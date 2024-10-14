@@ -4,10 +4,10 @@ object Zeichen extends Enumeration {
   val Pik, Herz, Kreuz, Caro = Value
 }
 
-object Zahl extends Enumeration {
+/*object Zahl extends Enumeration {
   type Zahl = Value
   val 7, 8, 9, 10 = Value
-}
+}*/
 
 println(s"Willkommen bei $name")
 println("Es gibt diese Zeichen: ")
@@ -15,7 +15,7 @@ for (zeichen <- Zeichen.values) {
   println(zeichen)
 }
 // println("Es gibt diese Karten: " + Zeichen._)
-println(s"mit diesen Zahlen: $Zahl")
+//println(s"mit diesen Zahlen: $Zahl")
 
 
 
