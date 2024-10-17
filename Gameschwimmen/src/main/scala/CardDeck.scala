@@ -27,6 +27,15 @@ class CardDeck() {
     }
   }
 
+  // Methode, um drei Karten zu ziehen und anzuzeigen
+  def drawThree(): Unit = {
+    val cards = (1 to 3).map(_ => drawCard()) // Drei Karten ziehen
+    val cardLines = cards.map(_.getCardLines()) // Zeilen für jede Karte erstellen
+    for (i <- 0 until cardLines(0).length) { // Über jede Zeile iterieren
+      val line = cardLines.map(_(i)).mkString("  ") // Kartenzeilen nebeneinander mit Abstand
+      println(line)
+    }
+  }
 
   // Methode, um das aktuelle Deck anzuzeigen
   def showDeck(): Unit = {

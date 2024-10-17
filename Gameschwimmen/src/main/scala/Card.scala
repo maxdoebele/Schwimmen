@@ -1,6 +1,6 @@
-class Card(val suit: String, val rank: String){
-  def printCard(): Unit = {
-    // ASCII-Zeichen für die verschiedenen Suits
+class Card(val suit: String, val rank: String) {
+  // Methode, um jede Zeile der Karte als Liste von Strings zurückzugeben
+  def getCardLines(): List[String] = {
     val suitSymbol = suit match {
       case "Herz" => "♥"
       case "Pik" => "♠"
@@ -9,10 +9,12 @@ class Card(val suit: String, val rank: String){
       case _ => "?"
     }
 
-    println(s"+-------+")
-    println(s"|   $rank$suitSymbol  |")
-    println(s"|       |")
-    println(s"|       |")
-    println(s"+-------+")
+    List(
+      "+-------+",
+      f"|     $rank%-2s|",
+      f"|   $suitSymbol   |",
+      f"| $rank%-2s    |",
+      "+-------+"
+    )
   }
 }
