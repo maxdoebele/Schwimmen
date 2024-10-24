@@ -12,11 +12,8 @@ object Main {
     // für jeden spieler drei karten ausgeben
     namen.foreach { name =>
       println(s"$name, das sind deine Karten:")
-      carddeck.drawThree()
+      carddeck
     }
 
-    // to do: karten nur verdeckt anzeigen bis sich einer entschließt sie aufzudecken
-    println("Das sind die Karten in der Mitte:")
-    carddeck.drawThree()
   }
 }

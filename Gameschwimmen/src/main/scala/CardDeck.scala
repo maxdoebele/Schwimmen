@@ -12,29 +12,9 @@ class CardDeck() {
   } yield new Card(suit, rank)
 
   // Methode zum Mischen des Decks
-  def shuffleDeck(): Unit = {
+  def shuffleDeck(): Seq[Card] = {
     cardDeck = scala.util.Random.shuffle(cardDeck)
-  }
-
-  // Methode zum Ziehen einer Karte
-  def drawCard(): Card = {
-    if (cardDeck.nonEmpty) {
-      val card = cardDeck.head
-      cardDeck = cardDeck.tail
-      card
-    } else {
-      throw new NoSuchElementException("Das Deck ist leer! Keine Karten mehr verfügbar.")
-    }
-  }
-
-  // Methode, um drei Karten zu ziehen und anzuzeigen
-  def drawThree(): Unit = {
-    val cards = (1 to 3).map(_ => drawCard()) // Drei Karten ziehen
-    val cardLines = cards.map(_.getCardLines()) // Zeilen für jede Karte erstellen
-    for (i <- 0 until cardLines(0).length) { // Über jede Zeile iterieren
-      val line = cardLines.map(_(i)).mkString("  ") // Kartenzeilen nebeneinander mit Abstand
-      println(line)
-    }
+    cardDeck
   }
 
   // Methode, um das aktuelle Deck anzuzeigen
