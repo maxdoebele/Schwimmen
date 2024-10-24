@@ -1,0 +1,5 @@
+package terminalUI
+
+class UIfunc {
+
+}
