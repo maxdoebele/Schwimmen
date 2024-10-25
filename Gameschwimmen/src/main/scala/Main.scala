@@ -9,11 +9,5 @@ object Main {
     println("Alles Klar, die Karten werden nun gemischt und ausgeteilt!")
     carddeck.shuffleDeck()
 
-    // für jeden spieler drei karten ausgeben
-    namen.foreach { name =>
-      println(s"$name, das sind deine Karten:")
-      carddeck
-    }
-
   }
 }
