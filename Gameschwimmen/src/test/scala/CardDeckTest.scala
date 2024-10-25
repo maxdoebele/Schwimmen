@@ -1,4 +1,7 @@
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
 
 class CardDeckTest extends AnyWordSpec {
 
@@ -28,6 +31,26 @@ class CardDeckTest extends AnyWordSpec {
       val deck = new CardDeck
       deck.shuffleDeck()
       assert(deck.cardDeck.size == 32, "Deck sollte nach dem Mischen immer noch 32 Karten enthalten")
+    }
+
+    // Hilfsmethode zum Abfangen der Ausgabe
+    def captureOutput(method: => Unit): String = {
+      val outputStream = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream)) {
+        method // Die Methode aufrufen, deren Ausgabe wir abfangen wollen
+      }
+      outputStream.toString
+    }
+
+    "correctly show all cards in the deck" in {
+      val deck = new CardDeck
+      val expectedOutput = deck.cardDeck.map(card => s"${card.rank} ${card.suit}").mkString("\n") + "\n"
+
+      val output = captureOutput {
+        deck.showDeck()
+      }
+
+      assert(output == expectedOutput, "Die Ausgabe von showDeck sollte alle Karten korrekt anzeigen")
     }
   }
 }

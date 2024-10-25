@@ -1,6 +1,6 @@
 class Card(val suit: String, val rank: String) {
   // Methode, um jede Zeile der Karte als Liste von Strings zurückzugeben
-  def getCardLines(): List[String] = {
+  def drawCard(): List[String] = {
     val suitSymbol = suit match {
       case "Herz" => "♥"
       case "Pik" => "♠"
