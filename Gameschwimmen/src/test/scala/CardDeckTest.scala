@@ -1,11 +1,13 @@
+import Model.CardDeck
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 class CardDeckTest extends AnyWordSpec {
 
-  "A CardDeck" should {
+  "A Model.CardDeck" should {
 
     "contain 32 cards when initialized" in {
       val deck = new CardDeck

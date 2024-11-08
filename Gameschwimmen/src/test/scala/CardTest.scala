@@ -1,8 +1,9 @@
+import Model.Card
 import org.scalatest.wordspec.AnyWordSpec
 
 class CardTest extends AnyWordSpec {
 
-  "A Card" should {
+  "A Model.Card" should {
 
     "return a correct visual representation for a Herz card" in {
       val card = new Card("Herz", "A")

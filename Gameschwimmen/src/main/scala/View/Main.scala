@@ -1,3 +1,5 @@
+package View
+
 import scala.io.StdIn._
 
 object Main {

@@ -1,5 +1,7 @@
+import View.Main
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, PrintStream}
 
 class MainTest extends AnyWordSpec with Matchers {
