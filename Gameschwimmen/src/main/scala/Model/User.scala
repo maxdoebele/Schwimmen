@@ -11,9 +11,9 @@ case class User(handDeck: Seq[Card], livePoints: Int) {
     copy(handDeck = updatedHand)
   }
 
-  def updateLivePoints(): User = {
-    val updatedLivePoints = livePoints - 1
-    copy(livePoints = updatedLivePoints)
+  def loseLivePoints(): User = {
+    val lostLivePoints = livePoints - 1
+    copy(livePoints = lostLivePoints)
   }
 
 }

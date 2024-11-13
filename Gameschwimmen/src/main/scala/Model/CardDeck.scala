@@ -18,7 +18,7 @@ case class CardDeck(cardDeck: Seq[Card]) {
       val (onHoldCard, remaining) = cardDeck.splitAt(3)
       (onHoldCard.toList, copy(cardDeck = remaining))
     } else {
-//***************************************************** not defined
+      //***************************************************** not defined
       val newDeck = copy(cardDeck = Seq.empty)
       (cardDeck.toList, newDeck)
     }
