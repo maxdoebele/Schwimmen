@@ -2,7 +2,7 @@ package Controller
 
 import Model.{Card, CardDeck, GameState, User}
 
-class CardOperation {
+class CardOperation(val suit: String, val rank: String) {
 
   def initializeNewGame(playersName: Seq[String]): GameState = {
     val cardDeck = new CardDeck().shuffleDeck()
