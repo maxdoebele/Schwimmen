@@ -1,9 +1,7 @@
 package Controller
 
-import Model.{Card, CardDeck, GameState, User}
-
-class CardOperation(val suit: String, val rank: String) {
-
+import Model._
+object GameManage {
   def initializeNewGame(playersName: Seq[String]): GameState = {
     val cardDeck = new CardDeck().shuffleDeck()
 
@@ -23,6 +21,4 @@ class CardOperation(val suit: String, val rank: String) {
 
     GameState(usersWithCards, tableWithCards, finalDeck, 1)
   }
-
-
 }

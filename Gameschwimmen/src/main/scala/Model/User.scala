@@ -15,7 +15,7 @@ case class User(handDeck: Seq[Card], livePoints: Int, name: String) {
     val updatedHandDeck = handDeck :+ card
     copy(handDeck = updatedHandDeck)
   }
-  def addCards(cards: Seq[Card]): User = {
+  def add3Cards(cards: Seq[Card]): User = {
     val updatedHandDeck = handDeck ++ cards
     copy(handDeck = updatedHandDeck)
   }

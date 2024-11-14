@@ -2,17 +2,16 @@ package Controller
 
 import Model.{Card, CardDeck, User}
 
-object GameLogic
-{
+object GameLogic {
   def distributeCardsToUser(deck: CardDeck, user: User): (CardDeck, User) = {
     val (drawnCards, newDeck) = deck.remove3Cards()
-    val updatedUser = user.addCards(drawnCards)
+    val updatedUser = user.add3Cards(drawnCards)
     (newDeck, updatedUser)
   }
 
-  def swapCards(playerUser: User, tableUser: User): (User, User) = {
+  /*def swapCards(playerUser: User, tableUser: User): (User, User) = {
 
-  }
+  }*/
 }
 
 
