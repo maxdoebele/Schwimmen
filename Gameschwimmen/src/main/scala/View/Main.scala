@@ -12,6 +12,9 @@ object Main {
 
     val namen = readLine("Bitte sag mir die Namen der Mitspieler: ").split(" ").toList
     val currentGame = GameManage.initializeNewGame(namen)
+    val tui = new TUI();
+    tui.displayGameState(currentGame)
+
     GameManage.playGame(currentGame)
 
   }

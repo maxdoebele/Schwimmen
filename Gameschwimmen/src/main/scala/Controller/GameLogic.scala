@@ -1,12 +1,13 @@
 package Controller
 
-import Model.{Card, CardDeck, GameState, User}
+import Model.{Card, GameState, User}
 
 import scala.io.StdIn.readLine
+import scala.util.Random
 
 object GameLogic {
-  def distributeCardsToUser(deck: CardDeck, user: User): (CardDeck, User) = {
-    val (drawnCards, newDeck) = deck.remove3Cards()
+  def distributeCardsToUser(deck: Seq[Card], user: User): (Seq[Card], User) = {
+    val (drawnCards, newDeck) = remove3Cards(deck)
     val updatedUser = user.add3Cards(drawnCards)
     (newDeck, updatedUser)
   }
@@ -30,12 +31,32 @@ object GameLogic {
     gameState
   }
   def knock(gameState: GameState): GameState = {
-    gameState.knockCount()
-    if (!gameState.gameOver) {
+    val updatedGameState = GameState(gameState.players, gameState.table, gameState.deck, gameState.round, gameState.knockCounter + 1, gameState.gameOver)
+    if (!updatedGameState.gameOver) {
       gameState
     } else {
       //endGamefunction wird aufgerufen GameManage
       gameState
     }
+  }
+
+  def makeNewDeck: Seq[Card] = {
+    for {
+      suit <- Seq("Herz", "Pik", "Karo", "Kreuz")
+      rank <- Seq("7", "8", "9", "10", "J", "Q", "K", "A")
+    } yield Card(suit, rank)
+
+  }
+
+  def shuffleDeck(aDeck: Seq[Card]): Seq[Card] = {
+    Random.shuffle(aDeck)
+  }
+
+  def remove3Cards(aDeck: Seq[Card]): (Seq[Card], Seq[Card]) = {
+    if (aDeck.length < 3) {
+      throw new IllegalStateException("Not enough cards in the deck to remove 3.")
+    }
+    val (onHoldCard, remaining) = aDeck.splitAt(3)
+    (onHoldCard, remaining)
   }
 }
