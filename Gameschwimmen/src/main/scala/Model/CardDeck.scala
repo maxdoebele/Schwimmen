@@ -9,21 +9,27 @@ case class CardDeck(cardDeck: Seq[Card]) {
     rank <- ranks
   } yield new Card(suit, rank))
 
-  def shuffleDeck(carddeck: Seq[Card]): Seq[Card] = {
-    Random.shuffle(carddeck)
+  def shuffleDeck(): CardDeck = {
+    copy(cardDeck = Random.shuffle(cardDeck))
   }
 
-  def remove3Cards(): (List[Card], CardDeck) = {
+  def remove3Cards(): (Seq[Card], CardDeck) = {
     if (cardDeck.length >= 3) {
       val (onHoldCard, remaining) = cardDeck.splitAt(3)
-      (onHoldCard.toList, copy(cardDeck = remaining))
+      (onHoldCard, copy(cardDeck = remaining))
     } else {
-//***************************************************** not defined
+//********************** not defined *****************************
       val newDeck = copy(cardDeck = Seq.empty)
-      (cardDeck.toList, newDeck)
+      (cardDeck, newDeck)
     }
   }
-  def showDeck(): Unit = {
-    cardDeck.foreach(card => println(s"${card.rank} ${card.suit}"))
+
+  def add3Cards(threeCards: Seq[Card]): CardDeck = {
+    if (threeCards.length == 3) {
+      copy(cardDeck = cardDeck ++ threeCards)
+    } else {
+      throw new IllegalArgumentException("Exactly 3 cards are required")
+    }
   }
+
 }
