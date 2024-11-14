@@ -21,4 +21,8 @@ class TUI() {
     )
   }
 
+  def showDeck(): Unit = {
+    cardDeck.foreach(card => println(s"${card.rank} ${card.suit}"))
+  }
+
 }
