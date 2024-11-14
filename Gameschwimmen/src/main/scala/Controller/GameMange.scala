@@ -21,4 +21,24 @@ object GameManage {
 
     GameState(usersWithCards, tableWithCards, finalDeck, 1)
   }
+
+  def playGame(currentGame: GameState): GameState = {
+    if (currentGame.gameOver) {
+      println("Das Spiel ist vorbei!")
+      currentGame
+    } else {
+      // Get the current player based on the round
+      val currentPlayerIndex = (currentGame.round - 1) % currentGame.players.size
+      val currentPlayer = currentGame.players(currentPlayerIndex)
+
+      // Play the turn and update the game state
+      val newGameState = GameLogic.playTurn(currentPlayer, currentGame)
+
+      // Increment the round and update the game state using `copy`
+      val updatedGameState = newGameState.copy(round = newGameState.round + 1)
+
+      // Recurse with the updated game state
+      playGame(updatedGameState)
+    }
+  }
 }
