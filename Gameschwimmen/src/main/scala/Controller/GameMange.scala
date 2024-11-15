@@ -1,12 +1,12 @@
 package Controller
 
-import Model._
+import Model.*
+import View.TUI
 
 import scala.annotation.tailrec
 object GameManage {
   def initializeNewGame(playersName: Seq[String]): GameState = {
-    val cardDeck = GameLogic.makeNewDeck
-    val shuffeldDeck = GameLogic.shuffleDeck(cardDeck)
+    val cardDeck = new CardDeck().shuffleDeck()
 
     val users: Seq[User] = playersName.map { name =>
       User(handDeck = Seq.empty, livePoints = 3, name = name)
@@ -14,7 +14,7 @@ object GameManage {
 
     val userTable = User(handDeck = Seq.empty, livePoints = -1, name = "TheTable")
 
-    val (deckAfterPlayers, usersWithCards) = users.foldLeft((shuffeldDeck, Seq.empty[User])) {
+    val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {
       case ((currentDeck, updatedUsers), user) =>
         val (updatedDeck, updatedUser) = GameLogic.distributeCardsToUser(currentDeck, user)
         (updatedDeck, updatedUsers :+ updatedUser)
@@ -33,14 +33,10 @@ object GameManage {
       // Get the current player based on the round
       val currentPlayerIndex = (currentGame.round - 1) % currentGame.players.size
       val currentPlayer = currentGame.players(currentPlayerIndex)
-
-      // Play the turn and update the game state
-      val newGameState = GameLogic.playTurn(currentPlayer, currentGame)
-
-      // Increment the round and update the game state using `copy`
-      val updatedGameState = newGameState.copy(round = newGameState.round + 1)
-
-      // Recurse with the updated game state
+      
+      val newGameStateTUI = new TUI().playerActionHandler(currentPlayer, currentGame)
+      val updatedGameState = newGameStateTUI.copy(round = newGameStateTUI.round + 1)
+      
       playGame(updatedGameState)
     }
   }
