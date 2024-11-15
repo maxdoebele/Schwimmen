@@ -1,6 +1,9 @@
 package Controller
 
-import Model.{Card, CardDeck, User}
+import Model._
+
+import scala.io.StdIn.readLine
+import scala.util.Random
 
 object GameLogic {
   def distributeCardsToUser(deck: CardDeck, user: User): (CardDeck, User) = {
@@ -9,21 +12,9 @@ object GameLogic {
     (newDeck, updatedUser)
   }
 
-  /*def swapCards(playerUser: User, tableUser: User): (User, User) = {
-
-  }*/
-}
-
-
-
-
-
-
-
-
-
-
+  def knock(gameState: GameState): GameState = {
+    val updatedGameState = GameState(gameState.players, gameState.table, gameState.deck, gameState.round, gameState.knockCounter + 1, gameState.gameOver)
+    updatedGameState
+  }
 
 }
-
-
