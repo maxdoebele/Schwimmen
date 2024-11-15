@@ -26,11 +26,12 @@ object GameManage {
 
   @tailrec
   def playGame(currentGame: GameState): GameState = {
+    GameLogic.checkForSchnauz(currentGame)
+
     if (currentGame.gameOver) {
       println("Das Spiel ist vorbei!")
       currentGame
     } else {
-      // Get the current player based on the round
       val currentPlayerIndex = (currentGame.round - 1) % currentGame.players.size
       val currentPlayer = currentGame.players(currentPlayerIndex)
       
@@ -40,4 +41,5 @@ object GameManage {
       playGame(updatedGameState)
     }
   }
+
 }
