@@ -1,7 +1,7 @@
 package View
 
 import Controller.GameLogic
-import Model.*
+import Model._
 
 import scala.io.StdIn.readLine
 
