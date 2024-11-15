@@ -13,8 +13,23 @@ object GameLogic {
   }
 
   def knock(gameState: GameState): GameState = {
-    val updatedGameState = GameState(gameState.players, gameState.table, gameState.deck, gameState.round, gameState.knockCounter + 1, gameState.gameOver)
-    updatedGameState
+    if (gameState.knockCounter + 1 >= 2) {
+      gameState.copy(knockCounter = gameState.knockCounter + 1, gameOver = true)
+    } else {
+      gameState.copy(knockCounter = gameState.knockCounter + 1)
+    }
   }
+
+  def trade(gameState: GameState, indexPlayer: Int, indexTable: Int, currentPlayer: User): GameState = {
+    val Some((userWithTwoCards, playerCard)) = currentPlayer.removeCard(indexPlayer)
+    val Some((tableWithTwoCards, tableCard)) = gameState.table.removeCard(indexTable)
+    val userWithThreeCards = userWithTwoCards.addCard(tableCard)
+    val tableWithThreeCards = tableWithTwoCards.addCard(playerCard)
+    val updatedPlayers = gameState.players.map { player =>
+      if (player.name == currentPlayer.name) userWithThreeCards else player
+    }
+    gameState.copy(players = updatedPlayers, table = tableWithThreeCards)
+  }
+
 
 }

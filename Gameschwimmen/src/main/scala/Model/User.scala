@@ -1,13 +1,13 @@
 package Model
 
 case class User(handDeck: Seq[Card], livePoints: Int, name: String) {
-  def removeCard(card: Card): Option[(User, Card)] = {
-    handDeck.find(_ == card) match {
-      case Some(foundCard) =>
-        val updatedHandDeck = handDeck.filterNot(_ == foundCard)
-        Some((copy(handDeck = updatedHandDeck), foundCard))
-      case None =>
-        None
+  def removeCard(index: Int): Option[(User, Card)] = {
+    if (index >= 0 && index < handDeck.size) {
+      val cardToRemove = handDeck(index)
+      val updatedHandDeck = handDeck.patch(index, Nil, 1)
+      Some((copy(handDeck = updatedHandDeck), cardToRemove))
+    } else {
+      None
     }
   }
 

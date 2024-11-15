@@ -1,6 +1,6 @@
 package Controller
 
-import Model.*
+import Model._
 import View.TUI
 
 import scala.annotation.tailrec
