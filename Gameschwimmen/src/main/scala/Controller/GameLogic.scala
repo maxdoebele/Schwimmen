@@ -36,7 +36,7 @@ object GameLogic {
     val schnauz = 31
     val feuer = 33
 
-    if (cards.size != 3) throw new IllegalArgumentException("Exactly 3 cards are required.")
+    if (cards.size != 3) throw new IllegalArgumentException("Genau drei Karten erwartet.")
 
     // Check if all ranks are the same
     if (cards.map(_.rank).distinct.size == 1) {

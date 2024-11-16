@@ -8,34 +8,34 @@ import scala.io.StdIn.readLine
 class TUI {
 
   def playerActionHandler(currentPlayer: User, gameState: GameState): GameState = {
-    println(s"${currentPlayer.name}, it's your turn! Choose an action: 1 = Knock, 2 = Skip, 3 = Trade")
-    readLine("Enter your number: ") match {
+    println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen")
+    readLine("Gib eine Nummer ein: ") match {
       case "1" =>
         val afterKnockGameState = GameLogic.knock(gameState)
-        println(s"Spieler ${currentPlayer.name} has knocked")
+        println(s"Spieler ${currentPlayer.name} hat geklopft")
         return afterKnockGameState
       case "2" =>
         //skip()
-        println(s"Spieler ${currentPlayer.name} has skipped")
+        println(s"Spieler ${currentPlayer.name} hat geschoben")
       case "3" =>
-        val inputUser = toNumber(readLine("Select the number of one of your cards to trade: "))
+        val inputUser = toNumber(readLine("Wähle die Nummer einer deiner Karten: "))
         if(inputUser >= 0 && inputUser < 3) {
-          val inputTable = toNumber(readLine("Select the number of one of the table cards to trade: "))
+          val inputTable = toNumber(readLine("Wähle die Nummer einer der Karten auf dem Tisch: "))
           if (inputTable >= 0 && inputTable < 3) {
             val afterTradeGameState = GameLogic.trade(gameState, inputUser, inputTable, currentPlayer)
             displayGameState(afterTradeGameState)
             return afterTradeGameState
           } else {
-            println("Invalid input. Please try again.")
+            println("Falsche Eingabe, versuche es erneut.")
             playerActionHandler(currentPlayer, gameState)
           }
         } else {
-          println("Invalid input. Please try again.")
+          println("Falsche Eingabe, versuche es erneut.")
           playerActionHandler(currentPlayer, gameState)
         }
-        println(s"Spieler ${currentPlayer.name} has traded")
+        println(s"Spieler ${currentPlayer.name} hat getauscht")
       case _ =>
-        println("Invalid action. Please try again.")
+        println("Falsche Eingabe, versuche es erneut.")
         playerActionHandler(currentPlayer, gameState)
     }
     gameState
@@ -69,12 +69,12 @@ class TUI {
 
   def displayGameState(gameState: GameState): Unit = {
     gameState.players.foreach { player =>
-      println(s"${player.name}'s hand:")
+      println(s"${player.name}'s Karten:")
       displayHand(player.handDeck)
       println()
     }
 
-    println("Table's hand:")
+    println("Tisch Karten:")
     displayHand(gameState.table.handDeck)
     println() // Line break after table hand
   }

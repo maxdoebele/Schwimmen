@@ -18,7 +18,7 @@ case class CardDeck(cardDeck: Seq[Card]) {
 
     def remove3Cards(): (Seq[Card], CardDeck) = {
       if (cardDeck.length < 3) {
-        throw new IllegalStateException("Not enough cards in the deck to remove 3.")
+        throw new IllegalStateException("Nicht genug Karten im Deck um 3 abzuheben.")
       }
       val (onHoldCard, remaining) = cardDeck.splitAt(3)
       (onHoldCard, copy(cardDeck = remaining))
@@ -28,7 +28,7 @@ case class CardDeck(cardDeck: Seq[Card]) {
       if (threeCards.length == 3) {
         copy(cardDeck = cardDeck ++ threeCards)
       } else {
-        throw new IllegalArgumentException("Exactly 3 cards are required")
+        throw new IllegalArgumentException("Genau 3 Karten erwartet.")
       }
     }
 }

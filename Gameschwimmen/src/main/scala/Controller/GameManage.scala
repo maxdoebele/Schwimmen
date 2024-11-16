@@ -12,7 +12,7 @@ object GameManage {
       User(handDeck = Seq.empty, livePoints = 3, name = name)
     }
 
-    val userTable = User(handDeck = Seq.empty, livePoints = -1, name = "TheTable")
+    val userTable = User(handDeck = Seq.empty, livePoints = -1, name = "Der Tisch")
 
     val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {
       case ((currentDeck, updatedUsers), user) =>
