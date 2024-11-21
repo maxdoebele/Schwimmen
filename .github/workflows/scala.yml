@@ -36,6 +36,8 @@ jobs:
         env:
            COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
-         export CI_BRANCH="${GITHUB_REF#refs/heads/}"
-         sbt clean coverage test
-         sbt coverageReport
+          echo "Current directory: $(pwd)"
+          ls -R
+           export CI_BRANCH="${GITHUB_REF#refs/heads/}"
+           sbt clean coverage test
+           sbt coverageReport
