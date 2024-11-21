@@ -40,4 +40,4 @@ jobs:
           ls -R
            export CI_BRANCH="${GITHUB_REF#refs/heads/}"
            sbt clean coverage test
-           sbt coverageReport
+           sbt coverageReport coveralls
