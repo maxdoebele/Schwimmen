@@ -21,29 +21,23 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'temurin'
+        distribution: 'adopt'
 
-    - name: Cache SBT dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.ivy2/cache
-        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
-        restore-keys: |
-          ${{ runner.os }}-sbt-
-
-    - name: Cache SBT launcher
-      uses: actions/cache@v3
-      with:
-        path: ~/.sbt
-        key: ${{ runner.os }}-sbt-launcher
-
+    - name: compile
+      run: sbt compile
+      
     - name: Run tests
       run: sbt test
-
-    - name: Generate code coverage
-      run: sbt coverage test coverageReport
-
-    - name: Upload coverage to Coveralls
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      run: sbt coveralls
+      
+  run_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Project and export Coverage
+        env:
+           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+         export CI_BRANCH="${GITHUB_REF#refs/heads/}"
+         sbt clean coverage test
+         sbt coverageReport
