@@ -1,3 +1,0 @@
-package ControllerTest
-
-class GameMangeTest

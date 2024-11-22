@@ -32,11 +32,11 @@ object GameManage {
       println("Das Spiel ist vorbei!")
       currentGame
     } else {
-      val currentPlayerIndex = (currentGame.round - 1) % currentGame.players.size
+      val currentPlayerIndex = (currentGame.queue - 1) % currentGame.players.size
       val currentPlayer = currentGame.players(currentPlayerIndex)
       
       val newGameStateTUI = new TUI().playerActionHandler(currentPlayer, currentGame)
-      val updatedGameState = newGameStateTUI.copy(round = newGameStateTUI.round + 1)
+      val updatedGameState = newGameStateTUI.copy(queue = newGameStateTUI.queue + 1)
       
       playGame(updatedGameState)
     }
