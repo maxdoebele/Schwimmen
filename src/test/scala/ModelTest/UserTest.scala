@@ -44,7 +44,7 @@ class UserTest extends AnyWordSpec {
       assert(updatedUser.livePoints == 2)
     }
 
-    // ---------------- live points ab -1 bzw. 0 ist der user raus -----------------
+    // ---------------- live points ab -1 bzw. 0 ist der user raus -------------------
 
   }
 }
