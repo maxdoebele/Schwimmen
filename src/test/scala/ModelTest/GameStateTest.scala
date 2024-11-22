@@ -29,7 +29,7 @@ class GameStateTest extends AnyWordSpec {
 
       val gameState = GameState(Seq(player1), table, deck)
 
-      assert(gameState.round == 0)
+      assert(gameState.queue == 0)
       assert(gameState.knockCounter == 0)
       assert(!gameState.gameOver)
     }
@@ -41,10 +41,10 @@ class GameStateTest extends AnyWordSpec {
 
       val gameState = GameState(Seq(player1), table, deck)
 
-      assert(gameState.round == 0)
+      assert(gameState.queue == 0)
 
-      val updatedGameState = gameState.copy(round = gameState.round + 1)
-      assert(updatedGameState.round == 1)
+      val updatedGameState = gameState.copy(queue = gameState.queue + 1)
+      assert(updatedGameState.queue == 1)
     }
 
     "correctly handle the gameOver state" in {
