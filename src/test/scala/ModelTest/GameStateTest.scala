@@ -60,7 +60,7 @@ class GameStateTest extends AnyWordSpec {
       assert(updatedGameState.gameOver)
     }
 
-    "handle knockCounter correctly" in {
+    "handle knockCounter correct" in {
       val player1 = User(Seq(Card("Herz", "7")), 3, "Max")
       val table = User(Seq(Card("Pik", "8")), 3, "Table")
       val deck = new CardDeck()
