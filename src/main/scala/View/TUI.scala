@@ -1,32 +1,27 @@
 package View
 
-import Controller.GameLogic
-import Model._
+import Controller.{GameLogic, playerActions}
+import Model.*
 
 import scala.io.StdIn.readLine
 
 class TUI {
+  
 
-  trait playerActionState {
-    def playerAction(currentPlayer: User, gameState: GameState): GameState
-  }
-
-  object knockState extends playerActionState {
+  object knockState extends playerActions {
     override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
       val afterKnockGameState = GameLogic.knock(gameState)
-      println(s"Spieler ${currentPlayer.name} hat geklopft")
       afterKnockGameState
     }
   }
 
-  object skipState extends playerActionState {
+  object skipState extends playerActions {
     override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
-      println(s"Spieler ${currentPlayer.name} hat geschoben")
       gameState
     }
   }
 
-  object tradeState extends playerActionState {
+  object tradeState extends playerActions {
     override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
       println("1 = eine Karte tauschen, 2 = alle drei Karten tauschen")
       readLine("Gib eine Nummer ein: ") match {
@@ -60,8 +55,8 @@ class TUI {
   }
 
   class PlayerActionHandler {
-    private var state: playerActionState = _
-    def setState(newState: playerActionState): Unit = {
+    private var state: playerActions = _
+    def setState(newState: playerActions): Unit = {
       state = newState
     }
     def playerAction(currentPlayer: User, gameState: GameState): GameState = {
@@ -76,8 +71,10 @@ class TUI {
     readLine("Gib eine Nummer ein: ") match {
       case "1" =>
         actionHandler.setState(knockState)
+        println(s"Spieler ${currentPlayer.name} hat geklopft")
       case "2" =>
         actionHandler.setState(skipState)
+        println(s"Spieler ${currentPlayer.name} hat geschoben")
       case "3" =>
         actionHandler.setState(tradeState)
       case _ =>
