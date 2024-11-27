@@ -20,6 +20,11 @@ case class User(handDeck: Seq[Card], livePoints: Int, name: String) {
     copy(handDeck = updatedHandDeck)
   }
 
+  def removeAllCards(): (User, Seq[Card]) = {
+    val removedCards = handDeck
+    (copy(handDeck = Seq.empty), removedCards)
+  }
+
   def loseLivePoints(): User = {
     val lostLivePoints = livePoints - 1
     copy(livePoints = lostLivePoints)

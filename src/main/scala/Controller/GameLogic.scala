@@ -20,7 +20,7 @@ object GameLogic {
     }
   }
 
-  def trade(gameState: GameState, indexPlayer: Int, indexTable: Int, currentPlayer: User): GameState = {
+  def tradeOneCard(gameState: GameState, indexPlayer: Int, indexTable: Int, currentPlayer: User): GameState = {
     val Some((userWithTwoCards, playerCard)) = currentPlayer.removeCard(indexPlayer)
     val Some((tableWithTwoCards, tableCard)) = gameState.table.removeCard(indexTable)
     val userWithThreeCards = userWithTwoCards.addCard(tableCard)
@@ -30,6 +30,18 @@ object GameLogic {
     }
     gameState.copy(players = updatedPlayers, table = tableWithThreeCards)
   }
+
+  def tradeAllCards(gameState: GameState, currentPlayer: User): GameState = {
+    val (userWithNoCards, playerCards) = currentPlayer.removeAllCards()
+    val (tableWithNoCards, tableCards) = gameState.table.removeAllCards()
+    val userWithNewCards = userWithNoCards.add3Cards(tableCards)
+    val tableWithNewCards = tableWithNoCards.add3Cards(playerCards)
+    val updatedPlayers = gameState.players.map { player =>
+      if (player.name == currentPlayer.name) userWithNewCards else player
+    }
+    gameState.copy(players = updatedPlayers, table = tableWithNewCards)
+  }
+
 
   def calculatePoints(cards: Seq[Card]): Double = {
     val halbe = 30.5
@@ -42,7 +54,7 @@ object GameLogic {
     if (cards.map(_.rank).distinct.size == 1) {
       if (cards.head.rankToPoints * 3 == feuer)
         return feuer
-      return halbe // Triple the points for the rank
+      return halbe
     }
 
     val groupedBySuit = cards.groupBy(_.suit) // Group cards by their suits
@@ -66,7 +78,7 @@ object GameLogic {
         gameState.copy(gameOver = true) // Spiel ist vorbei, Schnauz erreicht
       case (_, Some(player)) =>
         println(s"${player.name} hat 33 Punkte erreicht!")
-        gameState.copy(gameOver = true) // Spiel ist vorbei, 33 Punkte erreicht
+        gameState.copy(gameOver = true)
       case _ =>
         gameState // Keine besonderen Punkte erreicht, Spiel geht weiter
     }

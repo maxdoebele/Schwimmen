@@ -7,38 +7,85 @@ import scala.io.StdIn.readLine
 
 class TUI {
 
+  trait playerActionState {
+    def playerAction(currentPlayer: User, gameState: GameState): GameState
+  }
+
+  object knockState extends playerActionState {
+    override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
+      val afterKnockGameState = GameLogic.knock(gameState)
+      println(s"Spieler ${currentPlayer.name} hat geklopft")
+      afterKnockGameState
+    }
+  }
+
+  object skipState extends playerActionState {
+    override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
+      println(s"Spieler ${currentPlayer.name} hat geschoben")
+      gameState
+    }
+  }
+
+  object tradeState extends playerActionState {
+    override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
+      println("1 = eine Karte tauschen, 2 = alle drei Karten tauschen")
+      readLine("Gib eine Nummer ein: ") match {
+        case "1" =>
+          val inputUser = toNumber(readLine("Wähle die Nummer einer deiner Karten: "))
+          if (inputUser >= 0 && inputUser < 3) {
+            val inputTable = toNumber(readLine("Wähle die Nummer einer der Karten auf dem Tisch: "))
+            if (inputTable >= 0 && inputTable < 3) {
+              val afterTradeGameState = GameLogic.tradeOneCard(gameState, inputUser, inputTable, currentPlayer)
+              displayGameState(afterTradeGameState)
+              println(s"Spieler ${currentPlayer.name} hat eine Karte getauscht")
+              afterTradeGameState
+            } else {
+              println("Falsche Eingabe, versuche es erneut.")
+              playerAction(currentPlayer, gameState)
+            }
+          } else {
+            println("Falsche Eingabe, versuche es erneut.")
+            playerAction(currentPlayer, gameState)
+          }
+        case "2" =>
+          val afterTradeAllGameState = GameLogic.tradeAllCards(gameState, currentPlayer)
+          displayGameState(afterTradeAllGameState)
+          println(s"Spieler ${currentPlayer.name} hat alle Karten getauscht")
+          afterTradeAllGameState
+        case _ =>
+          println("Falsche Eingabe, versuche es erneut.")
+          playerAction(currentPlayer, gameState)
+      }
+    }
+  }
+
+  class PlayerActionHandler {
+    private var state: playerActionState = _
+    def setState(newState: playerActionState): Unit = {
+      state = newState
+    }
+    def playerAction(currentPlayer: User, gameState: GameState): GameState = {
+      state.playerAction(currentPlayer, gameState)
+    }
+  }
+
   def playerActionHandler(currentPlayer: User, gameState: GameState): GameState = {
+    val actionHandler = new PlayerActionHandler()
+
     println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen")
     readLine("Gib eine Nummer ein: ") match {
       case "1" =>
-        val afterKnockGameState = GameLogic.knock(gameState)
-        println(s"Spieler ${currentPlayer.name} hat geklopft")
-        return afterKnockGameState
+        actionHandler.setState(knockState)
       case "2" =>
-        //skip()
-        println(s"Spieler ${currentPlayer.name} hat geschoben")
+        actionHandler.setState(skipState)
       case "3" =>
-        val inputUser = toNumber(readLine("Wähle die Nummer einer deiner Karten: "))
-        if(inputUser >= 0 && inputUser < 3) {
-          val inputTable = toNumber(readLine("Wähle die Nummer einer der Karten auf dem Tisch: "))
-          if (inputTable >= 0 && inputTable < 3) {
-            val afterTradeGameState = GameLogic.trade(gameState, inputUser, inputTable, currentPlayer)
-            displayGameState(afterTradeGameState)
-            return afterTradeGameState
-          } else {
-            println("Falsche Eingabe, versuche es erneut.")
-            playerActionHandler(currentPlayer, gameState)
-          }
-        } else {
-          println("Falsche Eingabe, versuche es erneut.")
-          playerActionHandler(currentPlayer, gameState)
-        }
-        println(s"Spieler ${currentPlayer.name} hat getauscht")
+        actionHandler.setState(tradeState)
       case _ =>
         println("Falsche Eingabe, versuche es erneut.")
-        playerActionHandler(currentPlayer, gameState)
+        return playerActionHandler(currentPlayer, gameState)
     }
-    gameState
+
+    actionHandler.playerAction(currentPlayer, gameState)
   }
 
   def toNumber(input: String): Int = {
