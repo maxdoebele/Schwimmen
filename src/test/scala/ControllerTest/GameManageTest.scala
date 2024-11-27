@@ -37,9 +37,6 @@ class GameManageTest extends AnyWordSpec {
         // Verify the game starts at queue 1
         assert(gameState.queue == 1, "The game should start at queue 1")
     }
-    
-    "loop the game process" in {
-      
-    }
+
   }
 }

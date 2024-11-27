@@ -84,7 +84,6 @@ class TUI {
         println("Falsche Eingabe, versuche es erneut.")
         return playerActionHandler(currentPlayer, gameState)
     }
-
     actionHandler.playerAction(currentPlayer, gameState)
   }
 

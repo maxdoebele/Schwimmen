@@ -44,7 +44,7 @@ class GameLogicTest extends AnyWordSpec {
         deck = new CardDeck().shuffleDeck()
       )
 
-      val newState = GameLogic.trade(gameState, 1, 2, player)
+      val newState = GameLogic.tradeOneCard(gameState, 1, 2, player)
 
       val updatedPlayer = newState.players.find(_.name == player.name).get
       assert(updatedPlayer.handDeck.contains(Card("Karo", "K")), "Der Spieler sollte die Karte aus der Mitte erhalten.")
