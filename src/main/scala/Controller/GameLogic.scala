@@ -2,24 +2,7 @@ package Controller
 
 import Model._
 
-import scala.io.StdIn.readLine
-import scala.util.Random
-
 object GameLogic {
-  def distributeCardsToUser(deck: CardDeck, user: User): (CardDeck, User) = {
-    val (drawnCards, newDeck) = deck.remove3Cards()
-    val updatedUser = user.add3Cards(drawnCards)
-    (newDeck, updatedUser)
-  }
-
-  def knock(gameState: GameState): GameState = {
-    if (gameState.knockCounter + 1 >= 2) {
-      gameState.copy(knockCounter = gameState.knockCounter + 1, gameOver = true)
-    } else {
-      gameState.copy(knockCounter = gameState.knockCounter + 1)
-    }
-  }
-
 
   def calculatePoints(cards: Seq[Card]): Double = {
     val halbe = 30.5
@@ -31,11 +14,11 @@ object GameLogic {
     // Check if all ranks are the same
     if (cards.map(_.rank).distinct.size == 1) {
     if (cards.head.rankToPoints * 3 == feuer)
-    return feuer
+      return feuer 
+    else 
     return halbe
     }
-
-
+    
     val groupedBySuit = cards.groupBy(_.suit) // Group cards by their suits
     val sameSuitGroup = groupedBySuit.values.find(_.size > 1)
 
@@ -47,20 +30,19 @@ object GameLogic {
     }
   }
 
-
   def checkForSchnauz(gameState: GameState): GameState = {
     val schnauzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 31)
-    val over33Player = gameState.players.find(player => calculatePoints(player.handDeck) == 33)
+    val feuerSchnautzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 33)
 
-    (schnauzPlayer, over33Player) match {
+    (schnauzPlayer, feuerSchnautzPlayer) match {
       case (Some(player), _) =>
         println(s"${player.name} hat Schnauz (31 Punkte)!")
-        gameState.copy(gameOver = true) // Spiel ist vorbei, Schnauz erreicht
+        UpdateGameState.updateGameState(gameState, gameOver = Some(true))
       case (_, Some(player)) =>
         println(s"${player.name} hat 33 Punkte erreicht!")
-        gameState.copy(gameOver = true)
+        UpdateGameState.updateGameState(gameState, gameOver = Some(true))
       case _ =>
-        gameState // Keine besonderen Punkte erreicht, Spiel geht weiter
+        gameState
     }
   }
 }

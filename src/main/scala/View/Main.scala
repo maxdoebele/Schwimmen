@@ -1,10 +1,8 @@
 package View
 
-import Model.User
-
-import scala.io.StdIn._
-import Model._
-import Controller._
+import scala.io.StdIn.*
+import Controller.*
+import Controller.GameBuilder.BuildGame
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -15,6 +13,10 @@ object Main {
     val tui = new TUI()
     tui.displayGameState(currentGame)
 
-    GameManage.playGame(currentGame)
+    val currentRound = GameManage.playGame(currentGame)
+    val finishedRound = UpdateGameState.updateLivePoints(currentGame, GameManage.findLoser(currentRound.players))
+    
+    
   }
+  
 }

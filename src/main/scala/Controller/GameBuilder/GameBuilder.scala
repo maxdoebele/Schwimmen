@@ -1,6 +1,6 @@
-package Controller
+package Controller.GameBuilder
 
-import Model._
+import Model.*
 
 trait GameBuilder {
   def createCardDeck(): CardDeck

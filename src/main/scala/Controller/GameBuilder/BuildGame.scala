@@ -1,4 +1,6 @@
-package Controller
+package Controller.GameBuilder
+
+import Controller.GameLogic
 import Model.{CardDeck, GameState, User}
 
 case class BuildGame(playerNames: Seq[String]) extends GameBuilder {
@@ -26,11 +28,18 @@ case class BuildGame(playerNames: Seq[String]) extends GameBuilder {
   override def distributeCards(users: Seq[User], userTable: User, cardDeck: CardDeck): GameState = {
     val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {
       case ((currentDeck, updatedUsers), user) =>
-        val (updatedDeck, updatedUser) = GameLogic.distributeCardsToUser(currentDeck, user)
+        val (updatedDeck, updatedUser) = distributeCardsToUser(currentDeck, user)
         (updatedDeck, updatedUsers :+ updatedUser)
     }
-    val (finalDeck, tableWithCards) = GameLogic.distributeCardsToUser(deckAfterPlayers, userTable)
+    val (finalDeck, tableWithCards) = distributeCardsToUser(deckAfterPlayers, userTable)
 
     GameState(usersWithCards, tableWithCards, finalDeck, 1)
+  }
+
+  //*************Helper Funktions*********************
+  def distributeCardsToUser(deck: CardDeck, user: User): (CardDeck, User) = {
+    val (drawnCards, newDeck) = deck.remove3Cards()
+    val updatedUser = user.add3Cards(drawnCards)
+    (newDeck, updatedUser)
   }
 }
