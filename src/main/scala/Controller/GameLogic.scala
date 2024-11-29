@@ -20,28 +20,6 @@ object GameLogic {
     }
   }
 
-  def tradeOneCard(gameState: GameState, indexPlayer: Int, indexTable: Int, currentPlayer: User): GameState = {
-    val Some((userWithTwoCards, playerCard)) = currentPlayer.removeCard(indexPlayer)
-    val Some((tableWithTwoCards, tableCard)) = gameState.table.removeCard(indexTable)
-    val userWithThreeCards = userWithTwoCards.addCard(tableCard)
-    val tableWithThreeCards = tableWithTwoCards.addCard(playerCard)
-    val updatedPlayers = gameState.players.map { player =>
-      if (player.name == currentPlayer.name) userWithThreeCards else player
-    }
-    gameState.copy(players = updatedPlayers, table = tableWithThreeCards)
-  }
-
-  def tradeAllCards(gameState: GameState, currentPlayer: User): GameState = {
-    val (userWithNoCards, playerCards) = currentPlayer.removeAllCards()
-    val (tableWithNoCards, tableCards) = gameState.table.removeAllCards()
-    val userWithNewCards = userWithNoCards.add3Cards(tableCards)
-    val tableWithNewCards = tableWithNoCards.add3Cards(playerCards)
-    val updatedPlayers = gameState.players.map { player =>
-      if (player.name == currentPlayer.name) userWithNewCards else player
-    }
-    gameState.copy(players = updatedPlayers, table = tableWithNewCards)
-  }
-
 
   def calculatePoints(cards: Seq[Card]): Double = {
     val halbe = 30.5
@@ -52,21 +30,23 @@ object GameLogic {
 
     // Check if all ranks are the same
     if (cards.map(_.rank).distinct.size == 1) {
-      if (cards.head.rankToPoints * 3 == feuer)
-        return feuer
-      return halbe
+    if (cards.head.rankToPoints * 3 == feuer)
+    return feuer
+    return halbe
     }
+
 
     val groupedBySuit = cards.groupBy(_.suit) // Group cards by their suits
     val sameSuitGroup = groupedBySuit.values.find(_.size > 1)
 
     sameSuitGroup match {
       case Some(sameSuitCards) =>
-        sameSuitCards.map(_.rankToPoints).sum // Sum points of cards with the same suit
+       sameSuitCards.map(_.rankToPoints).sum // Sum points of cards with the same suit
       case None =>
-        cards.map(_.rankToPoints).max // All cards have different suits, return the highest rank points
+      cards.map(_.rankToPoints).max // All cards have different suits, return the highest rank points
     }
   }
+
 
   def checkForSchnauz(gameState: GameState): GameState = {
     val schnauzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 31)
@@ -83,5 +63,4 @@ object GameLogic {
         gameState // Keine besonderen Punkte erreicht, Spiel geht weiter
     }
   }
-
 }

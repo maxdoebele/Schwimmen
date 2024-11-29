@@ -7,5 +7,4 @@ case class GameState(
   queue: Int = 0,
   knockCounter: Int = 0,
   gameOver: Boolean = false){
-
 }

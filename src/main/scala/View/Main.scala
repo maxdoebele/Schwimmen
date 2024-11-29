@@ -11,7 +11,7 @@ object Main {
     println("Willkommen bei Schwimmen :)")
 
     val namen = readLine("Bitte sag mir die Namen der Mitspieler: ").split(" ").toList
-    val currentGame = GameManage.initializeNewGame(namen)
+    val currentGame = BuildGame(namen).returnGameState()
     val tui = new TUI()
     tui.displayGameState(currentGame)
 
