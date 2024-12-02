@@ -13,24 +13,25 @@ class SkipCommand(initialGameState: GameState) extends Command {
     updatedGameState
   }
 
-  override def undoStep(): Unit = {
+  override def undoStep(): Option[GameState] = {
     previousState match {
       case Some(state) =>
-        newState = Some(initialGameState)
-        previousState = None
+        newState = previousState
+        previousState = newState
+        newState
       case None =>
-        throw new IllegalStateException("No previous state to undo to!")
+        None
     }
   }
 
-  override def redoStep(): Unit = {
-    // Reapply the new state
+  override def redoStep(): Option[GameState] = {
     newState match {
       case Some(state) =>
-        previousState = Some(initialGameState)
-        newState = None
+        previousState = newState
+        newState = previousState
+        newState
       case None =>
-        throw new IllegalStateException("No new state to redo to!")
+        None
     }
   }
 }

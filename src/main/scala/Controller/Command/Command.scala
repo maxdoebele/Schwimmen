@@ -5,8 +5,8 @@ trait Command {
 
   def execute() : GameState
 
-  def undoStep(): Unit
+  def undoStep(): Option[GameState]
   
-  def redoStep(): Unit
+  def redoStep(): Option[GameState]
   
 }

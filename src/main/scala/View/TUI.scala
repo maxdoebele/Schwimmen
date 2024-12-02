@@ -18,7 +18,6 @@ class TUI {
         val afterKnockGameState = knockCommand.execute()
         storeCommand(knockCommand)
         afterKnockGameState
-
       case "2" =>
         println(s"Spieler ${currentPlayer.name} hat geschoben")
         val skipCommand = new SkipCommand(gameState)
@@ -48,15 +47,19 @@ class TUI {
             tuiActionHandler(currentPlayer, gameState)
         }
       case "undo" =>
-        undo(gameState).getOrElse {
+        val undoedGameState = undo(gameState).getOrElse {
           println("Es gibt keinen Zug zum Rückgängig machen!")
           gameState
         }
+        displayGameState(undoedGameState)
+        undoedGameState
       case "redo" =>
-        redo(gameState).getOrElse {
+        val redoedGameState = redo(gameState).getOrElse {
           println("Es gibt keinen Zug zum Rückgängig machen!")
           gameState
         }
+        displayGameState(redoedGameState)
+        redoedGameState
       case _ =>
         println("Falsche Eingabe, versuche es erneut.")
         tuiActionHandler(currentPlayer, gameState)
@@ -110,11 +113,11 @@ class TUI {
         println("Kein Zug zum Rückgängig machen.")
         None 
       case lastCommand :: remainingUndoStack =>
-        lastCommand.undoStep() // Undo the last command
-        redoStack = lastCommand :: redoStack // Move the undone command to the redo stack
-        undoStack = remainingUndoStack // Remove the command from the undo stack
+        val previousState = lastCommand.undoStep()
+        redoStack = lastCommand :: redoStack
+        undoStack = remainingUndoStack
         println("Zug wurde erfolgreich rückgängig gemacht!")
-        Some(lastCommand)
+        previousState
     }
   }
 
@@ -124,11 +127,11 @@ class TUI {
         println("Kein Zug zum Wiederherstellen.")
         None
       case lastCommand :: remainingRedoStack =>
-        val nextState = lastCommand.redoStep() // Execute the redo of the command
-        undoStack = lastCommand :: undoStack // Add the command back to the undo stack
-        redoStack = remainingRedoStack // Remove it from the redo stack
+        val nextState = lastCommand.redoStep()
+        undoStack = lastCommand :: undoStack
+        redoStack = remainingRedoStack
         println("Zug wurde erfolgreich wiederhergestellt!")
-        Some(nextState) // Return the new game state after redo
+        nextState
     }
   }
 
