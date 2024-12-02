@@ -9,10 +9,11 @@ import scala.annotation.tailrec
 object GameManage {
 
   val tui = new TUI()
-
+  
   def playGame(currentGame: GameState): GameState = {
+    
     if (currentGame.players.size <= 1) {
-      currentGame 
+      currentGame
     } else {
       tui.displayGameState(currentGame)
       val currentRound = GameManage.playRound(currentGame)
@@ -38,9 +39,11 @@ object GameManage {
       val newGameStateTUI = new TUI().tuiActionHandler(currentPlayer, currentGame)
 
       val gameStateQueuePlusOne = updateGameState(newGameStateTUI, queue = Some(newGameStateTUI.queue + 1))
+      
       playRound(gameStateQueuePlusOne)
     }
   }
+  
 
   def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
     val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap

@@ -1,7 +1,8 @@
 package View
 
-import Controller._
-import Model._
+import Controller.*
+import Controller.Command.PlayerActions
+import Model.*
 
 import scala.io.StdIn.readLine
 

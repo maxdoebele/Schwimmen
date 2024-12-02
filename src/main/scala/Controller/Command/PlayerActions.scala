@@ -1,6 +1,7 @@
-package Controller
-import Model._
-import UpdateGameState.updateGameState
+package Controller.Command
+
+import Controller.UpdateGameState.updateGameState
+import Model.*
 
 object PlayerActions {
 
