@@ -1,6 +1,6 @@
 package Controller.GameBuilder
 
-import Controller.GameLogic
+import Controller.HelpFunctions
 import Model.{CardDeck, GameState, User}
 
 case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {

@@ -1,6 +1,6 @@
 package Controller
 import Controller.GameBuilder._
-import Controller.GameLogic._
+import Controller.HelpFunctions._
 import UpdateGameState.updateGameState
 import Model._
 import View.TUI
@@ -27,20 +27,17 @@ object GameManage {
 
   @tailrec
   def playRound(currentGame: GameState): GameState = {
-    val checkedSchnauz = GameLogic.checkForSchnauz(currentGame)
+    val checkedSchnauz = HelpFunctions.checkForSchnauz(currentGame)
 
     if (checkedSchnauz.gameOver) {
       println("Die Runde ist vorbei!")
       checkedSchnauz
     } else {
-      val currentPlayerIndex = (currentGame.queue - 1) % currentGame.players.size
-      val currentPlayer = currentGame.players(currentPlayerIndex)
+      val currentPlayer = HelpFunctions.getCurrentPlayer(currentGame)
 
-      val newGameStateTUI = new TUI().tuiActionHandler(currentPlayer, currentGame)
-
-      val gameStateQueuePlusOne = updateGameState(newGameStateTUI, queue = Some(newGameStateTUI.queue + 1))
+      val newGameStateTUI = tui.tuiActionHandler(currentPlayer, currentGame)
       
-      playRound(gameStateQueuePlusOne)
+      playRound(newGameStateTUI)
     }
   }
   

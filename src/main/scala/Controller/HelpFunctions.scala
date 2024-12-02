@@ -2,7 +2,7 @@ package Controller
 
 import Model._
 
-object GameLogic {
+object HelpFunctions {
 
   def calculatePoints(cards: Seq[Card]): Double = {
     val halbe = 30.5
@@ -44,5 +44,11 @@ object GameLogic {
       case _ =>
         gameState
     }
+  }
+
+  def getCurrentPlayer(currentGame: GameState): User = {
+    val currentPlayerIndex = currentGame.queue % currentGame.players.size
+    val currentPlayer = currentGame.players(currentPlayerIndex)
+    currentPlayer
   }
 }

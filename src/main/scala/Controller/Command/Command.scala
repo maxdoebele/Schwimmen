@@ -1,6 +1,12 @@
 package Controller.Command
-import Model._
+import Model.*
 
 trait Command {
-  def execute(gameState: GameState, currentPlayer: User, playerCardIndex: Int, tableCardIndex: Int) : GameState
+
+  def execute() : GameState
+
+  def undoStep(): Unit
+  
+  def redoStep(): Unit
+  
 }

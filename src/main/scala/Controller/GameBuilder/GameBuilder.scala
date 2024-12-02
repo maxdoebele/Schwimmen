@@ -17,7 +17,7 @@ trait GameBuilder {
     }
     val (finalDeck, tableWithCards) = distributeCardsToUser(deckAfterPlayers, userTable)
 
-    GameState(usersWithCards, tableWithCards, finalDeck, 1)
+    GameState(usersWithCards, tableWithCards, finalDeck)
   }
 
   //*************Helper Funktions*********************
