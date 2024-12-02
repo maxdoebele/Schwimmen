@@ -1,8 +1,7 @@
 package View
 
-import Controller.*
-import Controller.Command.PlayerActions
-import Model.*
+import Controller.Command._
+import Model._
 
 import scala.io.StdIn.readLine
 
@@ -13,22 +12,24 @@ class TUI {
     readLine("Gib eine Nummer ein: ") match {
       case "1" =>
         println(s"Spieler ${currentPlayer.name} hat geklopft")
-        PlayerActions.knockAction(currentPlayer, gameState)
+        val afterKnockGameState = new KnockCommand().execute(gameState, currentPlayer)
+        afterKnockGameState
       case "2" =>
         println(s"Spieler ${currentPlayer.name} hat geschoben")
-        PlayerActions.skipAction(currentPlayer, gameState)
+        val afterSkipGameState =  new SkipCommand().execute(gameState, currentPlayer)
+        afterSkipGameState
       case "3" =>
         println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
         readLine("Gib eine Nummer ein: ") match {
           case "1" =>
-            val afterTradeGameState = PlayerActions.tradeAllAction(currentPlayer, gameState)
+            val afterTradeGameState = new TradeAllCommand().execute(gameState, currentPlayer)
             displayGameState(afterTradeGameState)
             afterTradeGameState
           case "2" =>
             println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte")
             val input = readLine("Gib einmal die Zahl für dein Deck und einmal die Zahl für das Tischdeck ein (0 0), (0 1) etc: ")
             val indices = input.split(" ").map(_.toInt)
-            val afterTradeOneGameState = PlayerActions.tradeOneAction(currentPlayer, gameState, indices(0), indices(1))
+            val afterTradeOneGameState = new TradeOneCommand().execute(gameState, currentPlayer, indices(0), indices(1))
             displayGameState(afterTradeOneGameState)
             afterTradeOneGameState
           case _ =>

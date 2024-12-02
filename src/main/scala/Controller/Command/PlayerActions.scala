@@ -1,7 +1,7 @@
 package Controller.Command
 
 import Controller.UpdateGameState.updateGameState
-import Model.*
+import Model._
 
 object PlayerActions {
 
