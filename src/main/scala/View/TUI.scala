@@ -1,104 +1,78 @@
 package View
 
-import Controller.{GameLogic, playerActions}
-import Model.*
+import Controller.Command._
+import Model._
 
 import scala.io.StdIn.readLine
 
 class TUI {
-  
+  private var undoStack: List[Command] = Nil
+  private var redoStack: List[Command] = Nil
 
-  object knockState extends playerActions {
-    override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
-      val afterKnockGameState = GameLogic.knock(gameState)
-      afterKnockGameState
-    }
-  }
-
-  object skipState extends playerActions {
-    override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
-      gameState
-    }
-  }
-
-  object tradeState extends playerActions {
-    override def playerAction(currentPlayer: User, gameState: GameState): GameState = {
-      println("1 = eine Karte tauschen, 2 = alle drei Karten tauschen")
-      readLine("Gib eine Nummer ein: ") match {
-        case "1" =>
-          val inputUser = toNumber(readLine("Wähle die Nummer einer deiner Karten: "))
-          if (inputUser >= 0 && inputUser < 3) {
-            val inputTable = toNumber(readLine("Wähle die Nummer einer der Karten auf dem Tisch: "))
-            if (inputTable >= 0 && inputTable < 3) {
-              val afterTradeGameState = GameLogic.tradeOneCard(gameState, inputUser, inputTable, currentPlayer)
-              displayGameState(afterTradeGameState)
-              println(s"Spieler ${currentPlayer.name} hat eine Karte getauscht")
-              afterTradeGameState
-            } else {
-              println("Falsche Eingabe, versuche es erneut.")
-              playerAction(currentPlayer, gameState)
-            }
-          } else {
-            println("Falsche Eingabe, versuche es erneut.")
-            playerAction(currentPlayer, gameState)
-          }
-        case "2" =>
-          val afterTradeAllGameState = GameLogic.tradeAllCards(gameState, currentPlayer)
-          displayGameState(afterTradeAllGameState)
-          println(s"Spieler ${currentPlayer.name} hat alle Karten getauscht")
-          afterTradeAllGameState
-        case _ =>
-          println("Falsche Eingabe, versuche es erneut.")
-          playerAction(currentPlayer, gameState)
-      }
-    }
-  }
-
-  class PlayerActionHandler {
-    private var state: playerActions = _
-    def setState(newState: playerActions): Unit = {
-      state = newState
-    }
-    def playerAction(currentPlayer: User, gameState: GameState): GameState = {
-      state.playerAction(currentPlayer, gameState)
-    }
-  }
-
-  def playerActionHandler(currentPlayer: User, gameState: GameState): GameState = {
-    val actionHandler = new PlayerActionHandler()
-
-    println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen")
+  def tuiActionHandler(currentPlayer: User, gameState: GameState): GameState = {
+    println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
     readLine("Gib eine Nummer ein: ") match {
       case "1" =>
-        actionHandler.setState(knockState)
         println(s"Spieler ${currentPlayer.name} hat geklopft")
+        val knockCommand = new KnockCommand(gameState, currentPlayer)
+        val afterKnockGameState = knockCommand.execute()
+        storeCommand(knockCommand)
+        afterKnockGameState
       case "2" =>
-        actionHandler.setState(skipState)
         println(s"Spieler ${currentPlayer.name} hat geschoben")
+        val skipCommand = new SkipCommand(gameState)
+        val afterSkipGameState = skipCommand.execute()
+        storeCommand(skipCommand)
+        afterSkipGameState
       case "3" =>
-        actionHandler.setState(tradeState)
+        println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
+        readLine("Gib eine Nummer ein: ") match {
+          case "1" =>
+            val tradeAllCommand = new TradeAllCommand(gameState, currentPlayer)
+            val afterTradeGameState = tradeAllCommand.execute()
+            storeCommand(tradeAllCommand)
+            displayGameState(afterTradeGameState)
+            afterTradeGameState
+          case "2" =>
+            println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte")
+            val input = readLine("Gib einmal die Zahl für dein Deck und einmal die Zahl für das Tischdeck ein (0 0), (0 1) etc: ")
+            val indices = input.split(" ").map(_.toInt)
+            val tradeOneCommand = new TradeOneCommand(gameState, currentPlayer, indices(0), indices(1))
+            val afterTradeOneGameState = tradeOneCommand.execute()
+            storeCommand(tradeOneCommand)
+            displayGameState(afterTradeOneGameState)
+            afterTradeOneGameState
+          case _ =>
+            println("Falsche Eingabe, versuche es erneut.")
+            tuiActionHandler(currentPlayer, gameState)
+        }
+      case "undo" =>
+        val undoedGameState = undo(gameState).getOrElse {
+          println("Es gibt keinen Zug zum Rückgängig machen!")
+          gameState
+        }
+        displayGameState(undoedGameState)
+        undoedGameState
+      case "redo" =>
+        val redoedGameState = redo(gameState).getOrElse {
+          println("Es gibt keinen Zug zum Rückgängig machen!")
+          gameState
+        }
+        displayGameState(redoedGameState)
+        redoedGameState
       case _ =>
         println("Falsche Eingabe, versuche es erneut.")
-        return playerActionHandler(currentPlayer, gameState)
-    }
-    actionHandler.playerAction(currentPlayer, gameState)
-  }
-
-  def toNumber(input: String): Int = {
-    try {
-      input.toInt
-    } catch {
-      case _: NumberFormatException => -1
+        tuiActionHandler(currentPlayer, gameState)
     }
   }
 
   def drawCard(card: Card): List[String] = {
     val suitSymbol = card.suit match {
-      case "Herz"  => "♥"
-      case "Pik"   => "♠"
-      case "Karo"  => "♦"
+      case "Herz" => "♥"
+      case "Pik" => "♠"
+      case "Karo" => "♦"
       case "Kreuz" => "♣"
-      case _       => "?"
+      case _ => "?"
     }
 
     List(
@@ -127,4 +101,39 @@ class TUI {
     val transposedLines = drawnCards.transpose
     transposedLines.foreach(row => println(row.mkString(" ")))
   }
+
+  def storeCommand(command: Command): Unit = {
+    undoStack = command :: undoStack
+    redoStack = List.empty
+  }
+
+  def undo(gameState: GameState): Option[GameState] = {
+    undoStack match {
+      case Nil =>
+        println("Kein Zug zum Rückgängig machen.")
+        None 
+      case lastCommand :: remainingUndoStack =>
+        val previousState = lastCommand.undoStep()
+        redoStack = lastCommand :: redoStack
+        undoStack = remainingUndoStack
+        println("Zug wurde erfolgreich rückgängig gemacht!")
+        previousState
+    }
+  }
+
+  def redo(currentGameState: GameState): Option[GameState] = {
+    redoStack match {
+      case Nil =>
+        println("Kein Zug zum Wiederherstellen.")
+        None
+      case lastCommand :: remainingRedoStack =>
+        val nextState = lastCommand.redoStep()
+        undoStack = lastCommand :: undoStack
+        redoStack = remainingRedoStack
+        println("Zug wurde erfolgreich wiederhergestellt!")
+        nextState
+    }
+  }
+
+
 }

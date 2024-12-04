@@ -1,45 +1,59 @@
 package Controller
-
+import Controller.GameBuilder._
+import Controller.HelpFunctions._
+import UpdateGameState.updateGameState
 import Model._
 import View.TUI
 
 import scala.annotation.tailrec
 object GameManage {
-  def initializeNewGame(playersName: Seq[String]): GameState = {
-    val cardDeck = new CardDeck().shuffleDeck()
 
-    val users: Seq[User] = playersName.map { name =>
-      User(handDeck = Seq.empty, livePoints = 3, name = name)
-    }
-
-    val userTable = User(handDeck = Seq.empty, livePoints = -1, name = "Der Tisch")
-
-    val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {
-      case ((currentDeck, updatedUsers), user) =>
-        val (updatedDeck, updatedUser) = GameLogic.distributeCardsToUser(currentDeck, user)
-        (updatedDeck, updatedUsers :+ updatedUser)
-    }
-    val (finalDeck, tableWithCards) = GameLogic.distributeCardsToUser(deckAfterPlayers, userTable)
-
-    GameState(usersWithCards, tableWithCards, finalDeck, 1)
-  }
-
-  @tailrec
+  val tui = new TUI()
+  
   def playGame(currentGame: GameState): GameState = {
-    GameLogic.checkForSchnauz(currentGame)
-
-    if (currentGame.gameOver) {
-      println("Das Spiel ist vorbei!")
+    
+    if (currentGame.players.size <= 1) {
       currentGame
     } else {
-      val currentPlayerIndex = (currentGame.queue - 1) % currentGame.players.size
-      val currentPlayer = currentGame.players(currentPlayerIndex)
-      
-      val newGameStateTUI = new TUI().playerActionHandler(currentPlayer, currentGame)
-      val updatedGameState = newGameStateTUI.copy(queue = newGameStateTUI.queue + 1)
-      
-      playGame(updatedGameState)
+      tui.displayGameState(currentGame)
+      val currentRound = GameManage.playRound(currentGame)
+      val finishedRound = UpdateGameState.updateLivePoints(currentRound, GameManage.findLoserOfRound(currentRound.players))
+      val newRound = BuildNewRound(finishedRound).returnGameState()
+
+      playGame(newRound) // Recursively call the function with the new game state
     }
+  }
+
+
+  @tailrec
+  def playRound(currentGame: GameState): GameState = {
+    val checkedSchnauz = HelpFunctions.checkForSchnauz(currentGame)
+
+    if (checkedSchnauz.gameOver) {
+      println("Die Runde ist vorbei!")
+      checkedSchnauz
+    } else {
+      val currentPlayer = HelpFunctions.getCurrentPlayer(currentGame)
+
+      val newGameStateTUI = tui.tuiActionHandler(currentPlayer, currentGame)
+      
+      playRound(newGameStateTUI)
+    }
+  }
+  
+
+  def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
+    val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap
+    val minPoints = usersPoints.values.min
+
+    allPlayers.filter(user => calculatePoints(user.handDeck) == minPoints)
+  }
+
+  def findWinner(allPlayers: Seq[User]): Seq[User] = {
+    val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap
+    val maxPoints = usersPoints.values.max
+
+    allPlayers.filter(user => calculatePoints(user.handDeck) == maxPoints)
   }
 
 }

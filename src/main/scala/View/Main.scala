@@ -1,20 +1,19 @@
 package View
 
-import Model.User
-
-import scala.io.StdIn._
-import Model._
-import Controller._
+import scala.io.StdIn.*
+import Controller.*
+import Controller.GameBuilder.{BuildNewGame, BuildNewRound}
 
 object Main {
   def main(args: Array[String]): Unit = {
     println("Willkommen bei Schwimmen :)")
 
     val namen = readLine("Bitte sag mir die Namen der Mitspieler: ").split(" ").toList
-    val currentGame = GameManage.initializeNewGame(namen)
-    val tui = new TUI()
-    tui.displayGameState(currentGame)
+    val currentGame = BuildNewGame(namen).returnGameState()
 
     GameManage.playGame(currentGame)
+    print("Das Spiel ist vorbei")
+    
   }
+  
 }
