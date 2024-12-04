@@ -1,42 +1,33 @@
 package Controller.Command
+import Controller.util.Controller
+import Model.*
 
-import Controller.UpdateGameState.updateGameState
-import Model._
+class KnockCommand(controller: Controller) extends Command {
 
-class KnockCommand(initialGameState: GameState, currentPlayer: User) extends Command {
+  var memento: GameState = controller.gameState
 
-  var previousState: Option[GameState] = None
-  var newState: Option[GameState] = None
+  override def execute(): Unit = {
+    memento = controller.gameState
 
-  override def execute(): GameState = {
-    previousState = Some(initialGameState)
-
-    val newKnockCounter = initialGameState.knockCounter + 1
-    val updatedGameState = updateGameState(initialGameState, knockCounter = Some(newKnockCounter), queue = Some(initialGameState.queue + 1), gameOver = Some(newKnockCounter >= 2))
-
-    newState = Some(updatedGameState)
-    updatedGameState
+    val updatedKnockCounter = controller.gameState.knockCounter + 1
+    val updatedGameState = controller.gameState.copy(knockCounter = updatedKnockCounter, gameOver = updatedKnockCounter >= 2)
+    
+    controller.gameState = updatedGameState
   }
 
-  override def undoStep(): Option[GameState] = {
-    previousState match {
-      case Some(state) =>
-        newState = previousState
-        previousState = newState
-        newState
-      case None =>
-        None
-    }
+  override def undoStep(): Unit = {
+    val memento = controller.gameState
+
+    controller.gameState = this.memento
+
+    this.memento = memento
   }
 
-  override def redoStep(): Option[GameState] = {
-    newState match {
-      case Some(state) =>
-        previousState = newState
-        newState = previousState
-        newState
-      case None =>
-        None
-    }
+  override def redoStep(): Unit = {
+    val memento = controller.gameState
+
+    controller.gameState = this.memento
+
+    this.memento = memento
   }
 }

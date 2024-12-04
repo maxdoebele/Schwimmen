@@ -1,7 +1,6 @@
 package Controller
 import Controller.GameBuilder._
 import Controller.HelpFunctions._
-import UpdateGameState.updateGameState
 import Model._
 import View.TUI
 
@@ -17,14 +16,13 @@ object GameManage {
     } else {
       tui.displayGameState(currentGame)
       val currentRound = GameManage.playRound(currentGame)
-      val finishedRound = UpdateGameState.updateLivePoints(currentRound, GameManage.findLoserOfRound(currentRound.players))
+      val finishedRound = HelpFunctions.updateLivePoints(currentRound, GameManage.findLoserOfRound(currentRound.players))
       val newRound = BuildNewRound(finishedRound).returnGameState()
 
       playGame(newRound) // Recursively call the function with the new game state
     }
   }
-
-
+  
   @tailrec
   def playRound(currentGame: GameState): GameState = {
     val checkedSchnauz = HelpFunctions.checkForSchnauz(currentGame)
@@ -41,7 +39,6 @@ object GameManage {
     }
   }
   
-
   def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
     val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap
     val minPoints = usersPoints.values.min

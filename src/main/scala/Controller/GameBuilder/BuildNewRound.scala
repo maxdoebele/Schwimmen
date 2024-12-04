@@ -1,6 +1,5 @@
 package Controller.GameBuilder
 
-import Controller.UpdateGameState
 import Model._
 
 class BuildNewRound(gameState: GameState) extends GameBuilder {

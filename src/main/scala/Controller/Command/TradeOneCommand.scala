@@ -1,44 +1,39 @@
 package Controller.Command
-import Controller.UpdateGameState.updateGameState
-import Model._
+import Controller.util.Controller
+import _root_.Controller.HelpFunctions
+import Model.*
 
-class TradeOneCommand(initialGameState: GameState, currentPlayer: User, playerCardIndex: Int, tableCardIndex: Int) extends Command {
-  private var previousState: Option[GameState] = None
-  private var newState: Option[GameState] = None
-  
-  override def execute(): GameState = {
-    previousState = Some(initialGameState)
-    val Some((userWithTwoCards, playerCard)) = currentPlayer.removeCard(playerCardIndex)
-    val Some(tableWithTwoCards, tableCard) = initialGameState.table.removeCard(tableCardIndex)
-    
-    val userWithThreeCards = userWithTwoCards.addCard(tableCard)
+class TradeOneCommand(controller: Controller) extends Command {
+
+  var memento: GameState = controller.gameState
+
+  override def execute(): Unit = {
+    memento = controller.gameState
+    val currentPlayer = HelpFunctions.getCurrentPlayer(controller.gameState)
+    val Some((userWithTwoCards, playerCard)) = currentPlayer.removeCard(controller.gameState.indexCardPlayer)
+    val Some(tableWithTwoCards, tableCard) = controller.gameState.table.removeCard(controller.gameState.indexCardTable)
+
+    val userWithNewCards = userWithTwoCards.addCard(tableCard)
     val tableWithThreeCards = tableWithTwoCards.addCard(playerCard)
+
+    val updatedPlayers = controller.gameState.players.map { player =>
+      if (currentPlayer.name == player.name) userWithNewCards else player
+    }
     
-    val updatedGameState = updateGameState(initialGameState, Some(currentPlayer), Some(userWithThreeCards), Some(tableWithThreeCards), queue = Some(initialGameState.queue + 1))
-    newState = Some(updatedGameState)
-    updatedGameState
+    val updatedGameState = controller.gameState.copy(players = updatedPlayers, table = tableWithThreeCards, queue = controller.gameState.queue + 1)
+    controller.gameState = updatedGameState
   }
 
-  override def undoStep(): Option[GameState] = {
-    previousState match {
-      case Some(state) =>
-        newState = previousState
-        previousState = newState
-        newState
-      case None =>
-        None
-    }
+  override def undoStep(): Unit = {
+    val memento = controller.gameState
+    controller.gameState = this.memento
+    this.memento = memento
   }
 
-  override def redoStep(): Option[GameState] = {
-    newState match {
-      case Some(state) =>
-        previousState = newState
-        newState = previousState
-        newState
-      case None =>
-        None
-    }
+  override def redoStep(): Unit = {
+    val memento = controller.gameState
+    controller.gameState = this.memento
+    this.memento = memento
   }
 
 }

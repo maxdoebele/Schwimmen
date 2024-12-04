@@ -3,10 +3,10 @@ import Model.*
 
 trait Command {
 
-  def execute() : GameState
+  def execute() : Unit
 
-  def undoStep(): Option[GameState]
+  def undoStep(): Unit
   
-  def redoStep(): Option[GameState]
+  def redoStep(): Unit
   
 }

@@ -1,68 +1,46 @@
 package View
 
-import Controller.Command._
-import Model._
-
+import Controller.*
+import Controller.util.Controller
+import Model.*
+import util._
 import scala.io.StdIn.readLine
 
-class TUI {
-  private var undoStack: List[Command] = Nil
-  private var redoStack: List[Command] = Nil
+class TUI(val controller: Controller) extends Observer {
 
-  def tuiActionHandler(currentPlayer: User, gameState: GameState): GameState = {
+  controller.add(this)
+
+  override def update(): Unit = {
+    val currentPlayer = HelpFunctions.getCurrentPlayer(controller.gameState)
+
     println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
     readLine("Gib eine Nummer ein: ") match {
       case "1" =>
-        println(s"Spieler ${currentPlayer.name} hat geklopft")
-        val knockCommand = new KnockCommand(gameState, currentPlayer)
-        val afterKnockGameState = knockCommand.execute()
-        storeCommand(knockCommand)
-        afterKnockGameState
+        controller.knock()
       case "2" =>
         println(s"Spieler ${currentPlayer.name} hat geschoben")
-        val skipCommand = new SkipCommand(gameState)
-        val afterSkipGameState = skipCommand.execute()
-        storeCommand(skipCommand)
-        afterSkipGameState
+        controller.skip()
       case "3" =>
         println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
         readLine("Gib eine Nummer ein: ") match {
           case "1" =>
-            val tradeAllCommand = new TradeAllCommand(gameState, currentPlayer)
-            val afterTradeGameState = tradeAllCommand.execute()
-            storeCommand(tradeAllCommand)
-            displayGameState(afterTradeGameState)
-            afterTradeGameState
+            controller.tradeAll()
           case "2" =>
             println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte")
             val input = readLine("Gib einmal die Zahl für dein Deck und einmal die Zahl für das Tischdeck ein (0 0), (0 1) etc: ")
             val indices = input.split(" ").map(_.toInt)
-            val tradeOneCommand = new TradeOneCommand(gameState, currentPlayer, indices(0), indices(1))
-            val afterTradeOneGameState = tradeOneCommand.execute()
-            storeCommand(tradeOneCommand)
-            displayGameState(afterTradeOneGameState)
-            afterTradeOneGameState
+            controller.tradeOne(indices(0), indices(1))
           case _ =>
             println("Falsche Eingabe, versuche es erneut.")
-            tuiActionHandler(currentPlayer, gameState)
+            update()
         }
       case "undo" =>
-        val undoedGameState = undo(gameState).getOrElse {
-          println("Es gibt keinen Zug zum Rückgängig machen!")
-          gameState
-        }
-        displayGameState(undoedGameState)
-        undoedGameState
+        controller.undo()
       case "redo" =>
-        val redoedGameState = redo(gameState).getOrElse {
-          println("Es gibt keinen Zug zum Rückgängig machen!")
-          gameState
-        }
-        displayGameState(redoedGameState)
-        redoedGameState
+        controller.redo()
       case _ =>
         println("Falsche Eingabe, versuche es erneut.")
-        tuiActionHandler(currentPlayer, gameState)
+        update()
     }
   }
 
@@ -101,39 +79,5 @@ class TUI {
     val transposedLines = drawnCards.transpose
     transposedLines.foreach(row => println(row.mkString(" ")))
   }
-
-  def storeCommand(command: Command): Unit = {
-    undoStack = command :: undoStack
-    redoStack = List.empty
-  }
-
-  def undo(gameState: GameState): Option[GameState] = {
-    undoStack match {
-      case Nil =>
-        println("Kein Zug zum Rückgängig machen.")
-        None 
-      case lastCommand :: remainingUndoStack =>
-        val previousState = lastCommand.undoStep()
-        redoStack = lastCommand :: redoStack
-        undoStack = remainingUndoStack
-        println("Zug wurde erfolgreich rückgängig gemacht!")
-        previousState
-    }
-  }
-
-  def redo(currentGameState: GameState): Option[GameState] = {
-    redoStack match {
-      case Nil =>
-        println("Kein Zug zum Wiederherstellen.")
-        None
-      case lastCommand :: remainingRedoStack =>
-        val nextState = lastCommand.redoStep()
-        undoStack = lastCommand :: undoStack
-        redoStack = remainingRedoStack
-        println("Zug wurde erfolgreich wiederhergestellt!")
-        nextState
-    }
-  }
-
-
+  
 }

@@ -36,11 +36,8 @@ object HelpFunctions {
 
     (schnauzPlayer, feuerSchnautzPlayer) match {
       case (Some(player), _) =>
-        println(s"${player.name} hat Schnauz (31 Punkte)!")
-        UpdateGameState.updateGameState(gameState, gameOver = Some(true))
-      case (_, Some(player)) =>
-        println(s"${player.name} hat 33 Punkte erreicht!")
-        UpdateGameState.updateGameState(gameState, gameOver = Some(true))
+        val updatedGameState = gameState.copy(gameOver = true)
+        updatedGameState
       case _ =>
         gameState
     }
@@ -50,5 +47,16 @@ object HelpFunctions {
     val currentPlayerIndex = currentGame.queue % currentGame.players.size
     val currentPlayer = currentGame.players(currentPlayerIndex)
     currentPlayer
+  }
+
+  def updateLivePoints(gameState: GameState, losers: Seq[User]): GameState = {
+    val updatedPlayers = gameState.players.map { player =>
+      if (losers.exists(_.name == player.name)) {
+        player.loseLivePoint()
+      } else {
+        player
+      }
+    }
+    gameState.copy(players = updatedPlayers)
   }
 }
