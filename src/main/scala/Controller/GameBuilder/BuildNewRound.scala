@@ -15,8 +15,14 @@ class BuildNewRound(gameState: GameState) extends GameBuilder {
   }
 
   def updatePlayers(players: Seq[User]): Seq[User] = {
-    players.filter(user => user.livePoints >= 0) 
+    if (players.nonEmpty) {
+      val filteredPlayers = players.filter(user => user.livePoints > 0)
+      filteredPlayers.tail :+ filteredPlayers.head
+    } else {
+      players
+    }
   }
+
 
   override def updateTable(): User = {
     User(handDeck = Seq.empty, livePoints = -1, name = "Der Tisch")

@@ -11,15 +11,14 @@ object GameManage {
 
   def playGame(controller: Controller): Controller = {
     val tui = new TUI(controller)
-    tui.update()
     if (controller.gameState.players.size <= 1) {
-      controller
-    } else {
-      HelpFunctions.updateLivePoints(controller, findLoserOfRound(controller.gameState.players))
-      val newRound = BuildNewRound(controller.gameState).returnController()
-
-      playGame(newRound) // Recursively call the function with the new game state
+      return controller
     }
+    tui.update()
+
+    val newRound = BuildNewRound(controller.gameState).returnController()
+
+    playGame(newRound) // Recursively call the function with the new game state
   }
 
   

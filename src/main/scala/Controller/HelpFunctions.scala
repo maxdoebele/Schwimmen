@@ -62,6 +62,6 @@ object HelpFunctions {
         player
       }
     }
-    controller.gameState =  controller.gameState.copy(players = updatedPlayers)
+    controller.gameState = controller.gameState.copy(players = updatedPlayers)
   }
 }
