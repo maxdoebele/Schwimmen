@@ -1,6 +1,6 @@
 package Model
 
-case class User(handDeck: Seq[Card], livePoints: Int, name: String) {
+case class User(handDeck: Seq[Card], livePoints: Int, name: String, schwimmt: Boolean = false) {
   def removeCard(index: Int): Option[(User, Card)] = {
     if (index >= 0 && index < handDeck.size) {
       val cardToRemove = handDeck(index)
@@ -9,6 +9,10 @@ case class User(handDeck: Seq[Card], livePoints: Int, name: String) {
     } else {
       None
     }
+  }
+
+  def setSchwimmer(): User = {
+    this.copy(schwimmt = true)
   }
 
   def addCard(card: Card): User = {
