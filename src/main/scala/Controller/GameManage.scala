@@ -1,43 +1,27 @@
 package Controller
-import Controller.GameBuilder._
-import Controller.HelpFunctions._
-import Model._
+import Controller.GameBuilder.*
+import Controller.HelpFunctions.*
+import Controller.util.Controller
+import Model.*
 import View.TUI
 
 import scala.annotation.tailrec
 object GameManage {
 
-  val tui = new TUI()
-  
-  def playGame(currentGame: GameState): GameState = {
-    
-    if (currentGame.players.size <= 1) {
-      currentGame
+
+  def playGame(controller: Controller): Controller = {
+    val tui = new TUI(controller)
+    tui.update()
+    if (controller.gameState.players.size <= 1) {
+      controller
     } else {
-      tui.displayGameState(currentGame)
-      val currentRound = GameManage.playRound(currentGame)
-      val finishedRound = HelpFunctions.updateLivePoints(currentRound, GameManage.findLoserOfRound(currentRound.players))
-      val newRound = BuildNewRound(finishedRound).returnGameState()
+      HelpFunctions.updateLivePoints(controller, findLoserOfRound(controller.gameState.players))
+      val newRound = BuildNewRound(controller.gameState).returnController()
 
       playGame(newRound) // Recursively call the function with the new game state
     }
   }
-  
-  @tailrec
-  def playRound(currentGame: GameState): GameState = {
-    val checkedSchnauz = HelpFunctions.checkForSchnauz(currentGame)
 
-    if (checkedSchnauz.gameOver) {
-      println("Die Runde ist vorbei!")
-      checkedSchnauz
-    } else {
-      val currentPlayer = HelpFunctions.getCurrentPlayer(currentGame)
-
-      val newGameStateTUI = tui.tuiActionHandler(currentPlayer, currentGame)
-      
-      playRound(newGameStateTUI)
-    }
-  }
   
   def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
     val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap

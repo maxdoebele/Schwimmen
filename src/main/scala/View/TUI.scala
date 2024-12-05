@@ -3,15 +3,26 @@ package View
 import Controller.*
 import Controller.util.Controller
 import Model.*
-import util._
+import util.*
+import _root_.Controller.GameManage.findLoserOfRound
+
 import scala.io.StdIn.readLine
 
-class TUI(val controller: Controller) extends Observer {
+class TUI(controller: Controller) extends Observer {
 
   controller.add(this)
 
+
   override def update(): Unit = {
     val currentPlayer = HelpFunctions.getCurrentPlayer(controller.gameState)
+    displayGameState(controller.gameState)
+    HelpFunctions.checkForSchnauz(controller)
+    if (controller.gameState.gameOver) {
+      HelpFunctions.updateLivePoints(controller, findLoserOfRound(controller.gameState.players))
+      displayEndOfRound()
+      println("Die Runde ist Vorbei")
+      return
+    }
 
     println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
     readLine("Gib eine Nummer ein: ") match {
@@ -79,5 +90,15 @@ class TUI(val controller: Controller) extends Observer {
     val transposedLines = drawnCards.transpose
     transposedLines.foreach(row => println(row.mkString(" ")))
   }
-  
+
+  private def displayEndOfRound(): Unit = {
+    val losers = findLoserOfRound(controller.gameState.players).map(_.name).mkString(", ")
+    println(s"Verloren haben: $losers")
+
+    val currentScores = HelpFunctions.calculateCurrentScore(controller)
+    println("Aktueller Punktestand")
+    currentScores.foreach { case (name, score) =>
+      println(f"$name%-20s  $score%3d") // Formatierung: Name linksbündig, Punktzahl rechtsbündig
+    }
+  }
 }

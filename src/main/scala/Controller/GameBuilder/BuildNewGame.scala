@@ -1,7 +1,8 @@
 package Controller.GameBuilder
 
 import Controller.HelpFunctions
-import Model.{CardDeck, GameState, User}
+import Model._
+import Controller.util.Controller
 
 case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
 
@@ -9,10 +10,7 @@ case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
   private val players: Seq[User] = createPlayers(playerNames)
   private val table: User = updateTable()
   private val gameState: GameState = distributeCards(players, table, cardDeck)
-
-  override def returnGameState(): GameState = {
-    gameState
-  }
+  
   override def createCardDeck(): CardDeck = {
     new CardDeck().shuffleDeck()
   }
@@ -24,5 +22,10 @@ case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
   }
   override def updateTable(): User = {
     User(handDeck = Seq.empty, livePoints = -1, name = "Der Tisch")
+  }
+
+  override def returnController(): Controller = {
+    val controller = Controller(gameState)
+    controller
   }
 }

@@ -1,6 +1,7 @@
 package Controller
 
-import Model._
+import Controller.util.Controller
+import Model.*
 
 object HelpFunctions {
 
@@ -30,18 +31,22 @@ object HelpFunctions {
     }
   }
 
-  def checkForSchnauz(gameState: GameState): GameState = {
-    val schnauzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 31)
-    val feuerSchnautzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 33)
+  def calculateCurrentScore(controller: Controller): Map[String, Int] = {
+    controller.gameState.players.map(player => {
+      player.name -> player.livePoints 
+    }).toMap
+  }
 
-    (schnauzPlayer, feuerSchnautzPlayer) match {
-      case (Some(player), _) =>
-        val updatedGameState = gameState.copy(gameOver = true)
-        updatedGameState
-      case _ =>
-        gameState
+
+  def checkForSchnauz(controller: Controller): Unit = {
+    val schnauzPlayer = controller.gameState.players.find(player => calculatePoints(player.handDeck) == 31)
+    val feuerSchnautzPlayer = controller.gameState.players.find(player => calculatePoints(player.handDeck) == 33)
+
+    if (schnauzPlayer.isDefined || feuerSchnautzPlayer.isDefined) {
+      controller.gameState = controller.gameState.copy(gameOver = true)
     }
   }
+
 
   def getCurrentPlayer(currentGame: GameState): User = {
     val currentPlayerIndex = currentGame.queue % currentGame.players.size
@@ -49,14 +54,14 @@ object HelpFunctions {
     currentPlayer
   }
 
-  def updateLivePoints(gameState: GameState, losers: Seq[User]): GameState = {
-    val updatedPlayers = gameState.players.map { player =>
+  def updateLivePoints(controller: Controller, losers: Seq[User]): Unit = {
+    val updatedPlayers = controller.gameState.players.map { player =>
       if (losers.exists(_.name == player.name)) {
         player.loseLivePoint()
       } else {
         player
       }
     }
-    gameState.copy(players = updatedPlayers)
+    controller.gameState =  controller.gameState.copy(players = updatedPlayers)
   }
 }

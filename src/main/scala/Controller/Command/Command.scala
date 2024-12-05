@@ -1,4 +1,5 @@
 package Controller.Command
+import Controller.HelpFunctions
 import Model.*
 
 trait Command {
@@ -8,5 +9,6 @@ trait Command {
   def undoStep(): Unit
   
   def redoStep(): Unit
+  
   
 }
