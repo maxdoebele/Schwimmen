@@ -6,6 +6,7 @@ import Model.*
 import View.TUI
 
 import scala.annotation.tailrec
+import scala.util._
 object GameManage {
 
 
@@ -21,19 +22,19 @@ object GameManage {
     playGame(newRound) // Recursively call the function with the new game state
   }
 
-  
+
   def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
-    val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap
-    val minPoints = usersPoints.values.min
+    val usersPoints: Seq[(User, Try[Double])] = allPlayers.map(user => user -> calculatePoints(user.handDeck))
+    val successfulPoints = usersPoints.collect {case (user, Success(points)) => (user, points)}
 
-    allPlayers.filter(user => calculatePoints(user.handDeck) == minPoints)
+    if (successfulPoints.isEmpty) {
+      return Seq.empty[User]
+    }
+    val minPoints = successfulPoints.map(_._2).min
+    successfulPoints.collect {
+      case (user, points) if points == minPoints => user
+    }
   }
 
-  def findWinner(allPlayers: Seq[User]): Seq[User] = {
-    val usersPoints: Map[User, Double] = allPlayers.map(user => user -> calculatePoints(user.handDeck)).toMap
-    val maxPoints = usersPoints.values.max
-
-    allPlayers.filter(user => calculatePoints(user.handDeck) == maxPoints)
-  }
 
 }
