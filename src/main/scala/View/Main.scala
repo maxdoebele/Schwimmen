@@ -9,11 +9,10 @@ object Main {
     println("Willkommen bei Schwimmen :)")
 
     val namen = readLine("Bitte sag mir die Namen der Mitspieler: ").split(" ").toList
-    val currentGame = BuildNewGame(namen).returnGameState()
+    val currentGameConroller = BuildNewGame(namen).returnController()
 
-    GameManage.playGame(currentGame)
+    GameManage.playGame(currentGameConroller)
     print("Das Spiel ist vorbei")
     
   }
-  
 }

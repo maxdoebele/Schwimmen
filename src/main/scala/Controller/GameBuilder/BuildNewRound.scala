@@ -1,7 +1,7 @@
 package Controller.GameBuilder
 
-import Controller.UpdateGameState
-import Model._
+import Controller.util.Controller
+import Model.*
 
 class BuildNewRound(gameState: GameState) extends GameBuilder {
 
@@ -22,7 +22,8 @@ class BuildNewRound(gameState: GameState) extends GameBuilder {
     User(handDeck = Seq.empty, livePoints = -1, name = "Der Tisch")
   }
 
-  def returnGameState(): GameState = {
-    updatedGameState
+  def returnController(): Controller = {
+    val controller = Controller(updatedGameState)
+    controller
   }
 }

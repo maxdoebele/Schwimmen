@@ -1,6 +1,7 @@
 package Controller
 
-import Model._
+import Controller.util.Controller
+import Model.*
 
 object HelpFunctions {
 
@@ -30,25 +31,37 @@ object HelpFunctions {
     }
   }
 
-  def checkForSchnauz(gameState: GameState): GameState = {
-    val schnauzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 31)
-    val feuerSchnautzPlayer = gameState.players.find(player => calculatePoints(player.handDeck) == 33)
+  def calculateCurrentScore(controller: Controller): Map[String, Int] = {
+    controller.gameState.players.map(player => {
+      player.name -> player.livePoints 
+    }).toMap
+  }
 
-    (schnauzPlayer, feuerSchnautzPlayer) match {
-      case (Some(player), _) =>
-        println(s"${player.name} hat Schnauz (31 Punkte)!")
-        UpdateGameState.updateGameState(gameState, gameOver = Some(true))
-      case (_, Some(player)) =>
-        println(s"${player.name} hat 33 Punkte erreicht!")
-        UpdateGameState.updateGameState(gameState, gameOver = Some(true))
-      case _ =>
-        gameState
+
+  def checkForSchnauz(controller: Controller): Unit = {
+    val schnauzPlayer = controller.gameState.players.find(player => calculatePoints(player.handDeck) == 31)
+    val feuerSchnautzPlayer = controller.gameState.players.find(player => calculatePoints(player.handDeck) == 33)
+
+    if (schnauzPlayer.isDefined || feuerSchnautzPlayer.isDefined) {
+      controller.gameState = controller.gameState.copy(gameOver = true)
     }
   }
+
 
   def getCurrentPlayer(currentGame: GameState): User = {
     val currentPlayerIndex = currentGame.queue % currentGame.players.size
     val currentPlayer = currentGame.players(currentPlayerIndex)
     currentPlayer
+  }
+
+  def updateLivePoints(controller: Controller, losers: Seq[User]): Unit = {
+    val updatedPlayers = controller.gameState.players.map { player =>
+      if (losers.exists(_.name == player.name)) {
+        player.loseLivePoint()
+      } else {
+        player
+      }
+    }
+    controller.gameState =  controller.gameState.copy(players = updatedPlayers)
   }
 }

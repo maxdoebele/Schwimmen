@@ -1,13 +1,14 @@
 package Controller.GameBuilder
 
-import Model._
+import Controller.util.Controller
+import Model.*
 
 trait GameBuilder {
   def createCardDeck(): CardDeck
 
   def updateTable(): User
 
-  def returnGameState(): GameState
+  def returnController(): Controller
 
   def distributeCards(users: Seq[User], userTable: User, cardDeck: CardDeck): GameState = {
     val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {
