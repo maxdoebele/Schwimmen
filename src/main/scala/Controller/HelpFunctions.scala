@@ -1,7 +1,7 @@
 package Controller
 
 import Controller.util.Controller
-import Model.*
+import Model._
 
 import scala.util.Try
 
@@ -56,7 +56,6 @@ object HelpFunctions {
   }
 
   def updateLivePoints(controller: Controller, losers: Seq[User]): Unit = {
-    // Check if any players in the losers list are about to lose their last life
     val updatedPlayers = if (controller.gameState.schwimmer) {
       controller.gameState.players.map { player =>
         if (losers.exists(_.name == player.name)) {

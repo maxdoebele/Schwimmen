@@ -1,6 +1,6 @@
 package Controller.Command
 import Controller.HelpFunctions
-import Model.*
+import Model._
 
 trait Command {
 

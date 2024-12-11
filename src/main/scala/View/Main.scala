@@ -1,7 +1,7 @@
 package View
 
-import scala.io.StdIn.*
-import Controller.*
+import scala.io.StdIn._
+import Controller._
 import Controller.GameBuilder.{BuildNewGame, BuildNewRound}
 
 object Main {

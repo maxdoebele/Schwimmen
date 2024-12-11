@@ -1,9 +1,9 @@
 package View
 
-import Controller.*
+import Controller._
 import Controller.util.Controller
-import Model.*
-import util.*
+import Model._
+import util._
 import _root_.Controller.GameManage.findLoserOfRound
 
 import scala.io.StdIn.readLine

@@ -1,14 +1,13 @@
 package Controller
-import Controller.GameBuilder.*
-import Controller.HelpFunctions.*
+import Controller.GameBuilder._
+import Controller.HelpFunctions._
 import Controller.util.Controller
-import Model.*
+import Model._
 import View.TUI
 
 import scala.annotation.tailrec
 import scala.util._
 object GameManage {
-
 
   def playGame(controller: Controller): Controller = {
     val tui = new TUI(controller)
