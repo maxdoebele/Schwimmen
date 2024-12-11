@@ -9,7 +9,7 @@ class HelpFunctionsTest extends AnyWordSpec {
 
     "distribute cards to user" in {
       val initialDeck = new CardDeck().shuffleDeck()
-      val user = User(Seq.empty, livePoints = 3, name = "Player1")
+      val user = User(Seq.empty, lifePoints = 3, name = "Player1")
 
       val (updatedDeck, updatedUser) = HelpFunctions.distributeCardsToUser(initialDeck, user)
 

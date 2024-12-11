@@ -34,6 +34,4 @@ object GameManage {
       case (user, points) if points == minPoints => user
     }
   }
-
-
 }

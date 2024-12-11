@@ -4,6 +4,7 @@ import Controller._
 import Controller.util.Controller
 import Model._
 import util._
+import _root_.Controller.COR.LifePointsHandler
 import _root_.Controller.GameManage.findLoserOfRound
 
 import scala.io.StdIn.readLine
@@ -18,7 +19,7 @@ class TUI(val controller: Controller) extends Observer {
     displayGameState(controller.gameState)
     HelpFunctions.checkForSchnauz(controller)
     if (controller.gameState.gameOver) {
-      HelpFunctions.updateLivePoints(controller, findLoserOfRound(controller.gameState.players))
+      new LifePointsHandler().handle(controller, findLoserOfRound(controller.gameState.players))
       displayEndOfRound()
       return
     }

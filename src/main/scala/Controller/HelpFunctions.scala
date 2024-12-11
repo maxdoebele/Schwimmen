@@ -34,7 +34,7 @@ object HelpFunctions {
 
   def calculateCurrentScore(controller: Controller): Map[String, Int] = {
     controller.gameState.players.map(player => {
-      player.name -> player.livePoints
+      player.name -> player.lifePoints
     }).toMap
   }
 
@@ -55,30 +55,4 @@ object HelpFunctions {
     currentPlayer
   }
 
-  def updateLivePoints(controller: Controller, losers: Seq[User]): Unit = {
-    val updatedPlayers = if (controller.gameState.schwimmer) {
-      controller.gameState.players.map { player =>
-        if (losers.exists(_.name == player.name)) {
-          player.loseLivePoint()
-        } else {
-          player
-        }
-      }
-    } else {
-      controller.gameState.players.map { player =>
-        if (losers.exists(_.name == player.name)) {
-          if (player.livePoints == 1) {
-            controller.gameState = controller.gameState.copy(schwimmer = true)
-            player.setSchwimmer()
-          } else {
-            player.loseLivePoint()
-          }
-        } else {
-          player
-        }
-      }
-    }
-
-    controller.gameState = controller.gameState.copy(players = updatedPlayers)
-  }
 }
