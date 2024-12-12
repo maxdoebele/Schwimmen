@@ -1,14 +1,15 @@
 package View
 
-import Controller.*
+import Controller._
 import Controller.util.Controller
-import Model.*
-import util.*
+import Model._
+import util._
+import _root_.Controller.COR.LifePointsHandler
 import _root_.Controller.GameManage.findLoserOfRound
 
 import scala.io.StdIn.readLine
 
-class TUI(controller: Controller) extends Observer {
+class TUI(val controller: Controller) extends Observer {
 
   controller.add(this)
 
@@ -18,9 +19,8 @@ class TUI(controller: Controller) extends Observer {
     displayGameState(controller.gameState)
     HelpFunctions.checkForSchnauz(controller)
     if (controller.gameState.gameOver) {
-      HelpFunctions.updateLivePoints(controller, findLoserOfRound(controller.gameState.players))
+      new LifePointsHandler().handle(controller, findLoserOfRound(controller.gameState.players))
       displayEndOfRound()
-      println("Die Runde ist Vorbei")
       return
     }
 
@@ -91,7 +91,7 @@ class TUI(controller: Controller) extends Observer {
     transposedLines.foreach(row => println(row.mkString(" ")))
   }
 
-  private def displayEndOfRound(): Unit = {
+  def displayEndOfRound(): Unit = {
     val losers = findLoserOfRound(controller.gameState.players).map(_.name).mkString(", ")
     println(s"Verloren haben: $losers")
 
@@ -100,5 +100,6 @@ class TUI(controller: Controller) extends Observer {
     currentScores.foreach { case (name, score) =>
       println(f"$name%-20s  $score%3d") // Formatierung: Name linksbündig, Punktzahl rechtsbündig
     }
+    println("Die Runde ist Vorbei")
   }
 }

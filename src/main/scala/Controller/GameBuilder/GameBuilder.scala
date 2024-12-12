@@ -1,7 +1,7 @@
 package Controller.GameBuilder
 
 import Controller.util.Controller
-import Model.*
+import Model._
 
 trait GameBuilder {
   def createCardDeck(): CardDeck

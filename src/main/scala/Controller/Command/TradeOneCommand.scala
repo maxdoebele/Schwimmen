@@ -1,7 +1,7 @@
 package Controller.Command
 import Controller.util.Controller
 import _root_.Controller.HelpFunctions
-import Model.*
+import Model._
 
 class TradeOneCommand(controller: Controller) extends Command {
 

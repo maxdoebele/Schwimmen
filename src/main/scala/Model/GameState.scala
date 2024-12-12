@@ -8,4 +8,5 @@ case class GameState(
   knockCounter: Int = 0,
   gameOver: Boolean = false, 
   indexCardPlayer: Int = 0,
-  indexCardTable: Int = 0)
+  indexCardTable: Int = 0,
+  schwimmer: Boolean = false)

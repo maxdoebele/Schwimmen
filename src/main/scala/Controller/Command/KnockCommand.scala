@@ -1,6 +1,6 @@
 package Controller.Command
 import Controller.util.Controller
-import Model.*
+import Model._
 
 class KnockCommand(controller: Controller) extends Command {
 
