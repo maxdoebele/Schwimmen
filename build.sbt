@@ -6,7 +6,7 @@ libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.10"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.10" % Test
 
-libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R24"
+libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R33"
 
 libraryDependencies ++= {
   lazy val osName = System.getProperty("os.name") match {
