@@ -5,17 +5,19 @@ import Controller.util.Controller
 import Model._
 import util._
 import _root_.Controller.COR.LifePointsHandler
-import _root_.Controller.GameManage.findLoserOfRound
+import _root_.Controller.HelpFunctions._
 
 import scala.io.StdIn.readLine
 
 class TUI(val controller: Controller) extends Observer {
 
   controller.add(this)
-
-
+  
+  /*def start(): Unit = {
+    
+  }*/
   override def update(): Unit = {
-    val currentPlayer = HelpFunctions.getCurrentPlayer(controller.gameState)
+    val currentPlayer = getCurrentPlayer(controller.gameState)
     displayGameState(controller.gameState)
     HelpFunctions.checkForSchnauz(controller)
     if (controller.gameState.gameOver) {

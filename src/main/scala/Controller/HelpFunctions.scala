@@ -3,9 +3,22 @@ package Controller
 import Controller.util.Controller
 import Model._
 
-import scala.util.Try
+import scala.util._
 
 object HelpFunctions {
+
+  def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
+    val usersPoints: Seq[(User, Try[Double])] = allPlayers.map(user => user -> calculatePoints(user.handDeck))
+    val successfulPoints = usersPoints.collect { case (user, Success(points)) => (user, points) }
+
+    if (successfulPoints.isEmpty) {
+      return Seq.empty[User]
+    }
+    val minPoints = successfulPoints.map(_._2).min
+    successfulPoints.collect {
+      case (user, points) if points == minPoints => user
+    }
+  }
 
   def calculatePoints(cards: Seq[Card]): Try[Double] = Try {
     val halbe = 30.5
@@ -47,7 +60,6 @@ object HelpFunctions {
       controller.gameState = controller.gameState.copy(gameOver = true)
     }
   }
-
 
   def getCurrentPlayer(currentGame: GameState): User = {
     val currentPlayerIndex = currentGame.queue % currentGame.players.size

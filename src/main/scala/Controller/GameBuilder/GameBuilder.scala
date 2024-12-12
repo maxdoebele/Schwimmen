@@ -8,7 +8,7 @@ trait GameBuilder {
 
   def updateTable(): User
 
-  def returnController(): Controller
+  def returnGameState(): GameState
 
   def distributeCards(users: Seq[User], userTable: User, cardDeck: CardDeck): GameState = {
     val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {

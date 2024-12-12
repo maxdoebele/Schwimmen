@@ -13,8 +13,8 @@ class BuildNewRound(gameState: GameState) extends GameBuilder {
   private val updatedGameState: GameState = mergeNewGameState()
 
   private def mergeNewGameState(): GameState = {
-    gameState.copy(players = distibuteCardGameState.players, table = distibuteCardGameState.table, deck = distibuteCardGameState.deck, gameOver = false, schwimmer = this.schwimmer
-    )
+    val updated = gameState.copy(players = distibuteCardGameState.players, table = distibuteCardGameState.table, deck = distibuteCardGameState.deck, queue = 0, knockCounter = 0, gameOver = false, indexCardPlayer = 0, indexCardTable = 0, schwimmer = gameState.schwimmer)
+    updated
   }
 
   
@@ -35,8 +35,7 @@ class BuildNewRound(gameState: GameState) extends GameBuilder {
     User(handDeck = Seq.empty, lifePoints = -1, name = "Der Tisch")
   }
 
-  def returnController(): Controller = {
-    val controller = Controller(updatedGameState)
-    controller
+  override def returnGameState(): GameState = {
+    updatedGameState
   }
 }
