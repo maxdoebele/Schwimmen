@@ -23,8 +23,8 @@ case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
     User(handDeck = Seq.empty, lifePoints = -1, name = "Der Tisch")
   }
 
-  override def returnController(): Controller = {
-    val controller = Controller(gameState)
+  override def returnGameState(): GameState = {
+    val controller = gameState
     controller
   }
 }

@@ -1,6 +1,5 @@
 package ControllerTest
 
-import Controller.GameManage._
 import Model.CardDeck
 import org.scalatest.wordspec.AnyWordSpec
 
