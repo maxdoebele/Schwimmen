@@ -1,9 +1,12 @@
 package View
 
-import scala.io.StdIn._
-import Controller._
-import util._
-import Controller.GameBuilder._
+import scala.io.StdIn.*
+import Controller.*
+import util.*
+import _root_.Controller.GameBuilder.*
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -11,23 +14,13 @@ object Main {
 
     val namen = readLine("Bitte sag mir die Namen der Mitspieler: ").split(" ").toList
     val currentGameConroller = Controller(BuildNewGame(namen).returnGameState())
-    playGame(currentGameConroller)
+
+    val tui = new TUI(currentGameConroller)
+    val tuiFuture = tui.start()
+    
+    GUI(currentGameConroller).main(Array.empty)
+    Await.result(tuiFuture, Duration.Inf)
     print("Das Spiel ist vorbei")
-    
   }
 
-  def playGame(controller: Controller): Controller = {
-    //GUI(currentGameConroller).main(array.empty)
-    val tui = TUI(controller)
-    
-    while (controller.gameState.players.size > 1) {
-      tui.update()
-      resetGame(controller)
-    }
-    controller
-  }
-
-  def resetGame(controller: Controller): Unit = {
-    controller.gameState = BuildNewRound(controller.gameState).returnGameState()
-  }
 }

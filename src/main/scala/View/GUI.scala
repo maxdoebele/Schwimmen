@@ -1,6 +1,7 @@
 package View
 
-import Controller.util.*
+import Controller.util.Controller
+import Controller.util.Observer
 import _root_.Controller.HelpFunctions
 import scalafx.Includes.*
 import scalafx.application.JFXApp3
@@ -9,10 +10,15 @@ import scalafx.scene.control.Button
 import scalafx.scene.layout.StackPane
 import scalafx.scene.paint.Color.*
 
-object GUI extends JFXApp3 {
-  
+class GUI(controller: Controller) extends JFXApp3, Observer {
+
+  controller.add(this)
+
+  override def update(): Unit = {
+    println("do nothing")
+  }
   override def start(): Unit = {
-    
+
     stage = new JFXApp3.PrimaryStage {
       title.value = "Hello Stage"
       width = 600
