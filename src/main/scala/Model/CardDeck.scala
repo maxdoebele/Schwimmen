@@ -7,7 +7,7 @@ case class CardDeck(cardDeck: Seq[Card]) {
 
     def this() = this(
       cardDeck = for {
-        suit <- Seq("Herz", "Pik", "Karo", "Kreuz")
+        suit <- Seq("Herz", "Pik", "Caro", "Kreuz")
         rank <- Seq("7", "8", "9", "10", "J", "Q", "K", "A")
       } yield Card(suit, rank)
     )

@@ -1,72 +1,86 @@
 package View
 
-import Controller.*
-import Model.*
-import util.*
-import _root_.Controller.GameBuilder.BuildNewRound
-import _root_.Controller.COR.LifePointsHandler
+import Controller._
+import Model._
+import util._
 import _root_.Controller.HelpFunctions.*
 
+import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.*
-import scala.concurrent.duration.Duration
-import scala.io.StdIn.readLine
+import scala.concurrent._
 
 class TUI(val controller: Controller) extends Observer {
 
   controller.add(this)
 
+  private val roundCounter: AtomicInteger = new AtomicInteger(1)
+
+  val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
+
   def start(): Future[Unit] = {
     Future {
-      while (controller.gameState.players.size > 1) {
-        this.update()
-        resetRound(controller)
-      }
+      this.update()
     }
-  }
-
-  private def resetRound(controller: Controller): Unit = {
-    controller.gameState = BuildNewRound(controller.gameState).returnGameState()
   }
 
   override def update(): Unit = {
-    val currentPlayer = getCurrentPlayer(controller.gameState)
-    displayGameState(controller.gameState)
-    HelpFunctions.checkForSchnauz(controller)
-    if (controller.gameState.gameOver) {
-      new LifePointsHandler().handle(controller, findLoserOfRound(controller.gameState.players))
-      displayEndOfRound()
-      return
-    }
+    Future {
+      if(controller.gameState.roundCounter == roundCounter.get()) {
+        displayEndOfRound()
+        this.synchronized{
+          roundCounter.incrementAndGet()
+        }
 
-    println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
-    readLine("Gib eine Nummer ein: ") match {
-      case "1" =>
-        controller.knock()
-      case "2" =>
-        println(s"Spieler ${currentPlayer.name} hat geschoben")
-        controller.skip()
-      case "3" =>
-        println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
-        readLine("Gib eine Nummer ein: ") match {
-          case "1" =>
-            controller.tradeAll()
-          case "2" =>
-            println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte")
-            val input = readLine("Gib einmal die Zahl für dein Deck und einmal die Zahl für das Tischdeck ein (0 0), (0 1) etc: ")
-            val indices = input.split(" ").map(_.toInt)
-            controller.tradeOne(indices(0), indices(1))
+      }
+      if (controller.gameState.players.size > 1) {
+        val currentPlayer = getCurrentPlayer(controller.gameState)
+        displayGameState(controller.gameState)
+
+        println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
+
+        InputHandler.readLineThread(controller) match {
+          case Some("1") =>
+            println(f"${currentPlayer.name} klopft!")
+            controller.knock()
+          case Some("2") =>
+            println(s"Spieler ${currentPlayer.name} hat geschoben")
+            controller.skip()
+          case Some("3") =>
+            println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
+            InputHandler.readLineThread(controller) match {
+              case Some("1") =>
+                controller.tradeAll()
+              case Some("2") =>
+                println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte")
+                val input = InputHandler.readLineThread(controller)
+                input match {
+                  case Some(indices) =>
+                    val splitInput = indices.split(" ").map(_.toInt)
+                    if (splitInput.length == 2) {
+                      controller.tradeOne(splitInput(0), splitInput(1))
+                    } else {
+                      println(wrongInputMessage)
+                      update()
+                    }
+                  case None =>
+                    //println("Eingabe wurde abgebrochen oder fehlgeschlagen.")
+                    update()
+                }
+              case _ =>
+                println(wrongInputMessage)
+                update()
+            }
+          case Some("undo") =>
+            controller.undo()
+          case Some("redo") =>
+            controller.redo()
+          case None =>
+          //println("Eingabe wurde abgebrochen.")
           case _ =>
-            println("Falsche Eingabe, versuche es erneut.")
+            println(wrongInputMessage)
             update()
         }
-      case "undo" =>
-        controller.undo()
-      case "redo" =>
-        controller.redo()
-      case _ =>
-        println("Falsche Eingabe, versuche es erneut.")
-        update()
+      }
     }
   }
 
@@ -74,7 +88,7 @@ class TUI(val controller: Controller) extends Observer {
     val suitSymbol = card.suit match {
       case "Herz" => "♥"
       case "Pik" => "♠"
-      case "Karo" => "♦"
+      case "Caro" => "♦"
       case "Kreuz" => "♣"
       case _ => "?"
     }
@@ -97,7 +111,7 @@ class TUI(val controller: Controller) extends Observer {
 
     println("Tisch Karten:")
     displayHand(gameState.table.handDeck)
-    println() // Line break after table hand
+    println()
   }
 
   private def displayHand(handDeck: Seq[Card]): Unit = {
@@ -107,14 +121,21 @@ class TUI(val controller: Controller) extends Observer {
   }
 
   def displayEndOfRound(): Unit = {
-    val losers = findLoserOfRound(controller.gameState.players).map(_.name).mkString(", ")
-    println(s"Verloren haben: $losers")
+    val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
+    println(s"Verloren hat: $losers")
 
-    val currentScores = HelpFunctions.calculateCurrentScore(controller)
-    println("Aktueller Punktestand")
-    currentScores.foreach { case (name, score) =>
-      println(f"$name%-20s  $score%3d") // Formatierung: Name linksbündig, Punktzahl rechtsbündig
+    if (controller.gameState.players.size > 1) {
+      val currentScores = HelpFunctions.calculateCurrentScore(controller)
+      println("Aktueller Punktestand")
+      currentScores.foreach { case (name, score) =>
+        println(f"$name%-20s  $score%3d") // Formatierung: Name linksbündig, Punktzahl rechtsbündig
+      }
+      for (i <- 1 to 3) {
+        println()
+      }
+      println("Neue Runde:")
+    } else {
+      println(f"Das Spiel ist vorbei... Gratuliere ${controller.gameState.players.map(_.name).mkString(", ")} du hast GEWONNEN!")
     }
-    println("Die Runde ist Vorbei")
   }
 }

@@ -9,4 +9,6 @@ case class GameState(
   gameOver: Boolean = false, 
   indexCardPlayer: Int = 0,
   indexCardTable: Int = 0,
-  schwimmer: Boolean = false)
+  schwimmer: Boolean = false,
+  roundCounter: Int = 0,
+  lastLoosers: Seq[User] = Seq.empty[User])

@@ -18,10 +18,11 @@ class BuildNewRound(gameState: GameState) extends GameBuilder {
       deck = distibuteCardGameState.deck, 
       queue = 0, 
       knockCounter = 0, 
-      gameOver = false, 
+      gameOver = false,
       indexCardPlayer = 0, 
       indexCardTable = 0, 
-      schwimmer = gameState.schwimmer)
+      schwimmer = gameState.schwimmer,
+      roundCounter = gameState.roundCounter + 1)
     updated
   }
 

@@ -1,9 +1,9 @@
 package View
 
-import scala.io.StdIn.*
-import Controller.*
-import util.*
-import _root_.Controller.GameBuilder.*
+import scala.io.StdIn._
+import Controller._
+import util._
+import _root_.Controller.GameBuilder._
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -19,8 +19,6 @@ object Main {
     val tuiFuture = tui.start()
     
     GUI(currentGameConroller).main(Array.empty)
-    Await.result(tuiFuture, Duration.Inf)
-    print("Das Spiel ist vorbei")
   }
 
 }
