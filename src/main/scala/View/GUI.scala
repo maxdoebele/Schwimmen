@@ -1,14 +1,16 @@
 package View
 
 import Controller.util.Controller
+import _root_.Controller.HelpFunctions
 import Model.Card
 import _root_.Controller.util.Observer
+import javafx.geometry.*
 import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{HBox, VBox}
+import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.paint.Color.*
 
 import scala.jdk.CollectionConverters.*
@@ -54,30 +56,66 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
-      title.value = "Hello Stage"
-      width = 600
-      height = 450
+      title.value = "Game of Schwimmen"
+      width = Double.NaN
+      height = Double.NaN
       scene = new Scene {
-        fill = LightGreen
-        content = new VBox {
-          spacing = 20
+        fill = LightBlue
+        // StackPane as root to center everything
+        content = new StackPane {
           children = Seq(
-            new Label {
-              text = s"Knock Counter: ${controller.gameState.knockCounter}"
-            },
-            new Button {
-              text = "Knock"
-              onAction = handle {
-                controller.knock()
-              }
-            },
-            new Label("Table's HandDeck:"),
-            createCardDisplay(controller.gameState.table.handDeck),
+            new VBox {
+              alignment = Pos.CENTER
+              spacing = 20
+              children = Seq(
+                // Table cards centered horizontally at the top
+                new StackPane {
+                  alignment = Pos.CENTER  // Center the cards horizontally
+                  children = createCardDisplay(controller.gameState.table.handDeck)
+                },
+
+                // Add 3 additional cards below the table cards, centered horizontally
+                new StackPane {
+                  alignment = Pos.CENTER  // Center the additional cards horizontally
+                  children = new HBox {
+                    spacing = 10
+                    alignment = Pos.CENTER // Center the cards within the HBox
+                    children = createCardDisplay(HelpFunctions.getCurrentPlayer(controller.gameState).handDeck)
+                  }
+                },
+
+                // Buttons centered horizontally at the bottom
+                new StackPane {
+                  alignment = Pos.CENTER  // Center the buttons horizontally
+                  children = new HBox {
+                    spacing = 20
+                    alignment = Pos.CENTER // Center the buttons within the HBox
+                    children = Seq(
+                      new Button {
+                        text = "Knock"
+                        onAction = handle {
+                          controller.knock()
+                        }
+                      },
+                      new Button {
+                        text = "New Button"
+                        onAction = handle {
+                          controller.skip()
+                        }
+                      }
+                    )
+                  }
+                }
+              )
+            }
           )
         }
       }
     }
   }
+
+
+
 
   private def loadCardDeck(folderPath: String): Map[Card, String] = {
     val folderUrl: Option[URL] = Option(getClass.getClassLoader.getResource(folderPath))
@@ -99,12 +137,10 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                 None
               }
             }.toMap
-
           case Failure(exception) =>
             println(s"Error reading card files: ${exception.getMessage}")
             Map.empty
         }
-
       case None =>
         println(s"Folder not found: $folderPath")
         Map.empty
