@@ -20,6 +20,4 @@ libraryDependencies ++= {
 }
 
 lazy val root = (project in file("."))
-  .settings(
-    name := "Schwimmen"
-  )
+  .settings(name := "Schwimmen")

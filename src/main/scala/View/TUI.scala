@@ -1,14 +1,14 @@
 package View
 
-import Controller.*
-import Model.*
-import util.*
+import Controller._
+import Model._
+import util._
 import _root_.Controller.GameBuilder.BuildNewRound
 import _root_.Controller.COR.LifePointsHandler
-import _root_.Controller.HelpFunctions.*
+import _root_.Controller.HelpFunctions._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.*
+import scala.concurrent._
 import scala.concurrent.duration.Duration
 import scala.io.StdIn.readLine
 
