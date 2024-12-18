@@ -24,7 +24,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
   controller.add(this)
 
   private val folderPath = "\\resources\\Karten\\"
-  val cardFileMap = loadCardDeck(folderPath)
+  private val cardFileMap = loadCardDeck(folderPath)
 
   override def update(): Unit = {
     Platform.runLater {
@@ -32,7 +32,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
     }
   }
 
-  def guiupdate(): Unit = {
+  private def guiupdate(): Unit = {
     stage.scene = new Scene {
         fill = LightGreen
         content = new VBox {
@@ -43,7 +43,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
             },
             new Button {
               text = "Knock"
-              onAction = handle {
+              onAction = _=> {
                 controller.knock()
               }
             },
@@ -93,13 +93,13 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                     children = Seq(
                       new Button {
                         text = "Knock"
-                        onAction = handle {
+                        onAction = _=> {
                           controller.knock()
                         }
                       },
                       new Button {
                         text = "New Button"
-                        onAction = handle {
+                        onAction = _=> {
                           controller.skip()
                         }
                       }
@@ -148,7 +148,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
   }
 
   private def createCardImageView(card: Card): ImageView = {
-    val cardImagePath = cardFileMap.get(card).getOrElse("default.png")
+    val cardImagePath = cardFileMap.getOrElse(card, "default.png")
 
     new ImageView {
       image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath$cardImagePath"))
