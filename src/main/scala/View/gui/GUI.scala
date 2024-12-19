@@ -59,7 +59,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
 
               // Header for Player Cards
               new Label {
-                text = "Player Cards"
+                text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
                 style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for player cards header
               },
 
@@ -208,7 +208,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                   children = createCardDisplayTable(controller.gameState.table.handDeck)
                 },
                 new Label {
-                  text = "Player Cards"
+                  text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
                   style = "-fx-font-size: 16px; -fx-font-weight: bold;" // You can adjust styling as needed
                 },
                 new StackPane {
