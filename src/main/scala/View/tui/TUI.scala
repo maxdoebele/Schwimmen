@@ -1,13 +1,13 @@
-package View
+package View.tui
 
 import Controller._
+import Controller.util._
 import Model._
-import util._
-import _root_.Controller.HelpFunctions.*
+import _root_.Controller.HelpFunctions._
 
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class TUI(val controller: Controller) extends Observer {
 

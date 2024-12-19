@@ -1,4 +1,4 @@
-package View
+package View.tui
 
 import Controller.util.Controller
 

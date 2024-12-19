@@ -1,6 +1,6 @@
 package Model
 
-case class Card(val suit: String, val rank: String) {
+case class Card(val suit: String, val rank: String, var isSelected: Boolean = false) {
   def rankToPoints: Int = {
     rank match {
       case "7" => 7

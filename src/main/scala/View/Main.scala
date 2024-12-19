@@ -1,9 +1,11 @@
 package View
 
-import scala.io.StdIn._
-import Controller._
-import util._
-import _root_.Controller.GameBuilder._
+import scala.io.StdIn.*
+import Controller.*
+import View.gui.GUI
+import View.tui.TUI
+import util.*
+import _root_.Controller.GameBuilder.*
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
