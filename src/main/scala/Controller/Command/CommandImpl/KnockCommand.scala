@@ -1,10 +1,13 @@
-package Controller.Command
-import Controller.util.Controller
-import Model._
+package Controller.Command.CommandImpl
+
+import Controller.Controller
+import Model.*
+import Model.BaseImpl.GameState
+import _root_.Controller.Command.Command
 
 class KnockCommand(controller: Controller) extends Command {
 
-  var memento: GameState = controller.gameState
+  var memento: GameStateTrait = controller.gameState
 
   override def execute(): Unit = {
     memento = controller.gameState

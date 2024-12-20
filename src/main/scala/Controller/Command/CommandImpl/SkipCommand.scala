@@ -1,9 +1,12 @@
-package Controller.Command
-import Controller.util.Controller
-import Model.{GameState, User}
+package Controller.Command.CommandImpl
+
+import Controller.Controller
+import Model.BaseImpl.{GameState, User}
+import Model.GameStateTrait
+import _root_.Controller.Command.Command
 
 class SkipCommand(controller: Controller) extends Command {
-  var memento: GameState = controller.gameState
+  var memento: GameStateTrait = controller.gameState
 
   override def execute(): Unit = {
     memento = controller.gameState;

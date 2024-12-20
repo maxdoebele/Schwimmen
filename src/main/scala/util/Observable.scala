@@ -1,4 +1,4 @@
-package Controller.util
+package util
 
 class Observable {
   private var subscribers: Vector[Observer] = Vector()

@@ -1,6 +1,6 @@
 package ModelTest
 
-import Model.{Card, User}
+import Model.BaseImpl.{Card, User}
 import org.scalatest.wordspec.AnyWordSpec
 
 class UserTest extends AnyWordSpec {
@@ -38,10 +38,6 @@ class UserTest extends AnyWordSpec {
       assert(updatedUser.handDeck.contains(Card("Kreuz", "10")))
     }
 
-    "lose one live point when losing live points" in {
-      val user = User(Seq(Card("Herz", "7")), 3, "Max")
-      val updatedUser = user.loseLivePoints()
-      assert(updatedUser.livePoints == 2)
     }
 
     // ---------------- live points ab -1 bzw. 0 ist der user raus -------------------

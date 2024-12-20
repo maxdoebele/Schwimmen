@@ -1,8 +1,7 @@
 package View.gui
 
-import Model.Card
-import _root_.Controller.HelpFunctions
-import _root_.Controller.util.{Controller, Observer}
+import Model.BaseImpl.Card
+import _root_.Controller.{Controller, HelpFunctions}
 import javafx.geometry.*
 import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
@@ -12,6 +11,7 @@ import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.paint.Color.*
+import util.Observer
 
 import java.io.File
 import java.net.URL
@@ -51,19 +51,16 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                 style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for table cards header
               },
 
-              // Table hand deck
               new StackPane {
                 alignment = Pos.CENTER
                 children = createCardDisplayTable(controller.gameState.table.handDeck)
               },
 
-              // Header for Player Cards
               new Label {
                 text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
                 style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for player cards header
               },
 
-              // User hand deck (player's cards)
               new StackPane {
                 alignment = Pos.CENTER
                 children = new HBox {
@@ -73,7 +70,6 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                 }
               },
 
-              // Button section (Knock, Skip, Trade, etc.)
               new StackPane {
                 alignment = Pos.CENTER
                 children = new HBox {
@@ -94,7 +90,6 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
     }
   }
 
-  /** Creates a horizontal box to display cards */
   private def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
     new HBox {
       spacing = 10
@@ -201,7 +196,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
               children = Seq(
                 new Label {
                   text = "Table Cards"
-                  style = "-fx-font-size: 16px; -fx-font-weight: bold;" // You can adjust styling as needed
+                  style = "-fx-font-size: 16px; -fx-font-weight: bold;"
                 },
                 new StackPane {
                   alignment = Pos.CENTER
@@ -209,7 +204,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                 },
                 new Label {
                   text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
-                  style = "-fx-font-size: 16px; -fx-font-weight: bold;" // You can adjust styling as needed
+                  style = "-fx-font-size: 16px; -fx-font-weight: bold;"
                 },
                 new StackPane {
                   alignment = Pos.CENTER
@@ -241,7 +236,6 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
     }
   }
 
-  /** Loads the card images from the specified folder */
   private def loadCardDeck(folderPath: String): Map[Card, String] = {
     val folderUrl: Option[URL] = Option(getClass.getClassLoader.getResource(folderPath))
 

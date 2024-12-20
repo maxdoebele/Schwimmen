@@ -1,7 +1,6 @@
 package View.tui
 
-import Controller.util.Controller
-
+import Controller.Controller
 import scala.util.{Failure, Success, Try}
 
 object InputHandler {

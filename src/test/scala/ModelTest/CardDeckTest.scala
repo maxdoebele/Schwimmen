@@ -1,6 +1,6 @@
 package ModelTest
 
-import Model.CardDeck
+import Model.BaseImpl.CardDeck
 import org.scalatest.wordspec.AnyWordSpec
 
 class CardDeckTest extends AnyWordSpec {

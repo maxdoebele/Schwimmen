@@ -1,6 +1,6 @@
 package ModelTest
 
-import Model.{Card, CardDeck, GameState, User}
+import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import org.scalatest.wordspec.AnyWordSpec
 
 class GameStateTest extends AnyWordSpec {

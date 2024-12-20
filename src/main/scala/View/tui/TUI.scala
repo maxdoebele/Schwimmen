@@ -1,12 +1,13 @@
 package View.tui
 
-import Controller._
-import Controller.util._
+import _root_.Controller._
 import Model._
+import Model.BaseImpl._
 import _root_.Controller.HelpFunctions._
+import _root_.util.Observer
 
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent._
+import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TUI(val controller: Controller) extends Observer {
@@ -30,7 +31,6 @@ class TUI(val controller: Controller) extends Observer {
         this.synchronized{
           roundCounter.incrementAndGet()
         }
-
       }
       if (controller.gameState.players.size > 1) {
         val currentPlayer = getCurrentPlayer(controller.gameState)
@@ -51,7 +51,8 @@ class TUI(val controller: Controller) extends Observer {
               case Some("1") =>
                 controller.tradeAll()
               case Some("2") =>
-                println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte")
+                println("Schreibe deine und dann die Karte des Tisches mit welcher du Tauschen willst, Beispiel: 0 1")
+                println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte.")
                 val input = InputHandler.readLineThread(controller)
                 input match {
                   case Some(indices) =>
@@ -102,7 +103,7 @@ class TUI(val controller: Controller) extends Observer {
     )
   }
 
-  def displayGameState(gameState: GameState): Unit = {
+  def displayGameState(gameState: GameStateTrait): Unit = {
     gameState.players.foreach { player =>
       println(s"${player.name}'s Karten:")
       displayHand(player.handDeck)

@@ -1,4 +1,4 @@
-package Model
+package Model.BaseImpl
 
 case class Card(val suit: String, val rank: String, var isSelected: Boolean = false) {
   def rankToPoints: Int = {

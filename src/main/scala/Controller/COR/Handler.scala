@@ -1,7 +1,7 @@
 package Controller.COR
 
-import Controller.util.Controller
-import Model.User
+import Controller.Controller
+import Model.BaseImpl.User
 
 trait Handler {
 

@@ -1,4 +1,4 @@
-package Controller.util
+package util
 
 import Controller.Command.Command
 

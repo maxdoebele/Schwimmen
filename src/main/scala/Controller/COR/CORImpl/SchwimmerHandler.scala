@@ -1,7 +1,8 @@
-package Controller.COR
+package Controller.COR.CORImpl
 
-import Controller.util.Controller
-import Model.User
+import Controller.Controller
+import Model.BaseImpl.User
+import _root_.Controller.COR.Handler
 
 class SchwimmerHandler extends Handler {
   override def handle(controller: Controller, potentialSwimmer: Seq[User]): Unit = {

@@ -1,7 +1,8 @@
 package ControllerTest
 
-import Controller._
-import Model._
+import Controller.*
+import Model.*
+import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import org.scalatest.wordspec.AnyWordSpec
 class HelpFunctionsTest extends AnyWordSpec {
 

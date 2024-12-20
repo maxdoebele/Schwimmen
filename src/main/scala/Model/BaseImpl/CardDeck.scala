@@ -1,4 +1,4 @@
-package Model
+package Model.BaseImpl
 
 import scala.util.Random
 

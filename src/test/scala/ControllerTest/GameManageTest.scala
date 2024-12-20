@@ -1,6 +1,7 @@
 package ControllerTest
 
-import Model.CardDeck
+import Controller.GameBuilder.GameBuilderImpl.BuildNewGame
+import Model.BaseImpl.CardDeck
 import org.scalatest.wordspec.AnyWordSpec
 
 class GameManageTest extends AnyWordSpec {
@@ -11,9 +12,8 @@ class GameManageTest extends AnyWordSpec {
         // Arrange
         val playerNames = Seq("Alice", "Bob", "Charlie")
         // Act
-        val gameState = initializeNewGame(playerNames)
-
-        // Assert
+        val gameState = BuildNewGame(playerNames).returnGameState())
+        
         // Check that the correct number of players are created
         assert(gameState.players.length == 3, "There should be 3 players in the game")
 

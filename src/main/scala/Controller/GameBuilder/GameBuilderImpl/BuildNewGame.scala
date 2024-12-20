@@ -1,7 +1,8 @@
-package Controller.GameBuilder
+package Controller.GameBuilder.GameBuilderImpl
 
-import Model._
-import Controller.util.Controller
+import Model.*
+import Model.BaseImpl.{CardDeck, GameState, User}
+import _root_.Controller.GameBuilder.GameBuilder
 
 case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
 

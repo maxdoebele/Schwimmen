@@ -1,11 +1,13 @@
-package Controller.Command
-import Controller.util.Controller
-import _root_.Controller.HelpFunctions
-import Model._
+package Controller.Command.CommandImpl
+
+import Model.*
+import Model.BaseImpl.GameState
+import _root_.Controller.Command.Command
+import _root_.Controller.{Controller, HelpFunctions}
 
 class TradeOneCommand(controller: Controller) extends Command {
 
-  var memento: GameState = controller.gameState
+  var memento: GameStateTrait = controller.gameState
 
   override def execute(): Unit = {
     memento = controller.gameState

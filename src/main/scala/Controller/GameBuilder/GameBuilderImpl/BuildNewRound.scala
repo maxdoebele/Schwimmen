@@ -1,18 +1,19 @@
-package Controller.GameBuilder
+package Controller.GameBuilder.GameBuilderImpl
 
-import Controller.util.Controller
-import Model._
+import Model.*
+import Model.BaseImpl.{CardDeck, GameState, User}
+import _root_.Controller.GameBuilder.GameBuilder
 
-class BuildNewRound(gameState: GameState) extends GameBuilder {
-
+class BuildNewRound(gameState: GameStateTrait) extends GameBuilder {
+  
   private val cardDeck: CardDeck = createCardDeck()
   private val players: Seq[User] = updatePlayers(gameState.players)
   private val table: User = updateTable()
   private val schwimmer: Boolean = gameState.schwimmer
   private val distibuteCardGameState: GameState = distributeCards(players, table, cardDeck)
-  private val updatedGameState: GameState = mergeNewGameState()
+  private val updatedGameState: GameStateTrait = mergeNewGameState()
 
-  private def mergeNewGameState(): GameState = {
+  private def mergeNewGameState(): GameStateTrait = {
     val updated = gameState.copy(players = distibuteCardGameState.players, 
       table = distibuteCardGameState.table, 
       deck = distibuteCardGameState.deck, 
@@ -44,7 +45,7 @@ class BuildNewRound(gameState: GameState) extends GameBuilder {
     User(handDeck = Seq.empty, lifePoints = -1, name = "Der Tisch")
   }
 
-  override def returnGameState(): GameState = {
+  override def returnGameState(): GameStateTrait = {
     updatedGameState
   }
 }

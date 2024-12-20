@@ -1,14 +1,12 @@
 package View
 
-import scala.io.StdIn.*
 import Controller.*
 import View.gui.GUI
 import View.tui.TUI
-import util.*
 import _root_.Controller.GameBuilder.*
+import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
+import scala.io.StdIn.*
 
 object Main {
   def main(args: Array[String]): Unit = {

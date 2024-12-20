@@ -1,7 +1,9 @@
-package Controller.COR
+package Controller.COR.CORImpl
 
-import Controller.util.Controller
-import Model.User
+import _root_.Controller.COR.CORImpl._
+import Controller.COR.Handler
+import Controller.Controller
+import Model.BaseImpl.User
 
 class LifePointsHandler extends Handler {
 
