@@ -22,7 +22,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
 
   controller.add(this)
 
-  private val folderPath = "\\resources\\Karten\\"
+  private val folderPath = "Karten/"
   private val cardFileMap = loadCardDeck(folderPath)
 
   private var cardIndex = (-1, -1)
