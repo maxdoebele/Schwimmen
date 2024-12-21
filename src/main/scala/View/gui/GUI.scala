@@ -1,21 +1,22 @@
 package View.gui
 
 import Model.BaseImpl.Card
+import View.tui.InputHandler
 import _root_.Controller.{Controller, HelpFunctions}
-import javafx.geometry._
-import scalafx.Includes._
+import javafx.geometry.*
+import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.property.BooleanProperty
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{HBox, StackPane, VBox}
-import scalafx.scene.paint.Color._
+import scalafx.scene.paint.Color.*
 import util.Observer
 
 import java.io.File
 import java.net.URL
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.util.{Failure, Success, Try}
 
 class GUI(controller: Controller) extends JFXApp3 with Observer {
@@ -165,7 +166,9 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
       text = label
       minWidth = 80
       minHeight = 25
-      onAction = _ => action
+      onAction = _ =>
+        InputHandler.resetInput()
+        action 
       style = Style.buttonStyle
     }
   }

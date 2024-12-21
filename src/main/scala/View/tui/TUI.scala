@@ -46,42 +46,44 @@ class TUI(val controller: Controller) extends Observer {
             println(s"Spieler ${currentPlayer.name} hat geschoben")
             controller.skip()
           case Some("3") =>
-            println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
-            InputHandler.readLineThread(controller) match {
-              case Some("1") =>
-                controller.tradeAll()
-              case Some("2") =>
-                println("Schreibe deine und dann die Karte des Tisches mit welcher du Tauschen willst, Beispiel: 0 1")
-                println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte.")
-                val input = InputHandler.readLineThread(controller)
-                input match {
-                  case Some(indices) =>
-                    val splitInput = indices.split(" ").map(_.toInt)
-                    if (splitInput.length == 2) {
-                      controller.tradeOne(splitInput(0), splitInput(1))
-                    } else {
-                      println(wrongInputMessage)
-                      update()
-                    }
-                  case None =>
-                    //println("Eingabe wurde abgebrochen oder fehlgeschlagen.")
-                    update()
-                }
-              case _ =>
-                println(wrongInputMessage)
-                update()
-            }
+            handleTrade()
           case Some("undo") =>
             controller.undo()
           case Some("redo") =>
             controller.redo()
           case None =>
-          //println("Eingabe wurde abgebrochen.")
+          println("Eingabe wurde abgebrochen.")
           case _ =>
             println(wrongInputMessage)
             update()
         }
       }
+    }
+  }
+
+  private def handleTrade(): Unit = {
+    println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
+    InputHandler.readLineThread(controller) match {
+      case Some("1") =>
+        controller.tradeAll()
+      case Some("2") =>
+        println("Schreibe deine und dann die Karte des Tisches mit welcher du Tauschen willst, Beispiel: 0 1")
+        println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte.")
+        InputHandler.readLineThread(controller) match {
+          case Some(indices) =>
+            val splitInput = indices.split(" ").map(_.toInt)
+            if (splitInput.length == 2) {
+              controller.tradeOne(splitInput(0), splitInput(1))
+            } else {
+              println(wrongInputMessage)
+              update()
+            }
+          case None =>
+            //println("Eingabe wurde abgebrochen.")
+        }
+      case _ =>
+        println(wrongInputMessage)
+        update()
     }
   }
 
