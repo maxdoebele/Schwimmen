@@ -4,7 +4,6 @@ import Controller.COR.CORImpl.LifePointsHandler
 import Controller.Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOneCommand}
 import Controller.GameBuilder.GameBuilderImpl.BuildNewRound
 import Model._
-import Model.BaseImpl.GameState
 import util.{Observable, UndoManager}
 
 class Controller(var gameState: GameStateTrait) extends Observable {
