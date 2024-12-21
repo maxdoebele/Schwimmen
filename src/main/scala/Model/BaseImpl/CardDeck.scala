@@ -2,7 +2,6 @@ package Model.BaseImpl
 
 import scala.util.Random
 
-
 case class CardDeck(cardDeck: Seq[Card]) {
 
     def this() = this(

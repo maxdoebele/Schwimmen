@@ -1,6 +1,5 @@
 package Controller.COR.CORImpl
 
-import _root_.Controller.COR.CORImpl._
 import Controller.COR.Handler
 import Controller.Controller
 import Model.BaseImpl.User

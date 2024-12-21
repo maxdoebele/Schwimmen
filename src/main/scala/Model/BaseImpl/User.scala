@@ -1,7 +1,5 @@
 package Model.BaseImpl
 
-import Model.BaseImpl.Card
-
 case class User(handDeck: Seq[Card], lifePoints: Int, name: String, schwimmt: Boolean = false) {
   def removeCard(index: Int): Option[(User, Card)] = {
     if (index >= 0 && index < handDeck.size) {

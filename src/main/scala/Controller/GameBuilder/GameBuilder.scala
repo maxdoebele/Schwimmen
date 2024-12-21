@@ -1,7 +1,6 @@
 package Controller.GameBuilder
 
-import Controller.Controller
-import Model.*
+import Model._
 import Model.BaseImpl.{CardDeck, GameState, User}
 
 trait GameBuilder {

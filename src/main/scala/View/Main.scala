@@ -1,12 +1,12 @@
 package View
 
-import Controller.*
+import Controller._
 import View.gui.GUI
 import View.tui.TUI
-import _root_.Controller.GameBuilder.*
+import _root_.Controller.GameBuilder._
 import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 
-import scala.io.StdIn.*
+import scala.io.StdIn._
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -20,5 +20,4 @@ object Main {
     
     GUI(currentGameConroller).main(Array.empty)
   }
-
 }

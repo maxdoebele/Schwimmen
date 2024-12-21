@@ -1,8 +1,7 @@
 package Controller.Command.CommandImpl
 
 import Controller.Controller
-import Model.*
-import Model.BaseImpl.GameState
+import Model._
 import _root_.Controller.Command.Command
 
 class KnockCommand(controller: Controller) extends Command {

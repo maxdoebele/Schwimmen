@@ -1,6 +1,6 @@
 package Controller.GameBuilder.GameBuilderImpl
 
-import Model.*
+import Model._
 import Model.BaseImpl.{CardDeck, GameState, User}
 import _root_.Controller.GameBuilder.GameBuilder
 

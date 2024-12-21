@@ -1,6 +1,6 @@
 package Controller.Command.CommandImpl
 
-import Model.BaseImpl.{GameState, User}
+import Model.BaseImpl.User
 import Model.GameStateTrait
 import _root_.Controller.Command.Command
 import _root_.Controller.{Controller, HelpFunctions}

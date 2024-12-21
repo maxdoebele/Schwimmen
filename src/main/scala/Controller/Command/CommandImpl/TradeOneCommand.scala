@@ -1,7 +1,6 @@
 package Controller.Command.CommandImpl
 
-import Model.*
-import Model.BaseImpl.GameState
+import Model._
 import _root_.Controller.Command.Command
 import _root_.Controller.{Controller, HelpFunctions}
 
