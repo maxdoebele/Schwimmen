@@ -42,12 +42,11 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
   private def guistartscene(): Scene = {
     var enteredNames: Seq[String] = Seq.empty // Zwischenspeicher für eingegebene Spielernamen
     val playerNamesText = new Text {
-
       wrappingWidth = 250
       style = "-fx-font-size: 14px; -fx-fill: white;"
       text = "Spieler: "
     }
-    if (controller.getPlayerNames.nonEmpty) { // guckt ob in gui schon was eingegeben wurde
+    if (controller.getPlayerNames.nonEmpty) { // guckt ob in tui schon was eingegeben wurde
       guiupdatescene()
     } else {
       new Scene(700, 500) {

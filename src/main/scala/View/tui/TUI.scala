@@ -5,7 +5,6 @@ import Model._
 import Model.BaseImpl._
 import _root_.Controller.HelpFunctions._
 import _root_.util.Observer
-
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -111,13 +110,11 @@ class TUI(val controller: Controller) extends Observer {
   }
 
   def startGame(): Unit = {
+    val playerNames = playerInput()
     if (controller.getPlayerNames.nonEmpty) {
       println("Spiel wird mit den folgenden Spielern gestartet:")
       println(controller.getPlayerNames.mkString(", "))
-      return
-    }
-    val playerNames = playerInput()
-    if (playerNames.nonEmpty) {
+    } else if (playerNames.nonEmpty) {
       controller.setPlayerNames(playerNames)
     } else {
       println(wrongInputMessage)
