@@ -2,9 +2,11 @@ package Controller
 
 import Controller.COR.CORImpl.LifePointsHandler
 import Controller.Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOneCommand}
-import Controller.GameBuilder.GameBuilderImpl.BuildNewRound
+import Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import Model._
 import util.{Observable, UndoManager}
+
+import scala.io.StdIn.readLine
 
 class Controller(var gameState: GameStateTrait) extends Observable {
   
@@ -71,7 +73,6 @@ class Controller(var gameState: GameStateTrait) extends Observable {
       new LifePointsHandler().handle(this, losers)
       return true
     }
-
     false
   }
 
@@ -79,4 +80,15 @@ class Controller(var gameState: GameStateTrait) extends Observable {
     this.gameState = BuildNewRound(this.gameState).returnGameState()
   }
 
+  private var playerNames: Seq[String] = Seq()
+  def setPlayerNames(names: Seq[String]): Unit = {
+    if (names.nonEmpty) {
+      playerNames = names
+      gameState = BuildNewGame(names).returnGameState()
+      notifySubscribers()
+    } else {
+      println("Spielernamen dürfen nicht leer sein!")
+    }
+  }
+  def getPlayerNames: Seq[String] = playerNames
 }

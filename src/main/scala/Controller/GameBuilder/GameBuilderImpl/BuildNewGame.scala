@@ -14,6 +14,7 @@ case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
   override def createCardDeck(): CardDeck = {
     new CardDeck().shuffleDeck()
   }
+
   def createPlayers(playersName: Seq[String]): Seq[User] = {
     val users: Seq[User] = playersName.map { name =>
       User(handDeck = Seq.empty, lifePoints = 3, name = name)

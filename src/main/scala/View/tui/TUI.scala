@@ -7,7 +7,7 @@ import _root_.Controller.HelpFunctions._
 import _root_.util.Observer
 
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.*
+import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TUI(val controller: Controller) extends Observer {
@@ -20,6 +20,7 @@ class TUI(val controller: Controller) extends Observer {
 
   def start(): Future[Unit] = {
     Future {
+      this.startGame()
       this.update()
     }
   }
@@ -101,6 +102,27 @@ class TUI(val controller: Controller) extends Observer {
       f"| ${card.rank}%-2s    |",
       "+-------+"
     )
+  }
+
+  def playerInput(): Seq[String] = {
+    println("Bitte gib die Namen der Spieler getrennt durch Leerzeichen ein")
+    val namesInput = scala.io.StdIn.readLine()
+    namesInput.split(" ").toList.filter(_.nonEmpty)
+  }
+
+  def startGame(): Unit = {
+    if (controller.getPlayerNames.nonEmpty) {
+      println("Spiel wird mit den folgenden Spielern gestartet:")
+      println(controller.getPlayerNames.mkString(", "))
+      return
+    }
+    val playerNames = playerInput()
+    if (playerNames.nonEmpty) {
+      controller.setPlayerNames(playerNames)
+    } else {
+      println(wrongInputMessage)
+      startGame()
+    }
   }
 
   def displayGameState(gameState: GameStateTrait): Unit = {

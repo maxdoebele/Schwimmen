@@ -3,6 +3,7 @@ package Controller.COR.CORImpl
 import Controller.Controller
 import Model.BaseImpl.User
 import _root_.Controller.COR.Handler
+import _root_.Controller.COR.CORImpl._
 
 class PotentialSchwimmerHandler extends Handler {
   override def handle(controller: Controller, loosers: Seq[User]): Unit = {

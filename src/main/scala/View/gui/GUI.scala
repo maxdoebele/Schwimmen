@@ -7,10 +7,11 @@ import scalafx.Includes._
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.property.BooleanProperty
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, Label}
+import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{HBox, StackPane, VBox}
 import scalafx.scene.paint.Color._
+import scalafx.scene.text.Text
 import util.Observer
 
 import java.io.File
@@ -32,49 +33,114 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
 
   override def update(): Unit = {
     Platform.runLater {
-      guiupdate()
+      if (controller.getPlayerNames.nonEmpty && stage.scene != guiupdatescene()) {
+        stage.scene = guiupdatescene()
+      }
     }
   }
 
-  private def guiupdate(): Unit = {
-    stage.scene = new Scene {
-      fill = LightBlue
-      content = new StackPane {
-        children = Seq(
-          new VBox {
+  private def guistartscene(): Scene = {
+    var enteredNames: Seq[String] = Seq.empty // Zwischenspeicher für eingegebene Spielernamen
+    val playerNamesText = new Text {
+
+      wrappingWidth = 250
+      style = "-fx-font-size: 14px; -fx-fill: white;"
+      text = "Spieler: "
+    }
+    if (controller.getPlayerNames.nonEmpty) { // guckt ob in gui schon was eingegeben wurde
+      guiupdatescene()
+    } else {
+      new Scene(700, 500) {
+        root = new StackPane {
+          style = "-fx-background-color: darkblue;"
+          alignment = Pos.CENTER
+          children = new VBox {
             alignment = Pos.CENTER
-            spacing = 20
             children = Seq(
-              // Header for Table Cards
               new Label {
-                text = "Table Cards"
-                style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for table cards header
+                text = "Willkommen bei Schwimmen"
+                style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"
               },
-
-              new StackPane {
+              new VBox {
                 alignment = Pos.CENTER
-                children = createCardDisplayTable(controller.gameState.table.handDeck)
-              },
+                spacing = 20
+                children = Seq(
+                  new TextField {
+                    text = "Gib einen Namen ein und drücke Enter"
+                    style = "-fx-font-size: 14px; -fx-text-fill: black;"
+                    maxWidth = 250
+                    maxHeight = 30
+                    onAction = _ => {
+                      val name = text.value.trim
+                      if (name.nonEmpty) {
+                        enteredNames = enteredNames :+ name
+                        playerNamesText.text = s"Spieler: \n ${enteredNames.mkString("\n")}"
+                        text = ""
+                      }
+                    }
+                  },
+                  playerNamesText,
+                  new Button {
+                    text = "Start"
+                    minWidth = 100
+                    style = Style.buttonStyle
+                    onAction = _ => {
+                      if (enteredNames.nonEmpty) {
+                        controller.setPlayerNames(enteredNames)
+                        stage.scene = guiupdatescene()
+                      } else {
+                        println("Keine Spielernamen eingegeben!")
+                      }
+                    }
+                  }
+                )
+              }
+            )
+          }
+        }
+      }
+    }
+  }
 
-              new Label {
-                text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
-                style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for player cards header
-              },
 
-              new StackPane {
-                alignment = Pos.CENTER
-                children = new HBox {
+  private def guiupdatescene(): Scene = {
+    new Scene(700, 500) {
+      root = new StackPane {
+        style = "-fx-background-color: lightblue;"
+        alignment = Pos.CENTER
+        children = new StackPane {
+          alignment = Pos.CENTER
+          children = Seq(
+            new VBox {
+              alignment = Pos.CENTER
+              spacing = 20
+              children = Seq(
+                new Label {
+                  text = "Table Cards"
+                  style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for table cards header
+                },
+
+                new HBox {
+                  alignment = Pos.CENTER
+                  children = createCardDisplayTable(controller.gameState.table.handDeck)
+                },
+
+                new Label {
+                  text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
+                  style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for player cards header
+                },
+
+                new HBox {
+                  alignment = Pos.CENTER
                   spacing = 10
                   alignment = Pos.CENTER
                   children = createCardDisplayUser(HelpFunctions.getCurrentPlayer(controller.gameState).handDeck)
-                }
-              },
 
-              new StackPane {
-                alignment = Pos.CENTER
-                children = new HBox {
-                  spacing = 20
+                },
+
+                new HBox {
                   alignment = Pos.CENTER
+                  spacing = 20
                   children = Seq(
                     createButton("Knock", controller.knock()),
                     createButton("Skip", controller.skip()),
@@ -82,10 +148,10 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                     createTradeOneButton
                   )
                 }
-              }
-            )
-          }
-        )
+              )
+            }
+          )
+        }
       }
     }
   }
@@ -186,53 +252,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
       title.value = "Game of Schwimmen"
-      scene = new Scene {
-        fill = LightBlue
-        content = new StackPane {
-          children = Seq(
-            new VBox {
-              alignment = Pos.CENTER
-              spacing = 20
-              children = Seq(
-                new Label {
-                  text = "Table Cards"
-                  style = "-fx-font-size: 16px; -fx-font-weight: bold;"
-                },
-                new StackPane {
-                  alignment = Pos.CENTER
-                  children = createCardDisplayTable(controller.gameState.table.handDeck)
-                },
-                new Label {
-                  text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
-                  style = "-fx-font-size: 16px; -fx-font-weight: bold;"
-                },
-                new StackPane {
-                  alignment = Pos.CENTER
-                  children = new HBox {
-                    spacing = 10
-                    alignment = Pos.CENTER
-                    children = createCardDisplayUser(HelpFunctions.getCurrentPlayer(controller.gameState).handDeck)
-                  }
-                },
-
-                new StackPane {
-                  alignment = Pos.CENTER
-                  children = new HBox {
-                    spacing = 20
-                    alignment = Pos.CENTER
-                    children = Seq(
-                      createButton("Knock", controller.knock()),
-                      createButton("Skip", controller.skip()),
-                      createButton("Trade ALL", controller.tradeAll()),
-                      createTradeOneButton
-                    )
-                  }
-                }
-              )
-            }
-          )
-        }
-      }
+      scene = guistartscene()
     }
   }
 
