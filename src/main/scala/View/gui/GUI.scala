@@ -9,13 +9,14 @@ import scalafx.beans.property.BooleanProperty
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{HBox, StackPane, VBox}
+import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Text
 import util.Observer
 
 import java.io.File
 import java.net.URL
+import java.util.concurrent.atomic.AtomicInteger
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
@@ -31,16 +32,24 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
   private var lastSelectedButtonTable: Option[Button] = None
   private var lastSelectedButtonUser: Option[Button] = None
 
+  private val roundCounter: AtomicInteger = new AtomicInteger(1)
+
+  // end of round aus tui übernommen
   override def update(): Unit = {
     Platform.runLater {
-      if (controller.getPlayerNames.nonEmpty && stage.scene != guiupdatescene()) {
+      if (controller.gameState.roundCounter == roundCounter.get()) {
+        stage.scene = guiEndOfRoundScene()
+        this.synchronized {
+          roundCounter.incrementAndGet()
+        }
+      } else if (controller.getPlayerNames.nonEmpty && stage.scene != guiupdatescene()) {
         stage.scene = guiupdatescene()
       }
     }
   }
 
   private def guistartscene(): Scene = {
-    var enteredNames: Seq[String] = Seq.empty // Zwischenspeicher für eingegebene Spielernamen
+    var enteredNames: Seq[String] = Seq.empty
     val playerNamesText = new Text {
       wrappingWidth = 250
       style = "-fx-font-size: 14px; -fx-fill: white;"
@@ -49,7 +58,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
     if (controller.getPlayerNames.nonEmpty) { // guckt ob in tui schon was eingegeben wurde
       guiupdatescene()
     } else {
-      new Scene(700, 500) {
+      new Scene(500, 300) {
         root = new StackPane {
           style = "-fx-background-color: darkblue;"
           alignment = Pos.CENTER
@@ -73,7 +82,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                       val name = text.value.trim
                       if (name.nonEmpty) {
                         enteredNames = enteredNames :+ name
-                        playerNamesText.text = s"Spieler: \n ${enteredNames.mkString("\n")}"
+                        playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
                         text = ""
                       }
                     }
@@ -118,25 +127,20 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                   text = "Table Cards"
                   style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for table cards header
                 },
-
                 new HBox {
                   alignment = Pos.CENTER
                   children = createCardDisplayTable(controller.gameState.table.handDeck)
                 },
-
                 new Label {
                   text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
                   style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for player cards header
                 },
-
                 new HBox {
                   alignment = Pos.CENTER
                   spacing = 10
                   alignment = Pos.CENTER
                   children = createCardDisplayUser(HelpFunctions.getCurrentPlayer(controller.gameState).handDeck)
-
                 },
-
                 new HBox {
                   alignment = Pos.CENTER
                   spacing = 20
@@ -148,6 +152,63 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                   )
                 }
               )
+            }
+          )
+        }
+      }
+    }
+  }
+
+  def guiEndOfRoundScene(): Scene = {
+    val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
+    val spacer = new Region {
+      minHeight = 20
+    }
+    new Scene(700, 500) {
+      root = new StackPane {
+        style = "-fx-background-color: lightblue;"
+        alignment = Pos.CENTER
+        children = new VBox {
+          alignment = Pos.CENTER
+          children = Seq(
+            new Label {
+              text = "Die Runde ist vorbei!"
+              style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: black;"
+            },
+            spacer,
+            new Text {
+              wrappingWidth = 250
+              style = "-fx-font-size: 14px; -fx-fill: black;"
+              text = s"Verloren hat: ${losers}"
+            },
+            spacer,
+            new Text {
+              wrappingWidth = 250
+              text = "Aktueller Punktestand:"
+              style = "-fx-font-size: 14px; -fx-text-fill: black;"
+            },
+            new VBox {
+              spacing = 2
+              alignment = Pos.CENTER
+              children = HelpFunctions.calculateCurrentScore(controller).map { case (name, score) =>
+                new Text {
+                  text = f"$name%-20s  $score%3d"
+                  style = "-fx-font-size: 14px; -fx-fill: black;"
+                }
+              }
+            },
+            spacer,
+            new Label {
+              text = "Bestätige um weiter zu spielen:"
+              style = "-fx-font-size: 14px; -fx-text-fill: black;"
+            },
+            new Button {
+            text = "Weiter"
+            minWidth = 80
+            minHeight = 25
+            onAction = _ => {
+              stage.scene = guiupdatescene()
+              }
             }
           )
         }

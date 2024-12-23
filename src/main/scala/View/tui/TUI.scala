@@ -20,7 +20,7 @@ class TUI(val controller: Controller) extends Observer {
   def start(): Future[Unit] = {
     Future {
       this.startGame()
-      this.update()
+      // aufruf von update() nicht mehr nötig da es eh von observer ausgeführt wird
     }
   }
 
@@ -28,7 +28,7 @@ class TUI(val controller: Controller) extends Observer {
     Future {
       if(controller.gameState.roundCounter == roundCounter.get()) {
         displayEndOfRound()
-        this.synchronized{
+        this.synchronized {
           roundCounter.incrementAndGet()
         }
       }
