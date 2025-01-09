@@ -2,20 +2,22 @@ package Controller
 
 import Controller.COR.CORImpl.LifePointsHandler
 import Controller.Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOneCommand}
+import Controller.GameBuilder.GameBuilder
 import Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import Model._
 import util.{Observable, UndoManager}
 
 import scala.io.StdIn.readLine
+import com.google.inject.Inject
 
-class Controller(var gameState: GameStateTrait) extends Observable {
+class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
   
   val undoManager: UndoManager = new UndoManager()
+  var gameState: GameStateTrait = gameBuilder.returnGameState()
 
   @volatile var threadReadLine: Thread = new Thread()
 
   private def executeCommand(action: => Unit): Unit = {
-    //cancelReadLine()
     action
     if(checkifGameOver()) {
       resetRound()
@@ -81,7 +83,7 @@ class Controller(var gameState: GameStateTrait) extends Observable {
   }
 
   def createNewGame(names: Seq[String]): Unit = {
-    this.gameState = BuildNewGame(names).returnGameState()
+    gameState = BuildNewGame(names).returnGameState()
     notifySubscribers()
   }
 }

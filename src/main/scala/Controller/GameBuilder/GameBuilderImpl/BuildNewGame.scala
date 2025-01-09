@@ -3,8 +3,10 @@ package Controller.GameBuilder.GameBuilderImpl
 import Model._
 import Model.BaseImpl.{CardDeck, GameState, User}
 import _root_.Controller.GameBuilder.GameBuilder
+import com.google.inject.Inject
+import com.google.inject.name.Named
 
-case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
+case class BuildNewGame @Inject() (@Named("playerNames") playerNames: Seq[String]) extends GameBuilder {
 
   private val cardDeck: CardDeck = createCardDeck()
   private val players: Seq[User] = createPlayers(playerNames)
@@ -26,7 +28,6 @@ case class BuildNewGame(playerNames: Seq[String]) extends GameBuilder {
   }
 
   override def returnGameState(): GameState = {
-    val controller = gameState
-    controller
+    gameState
   }
 }

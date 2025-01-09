@@ -5,15 +5,17 @@ import Model._
 import Model.BaseImpl._
 import _root_.Controller.HelpFunctions._
 import _root_.util.Observer
-import scala.util.{Success, Failure}
+import com.google.inject.Inject
 
+import scala.util.{Failure, Success}
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TUI(val controller: Controller) extends Observer {
+class TUI @Inject() (val controller: Controller) extends Observer {
 
   controller.add(this)
+  InputHandler.startReading()
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
@@ -27,14 +29,13 @@ class TUI(val controller: Controller) extends Observer {
           val names = input.split(" ").toList
           controller.createNewGame(names)
         case Failure(exception) =>
-          // cancel input from GUI
+        // cancel input from GUI
       }
     }
   }
 
   override def update(): Unit = {
     Future {
-      InputHandler.startReading()
       if (controller.gameState.roundCounter == roundCounter.get()) {
         displayEndOfRound()
         this.synchronized {

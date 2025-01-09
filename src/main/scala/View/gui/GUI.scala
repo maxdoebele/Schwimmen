@@ -2,6 +2,7 @@ package View.gui
 
 import Model.BaseImpl.Card
 import _root_.Controller.{Controller, HelpFunctions}
+import com.google.inject.Inject
 import javafx.geometry._
 import scalafx.Includes._
 import scalafx.application.{JFXApp3, Platform}
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
-class GUI(controller: Controller) extends JFXApp3 with Observer {
+class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
   controller.add(this)
 
@@ -153,9 +154,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
 
   def guiEndOfRoundScene(): Scene = {
     val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
-    val spacer = new Region {
-      minHeight = 20
-    }
+
     new Scene(700, 500) {
       root = new StackPane {
         style = "-fx-background-color: lightblue;"
@@ -167,39 +166,19 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
               text = "Die Runde ist vorbei!"
               style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: black;"
             },
-            spacer,
+            new Region { minHeight = 20 },
             new Text {
               wrappingWidth = 250
               style = "-fx-font-size: 14px; -fx-fill: black;"
               text = s"Verloren hat: ${losers}"
             },
-            spacer,
-            new Text {
-              wrappingWidth = 250
-              text = "Aktueller Punktestand:"
-              style = "-fx-font-size: 14px; -fx-text-fill: black;"
-            },
-            new VBox {
-              spacing = 2
-              alignment = Pos.CENTER
-              children = HelpFunctions.calculateCurrentScore(controller).map { case (name, score) =>
-                new Text {
-                  text = f"$name%-20s  $score%3d"
-                  style = "-fx-font-size: 14px; -fx-fill: black;"
-                }
-              }
-            },
-            spacer,
-            new Label {
-              text = "Bestätige um weiter zu spielen:"
-              style = "-fx-font-size: 14px; -fx-text-fill: black;"
-            },
+            new Region { minHeight = 20 },
             new Button {
-            text = "Weiter"
-            minWidth = 80
-            minHeight = 25
-            onAction = _ => {
-              stage.scene = guiupdatescene()
+              text = "Weiter"
+              minWidth = 80
+              minHeight = 25
+              onAction = _ => {
+                stage.scene = guiupdatescene()
               }
             }
           )
@@ -207,6 +186,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
       }
     }
   }
+
 
   private def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
     new HBox {
