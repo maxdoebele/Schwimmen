@@ -1,24 +1,30 @@
 package View.tui
 
-import Controller.Controller
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.{Future, Promise}
+import scala.io.StdIn
 
 object InputHandler {
-  @volatile private var input: Option[String] = None
+  private var inputPromise: Option[Promise[String]] = None
 
-  def readLineThread(controller: Controller): Option[String] = {
-    controller.threadReadLine = new Thread(() => {
-      val result = Try(scala.io.StdIn.readLine())
-      result match {
-        case Success(value) =>
-          input = Some(value) 
-        case Failure(exception) =>
+  def startReading(): Unit = {
+    new Thread(() => {
+      while (true) {
+        val line = StdIn.readLine()
+        this.synchronized {
+          inputPromise.foreach(_.success(line))
+          inputPromise = None // Reset the promise
+        }
       }
-    })
-
-    controller.threadReadLine.start()
-
-    controller.threadReadLine.join()
-    input
+    }).start()
   }
+
+  def readLineThread(): Future[String] = this.synchronized {
+    if (inputPromise.isDefined) {
+      inputPromise.get.failure(new IllegalStateException())
+    }
+    val promise = Promise[String]()
+    inputPromise = Some(promise)
+    promise.future
+  }
+
 }

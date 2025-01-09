@@ -15,7 +15,7 @@ class Controller(var gameState: GameStateTrait) extends Observable {
   @volatile var threadReadLine: Thread = new Thread()
 
   private def executeCommand(action: => Unit): Unit = {
-    cancelReadLine()
+    //cancelReadLine()
     action
     if(checkifGameOver()) {
       resetRound()

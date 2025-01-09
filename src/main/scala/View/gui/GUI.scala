@@ -144,6 +144,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
                 new HBox {
                   alignment = Pos.CENTER
                   spacing = 20
+                  alignment = Pos.CENTER
                   children = Seq(
                     createButton("Knock", controller.knock()),
                     createButton("Skip", controller.skip()),
@@ -291,7 +292,8 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
       text = label
       minWidth = 80
       minHeight = 25
-      onAction = _ => action
+      onAction = _ =>
+        action
       style = Style.buttonStyle
     }
   }
