@@ -80,15 +80,8 @@ class Controller(var gameState: GameStateTrait) extends Observable {
     this.gameState = BuildNewRound(this.gameState).returnGameState()
   }
 
-  private var playerNames: Seq[String] = Seq()
-  def setPlayerNames(names: Seq[String]): Unit = {
-    if (names.nonEmpty) {
-      playerNames = names
-      gameState = BuildNewGame(names).returnGameState()
-      notifySubscribers()
-    } else {
-      println("Spielernamen dürfen nicht leer sein!")
-    }
+  def createNewGame(names: Seq[String]): Unit = {
+    this.gameState = BuildNewGame(names).returnGameState()
+    notifySubscribers()
   }
-  def getPlayerNames: Seq[String] = playerNames
 }

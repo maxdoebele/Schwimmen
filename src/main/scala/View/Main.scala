@@ -12,9 +12,7 @@ object Main {
   def main(args: Array[String]): Unit = {
 
     val currentGameController = Controller(BuildNewGame(Seq.empty).returnGameState())
-    val tui = new TUI(currentGameController)
-    val tuiFuture = tui.start()
-    
+    TUI(currentGameController).start()
     GUI(currentGameController).main(Array.empty)
   }
 }

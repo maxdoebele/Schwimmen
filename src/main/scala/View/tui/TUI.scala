@@ -21,7 +21,14 @@ class TUI(val controller: Controller) extends Observer {
 
   def start(): Future[Unit] = {
     Future {
-      this.update()
+      println("Bitte gib die Namen der Spieler mit Leerzeichen getrennt ein.")
+      InputHandler.readLineThread().onComplete {
+        case Success(input) =>
+          val names = input.split(" ").toList
+          controller.createNewGame(names)
+        case Failure(exception) =>
+          // cancel input from GUI
+      }
     }
   }
 

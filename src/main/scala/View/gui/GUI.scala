@@ -42,7 +42,7 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
         this.synchronized {
           roundCounter.incrementAndGet()
         }
-      } else if (controller.getPlayerNames.nonEmpty && stage.scene != guiupdatescene()) {
+      } else {
         stage.scene = guiupdatescene()
       }
     }
@@ -55,56 +55,47 @@ class GUI(controller: Controller) extends JFXApp3 with Observer {
       style = "-fx-font-size: 14px; -fx-fill: white;"
       text = "Spieler: "
     }
-    if (controller.getPlayerNames.nonEmpty) { // guckt ob in tui schon was eingegeben wurde
-      guiupdatescene()
-    } else {
-      new Scene(500, 300) {
-        root = new StackPane {
-          style = "-fx-background-color: darkblue;"
+    new Scene(500, 300) {
+      root = new StackPane {
+        style = "-fx-background-color: darkblue;"
+        alignment = Pos.CENTER
+        children = new VBox {
           alignment = Pos.CENTER
-          children = new VBox {
-            alignment = Pos.CENTER
-            children = Seq(
-              new Label {
-                text = "Willkommen bei Schwimmen"
-                style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"
-              },
-              new VBox {
-                alignment = Pos.CENTER
-                spacing = 20
-                children = Seq(
-                  new TextField {
-                    text = "Gib einen Namen ein und drücke Enter"
-                    style = "-fx-font-size: 14px; -fx-text-fill: black;"
-                    maxWidth = 250
-                    maxHeight = 30
-                    onAction = _ => {
-                      val name = text.value.trim
-                      if (name.nonEmpty) {
-                        enteredNames = enteredNames :+ name
-                        playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
-                        text = ""
-                      }
-                    }
-                  },
-                  playerNamesText,
-                  new Button {
-                    text = "Start"
-                    minWidth = 100
-                    style = Style.buttonStyle
-                    onAction = _ => {
-                      if (enteredNames.nonEmpty) {
-                        controller.setPlayerNames(enteredNames)
-                        stage.scene = guiupdatescene()
-                      } else {
-                        println("Keine Spielernamen eingegeben!")
-                      }
+          children = Seq(
+            new Label {
+              text = "Willkommen bei Schwimmen"
+              style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"
+            },
+            new VBox {
+              alignment = Pos.CENTER
+              spacing = 20
+              children = Seq(
+                new TextField {
+                  text = "Gib einen Namen ein und drücke Enter"
+                  style = "-fx-font-size: 14px; -fx-text-fill: black;"
+                  maxWidth = 250
+                  maxHeight = 30
+                  onAction = _ => {
+                    val name = text.value.trim
+                    if (name.nonEmpty) {
+                      enteredNames = enteredNames :+ name
+                      playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
+                      text = ""
                     }
                   }
-                )
-              }
-            )
-          }
+                },
+                playerNamesText,
+                new Button {
+                  text = "Start"
+                  minWidth = 100
+                  style = Style.buttonStyle
+                  onAction = _ => {
+                    controller.createNewGame(enteredNames)
+                  }
+                }
+              )
+            }
+          )
         }
       }
     }
