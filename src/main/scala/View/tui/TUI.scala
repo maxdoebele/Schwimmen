@@ -1,10 +1,11 @@
 package View.tui
 
-import _root_.Controller._
-import Model._
-import Model.BaseImpl._
-import _root_.Controller.HelpFunctions._
+import _root_.Controller.*
+import Model.*
+import Model.BaseImpl.*
+import _root_.Controller.HelpFunctions.*
 import _root_.util.Observer
+import scala.util.{Success, Failure}
 
 import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.*
@@ -26,9 +27,10 @@ class TUI(val controller: Controller) extends Observer {
 
   override def update(): Unit = {
     Future {
-      if(controller.gameState.roundCounter == roundCounter.get()) {
+      InputHandler.startReading()
+      if (controller.gameState.roundCounter == roundCounter.get()) {
         displayEndOfRound()
-        this.synchronized{
+        this.synchronized {
           roundCounter.incrementAndGet()
         }
       }
@@ -38,24 +40,27 @@ class TUI(val controller: Controller) extends Observer {
 
         println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
 
-        InputHandler.readLineThread(controller) match {
-          case Some("1") =>
-            println(f"${currentPlayer.name} klopft!")
-            controller.knock()
-          case Some("2") =>
-            println(s"Spieler ${currentPlayer.name} hat geschoben")
-            controller.skip()
-          case Some("3") =>
-            handleTrade()
-          case Some("undo") =>
-            controller.undo()
-          case Some("redo") =>
-            controller.redo()
-          case None =>
-          println("Eingabe wurde abgebrochen.")
-          case _ =>
-            println(wrongInputMessage)
-            update()
+        InputHandler.readLineThread().onComplete {
+          case Success(input) =>
+            input match {
+              case "1" =>
+                println(f"${currentPlayer.name} klopft!")
+                controller.knock()
+              case "2" =>
+                println(s"Spieler ${currentPlayer.name} hat geschoben")
+                controller.skip()
+              case "3" =>
+                handleTrade()
+              case "undo" =>
+                controller.undo()
+              case "redo" =>
+                controller.redo()
+              case _ =>
+                println(wrongInputMessage)
+                update()
+            }
+          case Failure(exception) =>
+            //println(s"Failed to read input: ${exception.getMessage}")
         }
       }
     }
@@ -63,27 +68,34 @@ class TUI(val controller: Controller) extends Observer {
 
   private def handleTrade(): Unit = {
     println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
-    InputHandler.readLineThread(controller) match {
-      case Some("1") =>
-        controller.tradeAll()
-      case Some("2") =>
-        println("Schreibe deine und dann die Karte des Tisches mit welcher du Tauschen willst, Beispiel: 0 1")
-        println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte.")
-        InputHandler.readLineThread(controller) match {
-          case Some(indices) =>
-            val splitInput = indices.split(" ").map(_.toInt)
-            if (splitInput.length == 2) {
-              controller.tradeOne(splitInput(0), splitInput(1))
-            } else {
-              println(wrongInputMessage)
-              update()
+
+    InputHandler.readLineThread().onComplete {
+      case Success(input) =>
+        input match {
+          case "1" =>
+            controller.tradeAll()
+          case "2" =>
+            println("Schreibe deine und dann die Karte des Tisches mit welcher du Tauschen willst, Beispiel: 0 1")
+            println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte.")
+
+            InputHandler.readLineThread().onComplete {
+              case scala.util.Success(indices) =>
+                val splitInput = indices.split(" ").map(_.toInt)
+                if (splitInput.length == 2) {
+                  controller.tradeOne(splitInput(0), splitInput(1))
+                } else {
+                  println(wrongInputMessage)
+                  handleTrade()
+                }
+              case Failure(exception) =>
+                println(s"Failed to read input for trading: ${exception.getMessage}")
             }
-          case None =>
-            //println("Eingabe wurde abgebrochen.")
+          case _ =>
+            println(wrongInputMessage)
+            handleTrade() // Retry the trade process
         }
-      case _ =>
-        println(wrongInputMessage)
-        update()
+      case scala.util.Failure(exception) =>
+        println(s"Failed to read input for trading choice: ${exception.getMessage}")
     }
   }
 
