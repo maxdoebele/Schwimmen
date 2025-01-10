@@ -53,7 +53,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
     var enteredNames: Seq[String] = Seq.empty
     val playerNamesText = new Text {
       wrappingWidth = 250
-      style = "-fx-font-size: 14px; -fx-fill: white;"
+      style = Style.defaultTextWhite
       text = "Spieler: "
     }
     new Scene(500, 300) {
@@ -65,7 +65,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
           children = Seq(
             new Label {
               text = "Willkommen bei Schwimmen"
-              style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"
+              style = Style.boldTextWhite
             },
             new VBox {
               alignment = Pos.CENTER
@@ -73,7 +73,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
               children = Seq(
                 new TextField {
                   text = "Gib einen Namen ein und drücke Enter"
-                  style = "-fx-font-size: 14px; -fx-text-fill: black;"
+                  style = Style.defaultTextWhite
                   maxWidth = 250
                   maxHeight = 30
                   onAction = _ => {
@@ -117,7 +117,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
               children = Seq(
                 new Label {
                   text = "Table Cards"
-                  style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for table cards header
+                  style = Style.boldText // Styling for table cards header
                 },
                 new HBox {
                   alignment = Pos.CENTER
@@ -125,7 +125,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
                 },
                 new Label {
                   text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
-                  style = "-fx-font-size: 16px; -fx-font-weight: bold;" // Styling for player cards header
+                  style = Style.boldText // Styling for player cards header
                 },
                 new HBox {
                   alignment = Pos.CENTER
@@ -154,7 +154,12 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
   def guiEndOfRoundScene(): Scene = {
     val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
-
+    val currentScores = HelpFunctions.calculateCurrentScore(controller)
+    val currentScoresText = new Text {
+      wrappingWidth = 250
+      style = Style.defaultText
+      text = "Aktueller Punktestand"
+    }
     new Scene(700, 500) {
       root = new StackPane {
         style = "-fx-background-color: lightblue;"
@@ -164,13 +169,20 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
           children = Seq(
             new Label {
               text = "Die Runde ist vorbei!"
-              style = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: black;"
+              style = Style.boldText
             },
             new Region { minHeight = 20 },
             new Text {
               wrappingWidth = 250
-              style = "-fx-font-size: 14px; -fx-fill: black;"
+              style = Style.defaultText
               text = s"Verloren hat: ${losers}"
+            },
+            currentScoresText,
+            new Text {
+              style = Style.defaultText
+              text = currentScores.map { case (name, score) =>
+                s"${name}: ${score}"
+              }.mkString("\n")
             },
             new Region { minHeight = 20 },
             new Button {

@@ -20,14 +20,26 @@ class TUI @Inject() (val controller: Controller) extends Observer {
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
   val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
-
   def start(): Future[Unit] = {
     Future {
       println("Bitte gib die Namen der Spieler mit Leerzeichen getrennt ein.")
       InputHandler.readLineThread().onComplete {
         case Success(input) =>
           val names = input.split(" ").toList
-          controller.createNewGame(names)
+          checkForPlayerLimit(names)
+          while(!checkForPlayerLimit(names)) {
+            InputHandler.readLineThread().onComplete {
+              case Success(input) =>
+                val names = input.split(" ").toList
+                if (checkForPlayerLimit(names)) {
+                  controller.createNewGame(names)
+                } else {
+                  println("Ungültige Eingabe. Es müssen zwischen 2 und 9 Spieler sein.")
+                }
+              case Failure(exception) =>
+              // cancel input from GUI
+            }
+          }
         case Failure(exception) =>
         // cancel input from GUI
       }

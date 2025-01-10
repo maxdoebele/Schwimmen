@@ -30,4 +30,24 @@ object Style {
     -fx-effect: dropshadow(gaussian, #c9cfce, 3, 0, 0, 3); /* Shadow effect */
 """
 
+  val defaultText = """
+      -fx-font-size: 14px;
+      -fx-fill: black;
+"""
+  val defaultTextWhite = """
+      -fx-font-size: 14px;
+      -fx-fill: white;
+"""
+  val boldText = """
+      -fx-font-size: 15px;
+      -fx-font-weight: bold;
+      -fx-text-fill: black;
+"""
+  val boldTextWhite = """
+      -fx-font-size: 15px;
+      -fx-font-weight: bold;
+      -fx-text-fill: white;
+"""
+
+
 }

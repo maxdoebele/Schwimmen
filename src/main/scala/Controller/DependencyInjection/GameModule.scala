@@ -19,6 +19,5 @@ class GameModule extends AbstractModule with ScalaModule{
     bind[Seq[String]].annotatedWith(Names.named("playerNames")).toInstance(Seq.empty[String])
 
     bind[Controller].in(classOf[Singleton])
-
   }
 }

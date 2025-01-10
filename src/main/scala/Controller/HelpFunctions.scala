@@ -37,9 +37,9 @@ object HelpFunctions {
 
       sameSuitGroup match {
         case Some(sameSuitCards) =>
-          sameSuitCards.map(_.rankToPoints).sum // Sum points of cards with the same suit
+          sameSuitCards.map(_.rankToPoints).sum
         case None =>
-          cards.map(_.rankToPoints).max // All cards have different suits, return the highest rank points
+          cards.map(_.rankToPoints).max
       }
     }
   }
@@ -54,6 +54,14 @@ object HelpFunctions {
     val minPoints = successfulPoints.map(_._2).min
     successfulPoints.collect {
       case (user, points) if points == minPoints => user
+    }
+  }
+
+  def checkForPlayerLimit(players: Seq[String]): Boolean = {
+    if (players.size > 1 && players.size < 9) {
+      true
+    } else {
+      false
     }
   }
 }
