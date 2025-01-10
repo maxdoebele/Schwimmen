@@ -52,8 +52,13 @@ class TUI @Inject() (val controller: Controller) extends Observer {
           case Success(input) =>
             input match {
               case "1" =>
-                println(f"${currentPlayer.name} klopft!")
-                controller.knock()
+                if(controller.gameState.queue < controller.gameState.players.size) {
+                  println("In der ersten Runde kann nicht geklopft werden.")
+                  update()
+                } else {
+                  println(f"${currentPlayer.name} klopft!")
+                  controller.knock()
+                }
               case "2" =>
                 println(s"Spieler ${currentPlayer.name} hat geschoben")
                 controller.skip()

@@ -3,22 +3,23 @@ package View.gui
 import Model.BaseImpl.Card
 import _root_.Controller.{Controller, HelpFunctions}
 import com.google.inject.Inject
-import javafx.geometry._
-import scalafx.Includes._
+import javafx.geometry.*
+import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
+import scalafx.beans.binding.Bindings
 import scalafx.beans.property.BooleanProperty
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import scalafx.scene.paint.Color._
+import scalafx.scene.paint.Color.*
 import scalafx.scene.text.Text
 import util.Observer
 
 import java.io.File
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.util.{Failure, Success, Try}
 
 class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
@@ -30,6 +31,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
   private var cardIndex = (-1, -1)
   private var cardIndexValid = BooleanProperty(false)
+  private var firstRoundKnockValid = BooleanProperty(false)
   private var lastSelectedButtonTable: Option[Button] = None
   private var lastSelectedButtonUser: Option[Button] = None
 
@@ -38,6 +40,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   // end of round aus tui übernommen
   override def update(): Unit = {
     Platform.runLater {
+      firstRoundKnockValid.value = controller.gameState.queue < controller.gameState.players.size
       if (controller.gameState.roundCounter == roundCounter.get()) {
         stage.scene = guiEndOfRoundScene()
         this.synchronized {
@@ -138,7 +141,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
                   spacing = 20
                   alignment = Pos.CENTER
                   children = Seq(
-                    createButton("Knock", controller.knock()),
+                    createKnockButton,
                     createButton("Skip", controller.skip()),
                     createButton("Trade ALL", controller.tradeAll()),
                     createTradeOneButton
@@ -281,6 +284,18 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
       }
     }
   }
+
+  private def createKnockButton: Button = {
+    new Button {
+      text = "Knock"
+      style <== when(disable) choose Style.disabledButton otherwise Style.buttonStyle
+      disable <== firstRoundKnockValid
+      onAction = _ => {
+        controller.knock()
+      }
+    }
+  }
+
 
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
