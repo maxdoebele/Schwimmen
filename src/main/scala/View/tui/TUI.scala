@@ -38,6 +38,13 @@ class TUI @Inject() (val controller: Controller) extends Observer {
     Future {
       if (controller.gameState.roundCounter == roundCounter.get()) {
         displayEndOfRound()
+        println("Drücke Enter um weiter zu spielen")
+        InputHandler.readLineThread().onComplete {
+          case Success(input) =>
+            println("Weiter gehts")
+          case Failure(exception) =>
+            //
+        }
         this.synchronized {
           roundCounter.incrementAndGet()
         }
