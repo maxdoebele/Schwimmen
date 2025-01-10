@@ -15,9 +15,8 @@ import net.codingwell.scalaguice.ScalaModule
 
 class GameModule extends AbstractModule with ScalaModule{
   override def configure(): Unit = {
-    bind[GameBuilder].to[BuildNewGame]
     bind[Seq[String]].annotatedWith(Names.named("playerNames")).toInstance(Seq.empty[String])
-
+    bind[GameBuilder].to[BuildNewGame]
     bind[Controller].in(classOf[Singleton])
 
   }
