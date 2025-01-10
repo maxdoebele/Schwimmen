@@ -51,9 +51,17 @@ object HelpFunctions {
     if (successfulPoints.isEmpty) {
       return Seq.empty[User]
     }
-    val minPoints = successfulPoints.map(_._2).min
-    successfulPoints.collect {
-      case (user, points) if points == minPoints => user
+
+    val playerWith33Points = successfulPoints.find { case (_, points) => points == 33 }
+
+    playerWith33Points match {
+      case Some((_, _)) =>
+        successfulPoints.collect { case (user, _) if !playerWith33Points.exists(_._1 == user) => user }
+      case None =>
+        val minPoints = successfulPoints.map(_._2).min
+        successfulPoints.collect {
+          case (user, points) if points == minPoints => user
+        }
     }
   }
 

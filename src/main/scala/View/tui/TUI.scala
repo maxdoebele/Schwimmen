@@ -50,6 +50,13 @@ class TUI @Inject() (val controller: Controller) extends Observer {
     Future {
       if (controller.gameState.roundCounter == roundCounter.get()) {
         displayEndOfRound()
+        println("Drücke Enter um weiter zu spielen")
+        InputHandler.readLineThread().onComplete {
+          case Success(input) =>
+            println("Weiter gehts")
+          case Failure(exception) =>
+            //
+        }
         this.synchronized {
           roundCounter.incrementAndGet()
         }
@@ -64,8 +71,13 @@ class TUI @Inject() (val controller: Controller) extends Observer {
           case Success(input) =>
             input match {
               case "1" =>
-                println(f"${currentPlayer.name} klopft!")
-                controller.knock()
+                if(controller.gameState.queue < controller.gameState.players.size) {
+                  println("In der ersten Runde kann nicht geklopft werden.")
+                  update()
+                } else {
+                  println(f"${currentPlayer.name} klopft!")
+                  controller.knock()
+                }
               case "2" =>
                 println(s"Spieler ${currentPlayer.name} hat geschoben")
                 controller.skip()
