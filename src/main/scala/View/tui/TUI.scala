@@ -26,19 +26,11 @@ class TUI @Inject() (val controller: Controller) extends Observer {
       InputHandler.readLineThread().onComplete {
         case Success(input) =>
           val names = input.split(" ").toList
-          checkForPlayerLimit(names)
-          while(!checkForPlayerLimit(names)) {
-            InputHandler.readLineThread().onComplete {
-              case Success(input) =>
-                val names = input.split(" ").toList
-                if (checkForPlayerLimit(names)) {
-                  controller.createNewGame(names)
-                } else {
-                  println("Ungültige Eingabe. Es müssen zwischen 2 und 9 Spieler sein.")
-                }
-              case Failure(exception) =>
-              // cancel input from GUI
-            }
+          if(checkForPlayerLimit(names)) {
+            controller.createNewGame(names)
+          } else {
+            println("Ungültige Eingabe. Es müssen zwischen 2 und 9 Spieler sein.")
+            start()
           }
         case Failure(exception) =>
         // cancel input from GUI
