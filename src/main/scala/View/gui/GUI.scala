@@ -8,12 +8,14 @@ import scalafx.Includes._
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.BooleanProperty
+import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
+import scalafx.scene.layout.{Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, GridPane, HBox, Region, StackPane, VBox}
+import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
-import scalafx.scene.text.Text
+import scalafx.scene.text.{Text, TextAlignment}
 import util.Observer
 
 import java.io.File
@@ -26,8 +28,9 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
   controller.add(this)
 
-  private val folderPath = "Karten/"
-  private val cardFileMap = loadCardDeck(folderPath)
+  private val folderPath1 = "Karten/"
+  private val Logo = "Logo.png"
+  private val cardFileMap = loadCardDeck(folderPath1)
 
   private var cardIndex = (-1, -1)
   private var cardIndexValid = BooleanProperty(false)
@@ -37,7 +40,6 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
-  // end of round aus tui übernommen
   override def update(): Unit = {
     Platform.runLater {
       firstRoundKnockValid.value = controller.gameState.queue < controller.gameState.players.size
@@ -61,14 +63,18 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
     }
     new Scene(500, 300) {
       root = new StackPane {
-        style = "-fx-background-color: darkblue;"
+        style = "-fx-background-color: lightblue;"
         alignment = Pos.CENTER
         children = new VBox {
           alignment = Pos.CENTER
           children = Seq(
             new Label {
-              text = "Willkommen bei Schwimmen"
+              text = "Willkommen bei"
               style = Style.boldTextWhite
+            },
+            new ImageView (Logo) {
+              fitWidth = 200
+              preserveRatio = true
             },
             new VBox {
               alignment = Pos.CENTER
@@ -109,7 +115,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   private def guiupdatescene(): Scene = {
     new Scene(700, 500) {
       root = new StackPane {
-        style = "-fx-background-color: lightblue;"
+        style = Style.Background
         alignment = Pos.CENTER
         children = new StackPane {
           alignment = Pos.CENTER
@@ -120,7 +126,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
               children = Seq(
                 new Label {
                   text = "Table Cards"
-                  style = Style.boldText // Styling for table cards header
+                  style = Style.boldText
                 },
                 new HBox {
                   alignment = Pos.CENTER
@@ -128,7 +134,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
                 },
                 new Label {
                   text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
-                  style = Style.boldText // Styling for player cards header
+                  style = Style.boldText
                 },
                 new HBox {
                   alignment = Pos.CENTER
@@ -156,14 +162,36 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   }
 
   def guiEndOfRoundScene(): Scene = {
-    val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
+    // val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
     val currentScores = HelpFunctions.calculateCurrentScore(controller)
+    val scoreGrid = new GridPane {
+      hgap = 20
+      vgap = 10
+      alignment = Pos.CENTER
+      padding = Insets(10)
+
+      currentScores.zipWithIndex.foreach { case ((name, score), index) =>
+        val nameLabel = new Label {
+          text = name
+          alignment = Pos.CENTER_LEFT
+          style = Style.defaultText
+        }
+        val scoreLabel = new Label {
+          text = score.toString
+          alignment = Pos.CENTER_RIGHT
+          style = Style.defaultText
+        }
+        add(nameLabel, 0, index)
+        add(scoreLabel, 1, index)
+      }
+    }
     val currentScoresText = new Text {
       wrappingWidth = 250
+      textAlignment = TextAlignment.Center
       style = Style.defaultText
       text = "Aktueller Punktestand"
     }
-    new Scene(700, 500) {
+    new Scene(500, 300) {
       root = new StackPane {
         style = "-fx-background-color: lightblue;"
         alignment = Pos.CENTER
@@ -174,19 +202,8 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
               text = "Die Runde ist vorbei!"
               style = Style.boldText
             },
-            new Region { minHeight = 20 },
-            new Text {
-              wrappingWidth = 250
-              style = Style.defaultText
-              text = s"Verloren hat: ${losers}"
-            },
             currentScoresText,
-            new Text {
-              style = Style.defaultText
-              text = currentScores.map { case (name, score) =>
-                s"${name}: ${score}"
-              }.mkString("\n")
-            },
+            scoreGrid,
             new Region { minHeight = 20 },
             new Button {
               text = "Weiter"
@@ -216,7 +233,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
     new Button {
       graphic = new ImageView {
-        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath$cardImagePath"))
+        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath1$cardImagePath"))
         fitWidth = 100
         preserveRatio = true
       }
@@ -228,7 +245,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
             cardIndex = (cardIndex._1, cardIdx)
             cardIndexValid.value = cardIndex._1 != -1 && cardIndex._2 != -1
             lastSelectedButtonTable.foreach(_.style = "-fx-background-color: transparent;")
-            this.style = "-fx-background-color: transparent; -fx-border-color: red; -fx-border-width: 2px;"
+            this.style = Style.BorderBlack
             lastSelectedButtonTable = Some(this)
           case Failure(exception) =>
             println(s"Error finding card index: ${exception.getMessage}")
@@ -251,7 +268,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
 
     new Button {
       graphic = new ImageView {
-        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath$cardImagePath"))
+        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath1$cardImagePath"))
         fitWidth = 100
         preserveRatio = true
       }
@@ -263,7 +280,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
             cardIndex = (cardIdx, cardIndex._2)
             cardIndexValid.value = cardIndex._1 != -1 && cardIndex._2 != -1
             lastSelectedButtonUser.foreach(_.style = "-fx-background-color: transparent;")
-            this.style = "-fx-background-color: transparent; -fx-border-color: red; -fx-border-width: 2px;"
+            this.style = Style.BorderBlack
             lastSelectedButtonUser = Some(this)
           case Failure(exception) =>
             println(s"Error finding card index: ${exception.getMessage}")
