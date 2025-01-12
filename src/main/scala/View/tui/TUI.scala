@@ -45,7 +45,10 @@ class TUI @Inject() (val controller: Controller) extends Observer {
         println("Drücke Enter um weiter zu spielen")
         InputHandler.readLineThread().onComplete {
           case Success(input) =>
-            println("Weiter gehts")
+            input match
+              case _ =>
+                println("Weiter gehts...")
+                controller.notifySubscribers()
           case Failure(exception) =>
             //
         }
@@ -53,7 +56,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
           roundCounter.incrementAndGet()
         }
       }
-      if (controller.gameState.players.size > 1) {
+      else if (controller.gameState.players.size > 1) {
         val currentPlayer = getCurrentPlayer(controller.gameState)
         displayGameState(controller.gameState)
 
@@ -172,7 +175,6 @@ class TUI @Inject() (val controller: Controller) extends Observer {
       for (i <- 1 to 3) {
         println()
       }
-      println("Neue Runde:")
     } else {
       println(f"Das Spiel ist vorbei... Gratuliere ${controller.gameState.players.map(_.name).mkString(", ")} du hast GEWONNEN!")
     }
