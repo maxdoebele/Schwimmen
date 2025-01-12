@@ -15,3 +15,4 @@ case class GameState(
                       override val roundCounter: Int = 0,
                       override val lastLoosers: Seq[User] = Seq.empty[User]
                     ) extends GameStateTrait
+  

@@ -1,15 +1,16 @@
 package View.tui
 
-import _root_.Controller._
-import Model._
-import Model.BaseImpl._
-import _root_.Controller.HelpFunctions._
+import FileIO.FileIOImpl.FileIOXML
+import _root_.Controller.*
+import Model.*
+import Model.BaseImpl.*
+import _root_.Controller.HelpFunctions.*
 import _root_.util.Observer
 import com.google.inject.Inject
 
 import scala.util.{Failure, Success}
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent._
+import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TUI @Inject() (val controller: Controller) extends Observer {
@@ -82,6 +83,14 @@ class TUI @Inject() (val controller: Controller) extends Observer {
                 controller.undo()
               case "redo" =>
                 controller.redo()
+              case "save" =>
+                FileIOXML().createFile(controller.gameState)
+                println("Game was saved in GameState.xml")
+                update()
+              case "read" =>
+                controller.gameState = FileIOXML().readFile("src/main/data/gameState.xml")
+                println(s"neues Spiel geladen: ${controller.gameState}")
+                update()
               case _ =>
                 println(wrongInputMessage)
                 update()

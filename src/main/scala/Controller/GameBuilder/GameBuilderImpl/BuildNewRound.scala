@@ -42,7 +42,7 @@ class BuildNewRound(gameState: GameStateTrait) extends GameBuilder {
   }
 
   override def updateTable(): User = {
-    User(handDeck = Seq.empty, lifePoints = -1, name = "Der Tisch")
+    User(handDeck = Seq.empty, lifePoints = -1, name = "theTable")
   }
 
   override def returnGameState(): GameStateTrait = {

@@ -1,6 +1,8 @@
 package Model.BaseImpl
 
-case class User(handDeck: Seq[Card], lifePoints: Int, name: String, schwimmt: Boolean = false) {
+import scala.xml.Elem
+
+case class User(handDeck: Seq[Card], lifePoints: Int, name: String, swimming: Boolean = false) {
   def removeCard(index: Int): Option[(User, Card)] = {
     if (index >= 0 && index < handDeck.size) {
       val cardToRemove = handDeck(index)
@@ -12,7 +14,7 @@ case class User(handDeck: Seq[Card], lifePoints: Int, name: String, schwimmt: Bo
   }
 
   def setSchwimmer(): User = {
-    this.copy(schwimmt = true)
+    this.copy(swimming = true)
   }
 
   def addCard(card: Card): User = {
@@ -31,12 +33,34 @@ case class User(handDeck: Seq[Card], lifePoints: Int, name: String, schwimmt: Bo
   }
 
   def loseLifePoint(): User = {
-    val lostLivePoints = lifePoints - 1
-    copy(lifePoints = lostLivePoints)
+    val lostLifePoints = lifePoints - 1
+    copy(lifePoints = lostLifePoints)
   }
 
   def addLifePoint(): User = {
-    val addedLivePoints = lifePoints + 1
-    copy(lifePoints = addedLivePoints)
+    val addedLifePoints = lifePoints + 1
+    copy(lifePoints = addedLifePoints)
+  }
+
+  def toXML: Elem = <player>
+    <handDeck>
+      {this.handDeck.map(card => card.toXML)}
+    </handDeck>
+    <lifePoints>{this.lifePoints}</lifePoints>
+    <name>{this.name}</name>
+    <swimming>{this.swimming}</swimming>
+  </player>
+}
+
+object User {
+  def fromXML(node: scala.xml.Node): User = {
+    val handDeck = (node \ "handDeck" \ "card").map(cardNode => Card.fromXML(cardNode))
+    val lifePoints = (node \ "lifePoints").text
+      println(lifePoints)
+    val lifePointsConverted = Integer.parseInt(lifePoints)
+    val name = (node \ "name").text.trim
+    val swimming = (node \ "swimming").text.toBoolean
+
+    User(handDeck = handDeck, lifePoints = lifePointsConverted, name = name, swimming = swimming)
   }
 }
