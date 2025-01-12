@@ -22,10 +22,10 @@ class TUI @Inject() (val controller: Controller) extends Observer {
   val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
   def start(): Future[Unit] = {
     Future {
-      println("Bitte gib die Namen der Spieler mit Leerzeichen getrennt ein.")
+      println("Bitte gib die Namen der Spieler mit Komma getrennt ein.")
       InputHandler.readLineThread().onComplete {
         case Success(input) =>
-          val names = input.split(" ").toList
+          val names = input.split(", ").toList
           if(checkForPlayerLimit(names)) {
             controller.createNewGame(names)
           } else {

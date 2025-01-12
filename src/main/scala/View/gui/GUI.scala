@@ -2,6 +2,7 @@ package View.gui
 
 import Model.BaseImpl.Card
 import _root_.Controller.{Controller, HelpFunctions}
+import _root_.Controller.HelpFunctions.checkForPlayerLimit
 import com.google.inject.Inject
 import javafx.geometry._
 import scalafx.Includes._
@@ -10,7 +11,7 @@ import scalafx.beans.binding.Bindings
 import scalafx.beans.property.BooleanProperty
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, Label, TextField}
+import scalafx.scene.control.{Button, ComboBox, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, GridPane, HBox, Region, StackPane, VBox}
 import scalafx.scene.paint.Color
@@ -21,7 +22,9 @@ import util.Observer
 import java.io.File
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
+import scala.collection.IterableOnce.iterableOnceExtensionMethods
 import scala.jdk.CollectionConverters._
+import scala.sys.process.buildersToProcess
 import scala.util.{Failure, Success, Try}
 
 class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
@@ -35,10 +38,12 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   private var cardIndex = (-1, -1)
   private var cardIndexValid = BooleanProperty(false)
   private var firstRoundKnockValid = BooleanProperty(false)
+  private var playerLimit = BooleanProperty(false)
   private var lastSelectedButtonTable: Option[Button] = None
   private var lastSelectedButtonUser: Option[Button] = None
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
+
 
   override def update(): Unit = {
     Platform.runLater {
@@ -57,11 +62,28 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   private def guistartscene(): Scene = {
     var enteredNames: Seq[String] = Seq.empty
     val playerNamesText = new Text {
+      textAlignment = TextAlignment.Center
       wrappingWidth = 250
       style = Style.defaultTextWhite
       text = "Spieler: "
     }
-    new Scene(500, 300) {
+    val playerNames = new TextField {
+      text = "Spielernamen eingeben"
+      style = Style.defaultTextWhite
+      maxWidth = 250
+      maxHeight = 30
+      onAction = _ => {
+        val name = text.value.trim
+        if (name.nonEmpty) {
+          enteredNames = enteredNames :+ name
+          playerLimit.value = checkForPlayerLimit(enteredNames)
+          println(s"Player limit status: ${playerLimit.value}")
+          playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
+          text = ""
+        }
+      }
+    }
+    new Scene(500, 450) {
       root = new StackPane {
         style = "-fx-background-color: lightblue;"
         alignment = Pos.CENTER
@@ -80,25 +102,18 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
               alignment = Pos.CENTER
               spacing = 20
               children = Seq(
-                new TextField {
-                  text = "Gib einen Namen ein und drücke Enter"
-                  style = Style.defaultTextWhite
-                  maxWidth = 250
-                  maxHeight = 30
-                  onAction = _ => {
-                    val name = text.value.trim
-                    if (name.nonEmpty) {
-                      enteredNames = enteredNames :+ name
-                      playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
-                      text = ""
-                    }
-                  }
+                new HBox {
+                  alignment = Pos.CENTER
+                  spacing = 20
+                  children = Seq(
+                  playerNames
+                  )
                 },
                 playerNamesText,
                 new Button {
                   text = "Start"
-                  minWidth = 100
-                  style = Style.buttonStyle
+                  style <== when(disable) choose Style.disabledButton otherwise Style.buttonStyle
+                  disable <== playerLimit.not
                   onAction = _ => {
                     controller.createNewGame(enteredNames)
                   }
@@ -161,7 +176,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
     }
   }
 
-  def guiEndOfRoundScene(): Scene = {
+  private def guiEndOfRoundScene(): Scene = {
     // val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
     val currentScores = HelpFunctions.calculateCurrentScore(controller)
     val scoreGrid = new GridPane {
@@ -191,7 +206,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
       style = Style.defaultText
       text = "Aktueller Punktestand"
     }
-    new Scene(500, 300) {
+    new Scene(500, 450) {
       root = new StackPane {
         style = "-fx-background-color: lightblue;"
         alignment = Pos.CENTER
@@ -218,7 +233,6 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
       }
     }
   }
-
 
   private def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
     new HBox {

@@ -38,6 +38,10 @@ object Style {
       -fx-font-size: 14px;
       -fx-fill: white;
 """
+  val defaultTextRed = """
+      -fx-font-size: 14px;
+      -fx-fill: red;
+"""
   val boldText = """
       -fx-font-size: 15px;
       -fx-font-weight: bold;
@@ -59,6 +63,4 @@ object Style {
       -fx-background-size: cover;
       -fx-background-position: center;
 """
-
-
 }

@@ -66,7 +66,7 @@ object HelpFunctions {
   }
 
   def checkForPlayerLimit(players: Seq[String]): Boolean = {
-    if (players.size > 1 && players.size < 9) {
+    if (players.size >=2 && players.size <= 9) {
       true
     } else {
       false
