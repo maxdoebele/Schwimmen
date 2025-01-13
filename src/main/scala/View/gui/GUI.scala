@@ -349,13 +349,11 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
 
   override def loadGame(): Unit = {
     controller.gameState = fileIO.readFile()
-    println("Saved GameState was loaded")
     controller.notifySubscribers()
   }
 
   override def saveGame(): Unit = {
     fileIO.createFile(controller.gameState.asInstanceOf[GameState])
-    println("Game was saved in src/main/data/gameState")
     controller.notifySubscribers()
   }
 }
