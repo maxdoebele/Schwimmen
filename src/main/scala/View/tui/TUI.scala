@@ -1,25 +1,26 @@
 package View.tui
 
-import _root_.Controller._
-import Model._
-import Model.BaseImpl._
-import _root_.Controller.HelpFunctions._
+import FileIO.FileIO
+import _root_.Controller.*
+import Model.*
+import Model.BaseImpl.*
+import _root_.Controller.HelpFunctions.*
 import _root_.util.Observer
 import com.google.inject.Inject
 
 import scala.util.{Failure, Success}
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent._
+import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TUI @Inject() (val controller: Controller) extends Observer {
+class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Observer {
 
   controller.add(this)
   InputHandler.startReading()
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
-  val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
+  private val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
   def start(): Future[Unit] = {
     Future {
       println("Bitte gib die Namen der Spieler mit Komma getrennt ein.")
@@ -82,6 +83,10 @@ class TUI @Inject() (val controller: Controller) extends Observer {
                 controller.undo()
               case "redo" =>
                 controller.redo()
+              case "save" =>
+                saveGame()
+              case "load" =>
+                loadGame()
               case _ =>
                 println(wrongInputMessage)
                 update()
@@ -126,7 +131,19 @@ class TUI @Inject() (val controller: Controller) extends Observer {
     }
   }
 
-  def drawCard(card: Card): List[String] = {
+  override def loadGame(): Unit = {
+    controller.gameState = fileIO.readFile()
+    println("Saved GameState was loaded")
+    controller.notifySubscribers()
+  }
+
+  override def saveGame() : Unit = {
+    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
+    println("Game was saved in src/main/data/gameState")
+    controller.notifySubscribers()
+  }
+
+  private def drawCard(card: Card): List[String] = {
     val suitSymbol = card.suit match {
       case "Herz" => "♥"
       case "Pik" => "♠"
@@ -144,7 +161,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
     )
   }
 
-  def displayGameState(gameState: GameStateTrait): Unit = {
+  private def displayGameState(gameState: GameStateTrait): Unit = {
     gameState.players.foreach { player =>
       println(s"${player.name}'s Karten:")
       displayHand(player.handDeck)
@@ -162,7 +179,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
     transposedLines.foreach(row => println(row.mkString(" ")))
   }
 
-  def displayEndOfRound(): Unit = {
+  private def displayEndOfRound(): Unit = {
     val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
     println(s"Verloren hat: $losers")
 

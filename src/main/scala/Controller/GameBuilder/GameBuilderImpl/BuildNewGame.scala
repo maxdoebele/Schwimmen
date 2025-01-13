@@ -24,7 +24,7 @@ case class BuildNewGame @Inject() (@Named("playerNames") playerNames: Seq[String
     users
   }
   override def updateTable(): User = {
-    User(handDeck = Seq.empty, lifePoints = -1, name = "Der Tisch")
+    User(handDeck = Seq.empty, lifePoints = -1, name = "theTable")
   }
 
   override def returnGameState(): GameState = {

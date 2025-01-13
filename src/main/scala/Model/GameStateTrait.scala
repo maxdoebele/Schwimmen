@@ -1,6 +1,7 @@
 package Model
 
-import Model.BaseImpl._
+import Model.BaseImpl.*
+import play.api.libs.json.{Format, Json}
 
 trait GameStateTrait {
   def players: Seq[User]
