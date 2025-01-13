@@ -1,6 +1,7 @@
 package View.tui
 
 import FileIO.FileIOImpl.{FileIOJSON, FileIOXML}
+import FileIO.FileIO
 import _root_.Controller.*
 import Model.*
 import Model.BaseImpl.*
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TUI @Inject() (val controller: Controller) extends Observer {
+class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Observer {
 
   controller.add(this)
   InputHandler.startReading()
@@ -84,14 +85,9 @@ class TUI @Inject() (val controller: Controller) extends Observer {
               case "redo" =>
                 controller.redo()
               case "save" =>
-                FileIOXML().createFile(controller.gameState.asInstanceOf[GameState])
-                FileIOJSON().createFile(controller.gameState.asInstanceOf[GameState])
-                println("Game was saved in gameState.xml")
-                update()
-              case "read" =>
-                controller.gameState = FileIOJSON().readFile("src/main/data/gameState.json")
-                println(s"neues Spiel geladen: ${controller.gameState}")
-                controller.notifySubscribers()
+                saveGame()
+              case "load" =>
+                loadGame()
               case _ =>
                 println(wrongInputMessage)
                 update()
@@ -134,6 +130,18 @@ class TUI @Inject() (val controller: Controller) extends Observer {
       case scala.util.Failure(exception) =>
         println(s"Failed to read input for trading choice: ${exception.getMessage}")
     }
+  }
+
+  def loadGame(): Unit = {
+    controller.gameState = fileIO.readFile()
+    println("Saved GameState was loaded")
+    controller.notifySubscribers()
+  }
+
+  def saveGame() : Unit = {
+    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
+    println("Game was saved in src/main/data/gameState")
+    update()
   }
 
   def drawCard(card: Card): List[String] = {

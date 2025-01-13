@@ -7,7 +7,7 @@ trait FileIO {
 
   def createFile(gameStateTrait: GameState): Unit
 
-  def readFile(fileName:String): GameStateTrait
+  def readFile(): GameStateTrait
 }
 
 
