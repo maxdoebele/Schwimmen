@@ -1,6 +1,5 @@
 package View.tui
 
-import FileIO.FileIOImpl.{FileIOJSON, FileIOXML}
 import FileIO.FileIO
 import _root_.Controller.*
 import Model.*
@@ -21,7 +20,7 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
-  val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
+  private val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
   def start(): Future[Unit] = {
     Future {
       println("Bitte gib die Namen der Spieler mit Leerzeichen getrennt ein.")
@@ -132,19 +131,19 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
     }
   }
 
-  def loadGame(): Unit = {
+  override def loadGame(): Unit = {
     controller.gameState = fileIO.readFile()
     println("Saved GameState was loaded")
     controller.notifySubscribers()
   }
 
-  def saveGame() : Unit = {
+  override def saveGame() : Unit = {
     fileIO.createFile(controller.gameState.asInstanceOf[GameState])
     println("Game was saved in src/main/data/gameState")
-    update()
+    controller.notifySubscribers()
   }
 
-  def drawCard(card: Card): List[String] = {
+  private def drawCard(card: Card): List[String] = {
     val suitSymbol = card.suit match {
       case "Herz" => "♥"
       case "Pik" => "♠"
@@ -162,7 +161,7 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
     )
   }
 
-  def displayGameState(gameState: GameStateTrait): Unit = {
+  private def displayGameState(gameState: GameStateTrait): Unit = {
     gameState.players.foreach { player =>
       println(s"${player.name}'s Karten:")
       displayHand(player.handDeck)
@@ -180,7 +179,7 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
     transposedLines.foreach(row => println(row.mkString(" ")))
   }
 
-  def displayEndOfRound(): Unit = {
+  private def displayEndOfRound(): Unit = {
     val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
     println(s"Verloren hat: $losers")
 

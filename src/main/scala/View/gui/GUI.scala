@@ -1,10 +1,11 @@
 package View.gui
 
-import Model.BaseImpl.Card
+import FileIO.FileIO
+import Model.BaseImpl.{Card, GameState}
 import _root_.Controller.{Controller, HelpFunctions}
 import com.google.inject.Inject
-import javafx.geometry._
-import scalafx.Includes._
+import javafx.geometry.*
+import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.BooleanProperty
@@ -12,17 +13,17 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import scalafx.scene.paint.Color._
+import scalafx.scene.paint.Color.*
 import scalafx.scene.text.Text
 import util.Observer
 
 import java.io.File
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.util.{Failure, Success, Try}
 
-class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
+class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFXApp3 with Observer {
 
   controller.add(this)
 
@@ -344,5 +345,17 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
         println(s"Folder not found: $folderPath")
         Map.empty
     }
+  }
+
+  override def loadGame(): Unit = {
+    controller.gameState = fileIO.readFile()
+    println("Saved GameState was loaded")
+    controller.notifySubscribers()
+  }
+
+  override def saveGame(): Unit = {
+    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
+    println("Game was saved in src/main/data/gameState")
+    controller.notifySubscribers()
   }
 }
