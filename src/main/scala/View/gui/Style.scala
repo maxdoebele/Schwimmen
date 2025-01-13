@@ -52,14 +52,24 @@ object Style {
       -fx-font-weight: bold;
       -fx-text-fill: white;
 """
+  val bigBoldTextWhite = """
+      -fx-font-size: 17px;
+      -fx-font-weight: bold;
+      -fx-text-fill: white;
+"""
   val BorderBlack = """
       -fx-background-color: transparent;
       -fx-border-color: black;
       -fx-border-width: 2px;
       -fx-border-radius: 10px;
 """
-  val Background = """
-      -fx-background-image: url('file:src/main/resources/Background.png');
+  val BackgroundUpdate = """
+      -fx-background-image: url('file:src/main/resources/Background_update.png');
+      -fx-background-size: cover;
+      -fx-background-position: center;
+"""
+  val BackgroundEnd = """
+      -fx-background-image: url('file:src/main/resources/Background_end.png');
       -fx-background-size: cover;
       -fx-background-position: center;
 """

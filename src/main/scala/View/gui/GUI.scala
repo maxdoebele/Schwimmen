@@ -13,7 +13,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, ComboBox, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, GridPane, HBox, Region, StackPane, VBox}
+import scalafx.scene.layout.{Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, GridPane, HBox, Pane, Region, StackPane, VBox}
 import scalafx.scene.paint.Color
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.{Text, TextAlignment}
@@ -75,11 +75,17 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
       onAction = _ => {
         val name = text.value.trim
         if (name.nonEmpty) {
-          enteredNames = enteredNames :+ name
-          playerLimit.value = checkForPlayerLimit(enteredNames)
-          println(s"Player limit status: ${playerLimit.value}")
-          playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
-          text = ""
+          if (enteredNames.size < 9) {
+            enteredNames = enteredNames :+ name
+            playerLimit.value = checkForPlayerLimit(enteredNames)
+            playerNamesText.text = s"Spieler:\n ${enteredNames.mkString("\n")}"
+            text = ""
+          } else {
+            playerNamesText.text = "Zu viele Spieler! Bitte erneut eingeben."
+            enteredNames = Seq.empty
+            playerLimit.value = false
+            text = ""
+          }
         }
       }
     }
@@ -130,7 +136,7 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   private def guiupdatescene(): Scene = {
     new Scene(700, 500) {
       root = new StackPane {
-        style = Style.Background
+        style = Style.BackgroundUpdate
         alignment = Pos.CENTER
         children = new StackPane {
           alignment = Pos.CENTER
@@ -177,59 +183,65 @@ class GUI @Inject() (val controller: Controller) extends JFXApp3 with Observer {
   }
 
   private def guiEndOfRoundScene(): Scene = {
-    // val losers = controller.gameState.lastLoosers.map(_.name).mkString(", ")
+    val losers = controller.gameState.lastLoosers.map(_.name).mkString("\n")
     val currentScores = HelpFunctions.calculateCurrentScore(controller)
+    val WeiterButton = new Image("file:src/main/resources/WeiterButton.png")
+    val imageView = new ImageView(WeiterButton) {
+      preserveRatio = true
+    }
     val scoreGrid = new GridPane {
-      hgap = 20
-      vgap = 10
-      alignment = Pos.CENTER
+      hgap = 40
+      vgap = 5
       padding = Insets(10)
 
       currentScores.zipWithIndex.foreach { case ((name, score), index) =>
         val nameLabel = new Label {
           text = name
           alignment = Pos.CENTER_LEFT
-          style = Style.defaultText
+          style = Style.boldTextWhite
         }
         val scoreLabel = new Label {
           text = score.toString
           alignment = Pos.CENTER_RIGHT
-          style = Style.defaultText
+          style = Style.boldTextWhite
         }
         add(nameLabel, 0, index)
         add(scoreLabel, 1, index)
       }
     }
-    val currentScoresText = new Text {
-      wrappingWidth = 250
-      textAlignment = TextAlignment.Center
-      style = Style.defaultText
+    val currentScoresText = new Label {
       text = "Aktueller Punktestand"
+      alignment = Pos.TOP_CENTER
+      style = Style.bigBoldTextWhite
     }
-    new Scene(500, 450) {
-      root = new StackPane {
-        style = "-fx-background-color: lightblue;"
-        alignment = Pos.CENTER
-        children = new VBox {
-          alignment = Pos.CENTER
-          children = Seq(
-            new Label {
-              text = "Die Runde ist vorbei!"
-              style = Style.boldText
-            },
-            currentScoresText,
-            scoreGrid,
-            new Region { minHeight = 20 },
-            new Button {
-              text = "Weiter"
-              minWidth = 80
-              minHeight = 25
-              onAction = _ => {
-                stage.scene = guiupdatescene()
-              }
+    val losersText = new Label {
+      text = s"${losers}"
+      style = Style.boldText
+    }
+
+    new Scene(700, 500) {
+      root = new Pane {
+        style = Style.BackgroundEnd
+        children = Seq(
+          currentScoresText,
+          scoreGrid,
+          losersText,
+          new Button {
+            graphic = imageView
+            style = "-fx-background-color: transparent;"
+            layoutX = 275
+            layoutY = 360
+            onAction = _ => {
+              stage.scene = guiupdatescene()
             }
-          )
-        }
+          }
+        )
+        losersText.layoutX = 50
+        losersText.layoutY = 57
+        currentScoresText.layoutX = 280
+        currentScoresText.layoutY = 122
+        scoreGrid.layoutX = 280
+        scoreGrid.layoutY = 137
       }
     }
   }
