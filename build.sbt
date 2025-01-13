@@ -16,6 +16,11 @@ libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0"
 
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC7"
 
+libraryDependencies ++= Seq(
+  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.15.2",
+  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.15.2"
+)
+
 libraryDependencies ++= {
   lazy val osName = System.getProperty("os.name") match {
     case n if n.startsWith("Linux") => "linux"
