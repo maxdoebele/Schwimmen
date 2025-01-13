@@ -14,6 +14,8 @@ libraryDependencies += "com.google.inject" % "guice" % "7.0.0"
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.3.0"
 
+libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC7"
+
 libraryDependencies ++= {
   lazy val osName = System.getProperty("os.name") match {
     case n if n.startsWith("Linux") => "linux"

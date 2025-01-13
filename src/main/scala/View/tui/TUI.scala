@@ -1,6 +1,6 @@
 package View.tui
 
-import FileIO.FileIOImpl.FileIOXML
+import FileIO.FileIOImpl.{FileIOJSON, FileIOXML}
 import _root_.Controller.*
 import Model.*
 import Model.BaseImpl.*
@@ -84,13 +84,14 @@ class TUI @Inject() (val controller: Controller) extends Observer {
               case "redo" =>
                 controller.redo()
               case "save" =>
-                FileIOXML().createFile(controller.gameState)
-                println("Game was saved in GameState.xml")
+                FileIOXML().createFile(controller.gameState.asInstanceOf[GameState])
+                FileIOJSON().createFile(controller.gameState.asInstanceOf[GameState])
+                println("Game was saved in gameState.xml")
                 update()
               case "read" =>
-                controller.gameState = FileIOXML().readFile("src/main/data/gameState.xml")
+                controller.gameState = FileIOJSON().readFile("src/main/data/gameState.json")
                 println(s"neues Spiel geladen: ${controller.gameState}")
-                update()
+                controller.notifySubscribers()
               case _ =>
                 println(wrongInputMessage)
                 update()

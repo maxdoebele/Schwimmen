@@ -1,5 +1,7 @@
 package Model.BaseImpl
 
+import play.api.libs.json.{Json, OFormat}
+
 import scala.util.Random
 import scala.xml.Elem
 
@@ -42,4 +44,6 @@ object CardDeck {
     val cardDeck = (node \ "CardDeck" \ "Card").map(cardNode => Card.fromXML(cardNode))
     CardDeck(cardDeck)
   }
+
+  implicit val cardDeckFormat: OFormat[CardDeck] = Json.format[CardDeck]
 }

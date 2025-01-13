@@ -1,5 +1,7 @@
 package Model.BaseImpl
 
+import play.api.libs.json.{Json, OFormat}
+
 import scala.xml.Elem
 
 case class User(handDeck: Seq[Card], lifePoints: Int, name: String, swimming: Boolean = false) {
@@ -54,13 +56,14 @@ case class User(handDeck: Seq[Card], lifePoints: Int, name: String, swimming: Bo
 
 object User {
   def fromXML(node: scala.xml.Node): User = {
-    val handDeck = (node \ "handDeck" \ "card").map(cardNode => Card.fromXML(cardNode))
-    val lifePoints = (node \ "lifePoints").text
+    val handDeck = (node \ "handDeck" \ "Card").map(cardNode => Card.fromXML(cardNode))
+    val lifePoints = (node \ "lifePoints").text.toInt
       println(lifePoints)
-    val lifePointsConverted = Integer.parseInt(lifePoints)
     val name = (node \ "name").text.trim
     val swimming = (node \ "swimming").text.toBoolean
 
-    User(handDeck = handDeck, lifePoints = lifePointsConverted, name = name, swimming = swimming)
+    User(handDeck = handDeck, lifePoints = lifePoints, name = name, swimming = swimming)
   }
+
+  implicit val cardFormat: OFormat[User] = Json.format[User]
 }

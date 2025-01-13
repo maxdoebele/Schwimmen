@@ -1,13 +1,12 @@
 package Controller
 
-import Controller.COR.CORImpl.LifePointsHandler
-import Controller.Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOneCommand}
-import Controller.GameBuilder.GameBuilder
-import Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
+import COR.CORImpl.LifePointsHandler
+import Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOneCommand}
+import GameBuilder.GameBuilder
+import GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import Model._
 import util.{Observable, UndoManager}
 
-import scala.io.StdIn.readLine
 import com.google.inject.Inject
 
 class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
