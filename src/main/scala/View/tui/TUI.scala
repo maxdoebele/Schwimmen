@@ -1,16 +1,16 @@
 package View.tui
 
 import FileIO.FileIO
-import _root_.Controller.*
-import Model.*
-import Model.BaseImpl.*
-import _root_.Controller.HelpFunctions.*
+import _root_.Controller._
+import Model._
+import Model.BaseImpl._
+import _root_.Controller.HelpFunctions._
 import _root_.util.Observer
 import com.google.inject.Inject
 
 import scala.util.{Failure, Success}
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.*
+import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Observer {
@@ -23,10 +23,10 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
   private val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
   def start(): Future[Unit] = {
     Future {
-      println("Bitte gib die Namen der Spieler mit Komma getrennt ein.")
+      println("Bitte gib die Namen der Spieler mit Leerzeichen getrennt ein.")
       InputHandler.readLineThread().onComplete {
         case Success(input) =>
-          val names = input.split(", ").toList
+          val names = input.split(" ").toList
           if(checkForPlayerLimit(names)) {
             controller.createNewGame(names)
           } else {

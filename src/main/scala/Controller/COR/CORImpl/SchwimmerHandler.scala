@@ -10,8 +10,8 @@ class SchwimmerHandler extends Handler {
     } else {
       controller.gameState.players.foreach { swimmer =>
         if (potentialSwimmer.exists(_.name == swimmer.name)) {
-          swimmer.setSchwimmer()
-          val updatedPlayer = swimmer.addLifePoint()
+          val swimmerupdated = swimmer.setSchwimmer()
+          val updatedPlayer = swimmerupdated.addLifePoint()
           val updatedPlayers = controller.gameState.players.map { p =>
             if (p.name == updatedPlayer.name) updatedPlayer else p
           }

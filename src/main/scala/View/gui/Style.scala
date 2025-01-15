@@ -29,6 +29,25 @@ object Style {
     -fx-background-radius: 8px;              /* Rounded background */
     -fx-effect: dropshadow(gaussian, #c9cfce, 3, 0, 0, 3); /* Shadow effect */
 """
+  val transparentButton = """
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+"""
+  val startButton = """
+  -fx-background-image: url('file:src/main/resources/StartButton.png');
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center;
+  -fx-background-color: transparent;
+"""
+  val weiterButton = """
+  -fx-background-image: url('file:src/main/resources/WeiterButton.png');
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center;
+  -fx-background-color: transparent;
+"""
 
   val defaultText = """
       -fx-font-size: 14px;
@@ -68,8 +87,18 @@ object Style {
       -fx-background-size: cover;
       -fx-background-position: center;
 """
+  val BackgroundStart = """
+      -fx-background-image: url('file:src/main/resources/Background_start.png');
+      -fx-background-size: cover;
+      -fx-background-position: center;
+"""
   val BackgroundEnd = """
       -fx-background-image: url('file:src/main/resources/Background_end.png');
+      -fx-background-size: cover;
+      -fx-background-position: center;
+"""
+  val BackgroundEndGame = """
+      -fx-background-image: url('file:src/main/resources/Background_endGame.png');
       -fx-background-size: cover;
       -fx-background-position: center;
 """
