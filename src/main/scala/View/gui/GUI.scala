@@ -143,14 +143,14 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
       text = "load"
       style = Style.buttonStyle
       onAction = _ => {
-        loadGame()
+        controller.loadGame()
       }
     }
     val saveButton = new Button {
       text = "save"
       style = Style.buttonStyle
       onAction = _ => {
-        saveGame()
+        controller.saveGame()
       }
     }
     val tableCardsLabel = new Label {
