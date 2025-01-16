@@ -5,7 +5,6 @@ import Controller.Command.Command
 class UndoManager {
 
   private var undoStack: List[Command] = Nil
-
   private var redoStack: List[Command] = Nil
 
   def execute(command: Command): Unit = {
@@ -18,7 +17,6 @@ class UndoManager {
       case Nil =>
       case head :: stack => {
         head.undoStep()
-
         undoStack = stack
         redoStack = head :: redoStack
       }

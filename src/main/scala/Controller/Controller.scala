@@ -24,6 +24,14 @@ class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
     notifySubscribers()
   }
 
+  def undo(): Unit = executeCommand {
+    undoManager.undoStep()
+  }
+
+  def redo(): Unit = executeCommand {
+    undoManager.redoStep()
+  }
+
   def cancelReadLine(): Unit = {
     if (threadReadLine != null && threadReadLine.isAlive) {
       threadReadLine.interrupt()
@@ -47,19 +55,11 @@ class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
     undoManager.execute(TradeOneCommand(this))
   }
 
-  def undo(): Unit = executeCommand {
-    undoManager.undoStep()
-  }
-
-  def redo(): Unit = executeCommand {
-    undoManager.redoStep()
-  }
-
   def checkForSchnauz(controller: Controller): Unit = {
     val schnauzPlayer = controller.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 31)
-    val feuerSchnautzPlayer = controller.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 33)
+    val feuerSchnauzPlayer = controller.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 33)
 
-    if (schnauzPlayer.isDefined || feuerSchnautzPlayer.isDefined) {
+    if (schnauzPlayer.isDefined || feuerSchnauzPlayer.isDefined) {
       controller.gameState = controller.gameState.copy(gameOver = true)
     }
   }

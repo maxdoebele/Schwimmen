@@ -46,13 +46,14 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
         println("Drücke Enter um weiter zu spielen")
         InputHandler.readLineThread().onComplete {
           case Success(input) =>
-            input match
+            input match {
               case _ =>
                 println("Weiter gehts...")
                 controller.notifySubscribers()
+            }
           case Failure(exception) =>
             //
-        }
+          }
         this.synchronized {
           roundCounter.incrementAndGet()
         }
@@ -61,7 +62,8 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
         val currentPlayer = getCurrentPlayer(controller.gameState)
         displayGameState(controller.gameState)
 
-        println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
+        println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: \n" +
+          s"1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
 
         InputHandler.readLineThread().onComplete {
           case Success(input) =>
@@ -131,18 +133,6 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
     }
   }
 
-  override def loadGame(): Unit = {
-    controller.gameState = fileIO.readFile()
-    println("Saved GameState was loaded")
-    controller.notifySubscribers()
-  }
-
-  override def saveGame() : Unit = {
-    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
-    println("Game was saved in src/main/data/gameState")
-    controller.notifySubscribers()
-  }
-
   private def drawCard(card: Card): List[String] = {
     val suitSymbol = card.suit match {
       case "Herz" => "♥"
@@ -167,7 +157,6 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
       displayHand(player.handDeck)
       println()
     }
-
     println("Tisch Karten:")
     displayHand(gameState.table.handDeck)
     println()
@@ -195,5 +184,17 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
     } else {
       println(f"Das Spiel ist vorbei... Gratuliere ${controller.gameState.players.map(_.name).mkString(", ")} du hast GEWONNEN!")
     }
+  }
+
+  override def loadGame(): Unit = {
+    controller.gameState = fileIO.readFile()
+    println("Saved GameState was loaded")
+    controller.notifySubscribers()
+  }
+
+  override def saveGame() : Unit = {
+    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
+    println("Game was saved in src/main/data/gameState")
+    controller.notifySubscribers()
   }
 }

@@ -6,6 +6,12 @@ import org.scalatest.wordspec.AnyWordSpec
 class UserTest extends AnyWordSpec {
 
   "A User" should {
+    
+    "set swimmer" in {
+      val user = User(Seq(Card("Herz", "7")), 1, "Max")
+      val updatedUser = user.setSchwimmer()
+      assert(updatedUser.swimming)
+    }
 
     "remove a card from the hand" in {
       val user = User(Seq(Card("Herz", "7"), Card("Pik", "8"), Card("Karo", "9")), 3, "Max")
@@ -37,10 +43,18 @@ class UserTest extends AnyWordSpec {
       assert(updatedUser.handDeck.contains(Card("Karo", "9")))
       assert(updatedUser.handDeck.contains(Card("Kreuz", "10")))
     }
-
+    
+    "lose lifepoint" in {
+      val user = User(Seq(Card("Herz", "7")), 3, "Max")
+      val updatedUser = user.loseLifePoint()
+      assert(updatedUser.lifePoints == 2)
     }
-
-    // ---------------- live points ab -1 bzw. 0 ist der user raus -------------------
+    
+    "add lifepoint" in {
+      val user = User(Seq(Card("Herz", "7")), 0, "Max")
+      val updatedUser = user.addLifePoint()
+      assert(updatedUser.lifePoints == 1)
+    }
 
   }
 }

@@ -1,0 +1,121 @@
+---
+players:
+- handDeck:
+  - suit: "Herz"
+    rank: "8"
+    isSelected: false
+  - suit: "Pik"
+    rank: "Q"
+    isSelected: false
+  - suit: "Herz"
+    rank: "7"
+    isSelected: false
+  lifePoints: 3
+  name: "max"
+  swimming: false
+- handDeck:
+  - suit: "Kreuz"
+    rank: "9"
+    isSelected: false
+  - suit: "Caro"
+    rank: "Q"
+    isSelected: false
+  - suit: "Herz"
+    rank: "K"
+    isSelected: false
+  lifePoints: 3
+  name: "emilia"
+  swimming: false
+table:
+  handDeck:
+  - suit: "Kreuz"
+    rank: "10"
+    isSelected: false
+  - suit: "Herz"
+    rank: "10"
+    isSelected: false
+  - suit: "Caro"
+    rank: "7"
+    isSelected: false
+  lifePoints: -1
+  name: "theTable"
+  swimming: false
+deck:
+  cardDeck:
+  - suit: "Kreuz"
+    rank: "K"
+    isSelected: false
+  - suit: "Caro"
+    rank: "K"
+    isSelected: false
+  - suit: "Caro"
+    rank: "A"
+    isSelected: false
+  - suit: "Pik"
+    rank: "8"
+    isSelected: false
+  - suit: "Caro"
+    rank: "10"
+    isSelected: false
+  - suit: "Kreuz"
+    rank: "J"
+    isSelected: false
+  - suit: "Caro"
+    rank: "J"
+    isSelected: false
+  - suit: "Pik"
+    rank: "J"
+    isSelected: false
+  - suit: "Kreuz"
+    rank: "8"
+    isSelected: false
+  - suit: "Kreuz"
+    rank: "A"
+    isSelected: false
+  - suit: "Herz"
+    rank: "A"
+    isSelected: false
+  - suit: "Kreuz"
+    rank: "Q"
+    isSelected: false
+  - suit: "Kreuz"
+    rank: "7"
+    isSelected: false
+  - suit: "Pik"
+    rank: "10"
+    isSelected: false
+  - suit: "Herz"
+    rank: "Q"
+    isSelected: false
+  - suit: "Herz"
+    rank: "9"
+    isSelected: false
+  - suit: "Pik"
+    rank: "K"
+    isSelected: false
+  - suit: "Caro"
+    rank: "9"
+    isSelected: false
+  - suit: "Pik"
+    rank: "9"
+    isSelected: false
+  - suit: "Herz"
+    rank: "J"
+    isSelected: false
+  - suit: "Caro"
+    rank: "8"
+    isSelected: false
+  - suit: "Pik"
+    rank: "A"
+    isSelected: false
+  - suit: "Pik"
+    rank: "7"
+    isSelected: false
+queue: 2
+knockCounter: 0
+gameOver: false
+indexCardPlayer: 0
+indexCardTable: 0
+schwimmer: false
+roundCounter: 0
+lastLoosers: []

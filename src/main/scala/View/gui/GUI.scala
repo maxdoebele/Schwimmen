@@ -309,6 +309,8 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
       scene = guistartscene()
     }
   }
+  
+  // ----------------------------- Helper functions --------------------------------
 
   def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
     new HBox {

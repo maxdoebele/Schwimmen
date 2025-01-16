@@ -1,12 +1,12 @@
 {
   "players" : [ {
     "handDeck" : [ {
-      "suit" : "Pik",
-      "rank" : "K",
-      "isSelected" : false
-    }, {
       "suit" : "Kreuz",
       "rank" : "10",
+      "isSelected" : false
+    }, {
+      "suit" : "Herz",
+      "rank" : "K",
       "isSelected" : false
     }, {
       "suit" : "Caro",
@@ -14,16 +14,16 @@
       "isSelected" : false
     } ],
     "lifePoints" : 3,
-    "name" : "ksjnfs",
+    "name" : "max",
     "swimming" : false
   }, {
     "handDeck" : [ {
-      "suit" : "Herz",
-      "rank" : "8",
+      "suit" : "Caro",
+      "rank" : "K",
       "isSelected" : false
     }, {
       "suit" : "Kreuz",
-      "rank" : "J",
+      "rank" : "9",
       "isSelected" : false
     }, {
       "suit" : "Kreuz",
@@ -31,69 +31,53 @@
       "isSelected" : false
     } ],
     "lifePoints" : 3,
-    "name" : "skjndf",
+    "name" : "emilia",
     "swimming" : false
   } ],
-  "queue" : 0,
+  "queue" : 3,
   "deck" : {
     "cardDeck" : [ {
       "suit" : "Pik",
-      "rank" : "10",
-      "isSelected" : false
-    }, {
-      "suit" : "Caro",
-      "rank" : "10",
-      "isSelected" : false
-    }, {
-      "suit" : "Kreuz",
-      "rank" : "7",
-      "isSelected" : false
-    }, {
-      "suit" : "Caro",
-      "rank" : "K",
-      "isSelected" : false
-    }, {
-      "suit" : "Pik",
       "rank" : "A",
-      "isSelected" : false
-    }, {
-      "suit" : "Pik",
-      "rank" : "9",
-      "isSelected" : false
-    }, {
-      "suit" : "Herz",
-      "rank" : "10",
-      "isSelected" : false
-    }, {
-      "suit" : "Herz",
-      "rank" : "K",
       "isSelected" : false
     }, {
       "suit" : "Herz",
       "rank" : "J",
       "isSelected" : false
     }, {
-      "suit" : "Kreuz",
-      "rank" : "9",
-      "isSelected" : false
-    }, {
-      "suit" : "Herz",
-      "rank" : "7",
+      "suit" : "Pik",
+      "rank" : "Q",
       "isSelected" : false
     }, {
       "suit" : "Caro",
-      "rank" : "9",
+      "rank" : "10",
       "isSelected" : false
     }, {
       "suit" : "Pik",
       "rank" : "8",
       "isSelected" : false
     }, {
-      "suit" : "Pik",
-      "rank" : "Q",
+      "suit" : "Caro",
+      "rank" : "9",
+      "isSelected" : false
+    }, {
+      "suit" : "Kreuz",
+      "rank" : "7",
       "isSelected" : false
     }, {
       "suit" : "Herz",
+      "rank" : "8",
+      "isSelected" : false
+    }, {
+      "suit" : "Caro",
+      "rank" : "J",
+      "isSelected" : false
+    }, {
+      "suit" : "Herz",
+      "rank" : "A",
+      "isSelected" : false
+    }, {
+      "suit" : "Kreuz",
       "rank" : "A",
       "isSelected" : false
     }, {
@@ -101,32 +85,48 @@
       "rank" : "9",
       "isSelected" : false
     }, {
-      "suit" : "Caro",
-      "rank" : "Q",
+      "suit" : "Pik",
+      "rank" : "K",
+      "isSelected" : false
+    }, {
+      "suit" : "Pik",
+      "rank" : "10",
       "isSelected" : false
     }, {
       "suit" : "Caro",
+      "rank" : "7",
+      "isSelected" : false
+    }, {
+      "suit" : "Pik",
       "rank" : "J",
+      "isSelected" : false
+    }, {
+      "suit" : "Herz",
+      "rank" : "7",
+      "isSelected" : false
+    }, {
+      "suit" : "Herz",
+      "rank" : "Q",
+      "isSelected" : false
+    }, {
+      "suit" : "Herz",
+      "rank" : "10",
       "isSelected" : false
     }, {
       "suit" : "Kreuz",
       "rank" : "K",
       "isSelected" : false
     }, {
-      "suit" : "Kreuz",
-      "rank" : "A",
-      "isSelected" : false
-    }, {
-      "suit" : "Kreuz",
+      "suit" : "Caro",
       "rank" : "Q",
       "isSelected" : false
     }, {
       "suit" : "Pik",
-      "rank" : "J",
+      "rank" : "7",
       "isSelected" : false
     }, {
-      "suit" : "Pik",
-      "rank" : "7",
+      "suit" : "Kreuz",
+      "rank" : "Q",
       "isSelected" : false
     } ]
   },
@@ -135,16 +135,16 @@
   "schwimmer" : false,
   "table" : {
     "handDeck" : [ {
+      "suit" : "Pik",
+      "rank" : "9",
+      "isSelected" : false
+    }, {
       "suit" : "Caro",
       "rank" : "A",
       "isSelected" : false
     }, {
-      "suit" : "Caro",
-      "rank" : "7",
-      "isSelected" : false
-    }, {
-      "suit" : "Herz",
-      "rank" : "Q",
+      "suit" : "Kreuz",
+      "rank" : "J",
       "isSelected" : false
     } ],
     "lifePoints" : -1,
@@ -153,6 +153,6 @@
   },
   "gameOver" : false,
   "roundCounter" : 0,
-  "knockCounter" : 0,
-  "indexCardTable" : 0
+  "knockCounter" : 1,
+  "indexCardTable" : 2
 }

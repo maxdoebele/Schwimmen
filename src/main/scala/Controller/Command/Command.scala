@@ -8,5 +8,4 @@ trait Command {
   
   def redoStep(): Unit
   
-  
 }

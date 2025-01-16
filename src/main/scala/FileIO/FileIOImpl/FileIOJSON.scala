@@ -29,11 +29,9 @@ class FileIOJSON extends FileIO {
 
     val json: JsValue = Json.parse(fileContent)
 
-    val parsedGameState: GameState = json.as[GameState] // Requires an implicit Reads[GameState]
+    val parsedGameState: GameState = json.as[GameState]
 
     // Return the parsed GameState (as GameStateTrait)
     parsedGameState
   }
-
-
 }

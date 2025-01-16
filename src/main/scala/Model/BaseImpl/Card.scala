@@ -29,7 +29,6 @@ case class Card(val suit: String, val rank: String, var isSelected: Boolean = fa
     "suit" -> this.suit,
     "rank" -> this.rank
   )
-  
 }
 
 object Card {

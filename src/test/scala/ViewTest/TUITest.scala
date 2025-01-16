@@ -1,3 +1,5 @@
 package ViewTest
 
-class TUITest
+class TUITest {
+
+}

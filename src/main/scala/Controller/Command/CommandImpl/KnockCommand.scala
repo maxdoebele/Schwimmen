@@ -12,7 +12,8 @@ class KnockCommand(controller: Controller) extends Command {
     memento = controller.gameState
 
     val updatedKnockCounter = controller.gameState.knockCounter + 1
-    val updatedGameState = controller.gameState.copy(knockCounter = updatedKnockCounter, gameOver = updatedKnockCounter >= 2, queue = controller.gameState.queue + 1)
+    val updatedGameState = controller.gameState.copy(knockCounter = updatedKnockCounter,
+      gameOver = updatedKnockCounter >= 2, queue = controller.gameState.queue + 1)
     
     controller.gameState = updatedGameState
   }
