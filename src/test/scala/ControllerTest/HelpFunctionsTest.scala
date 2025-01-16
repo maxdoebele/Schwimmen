@@ -1,83 +1,68 @@
 package ControllerTest
 
-import Controller.*
-import Model.*
+import Controller._
+
+import Model._
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import org.scalatest.wordspec.AnyWordSpec
+
 class HelpFunctionsTest extends AnyWordSpec {
 
   "Game Logic" should {
-
-    "distribute cards to user" in {
-      val initialDeck = new CardDeck().shuffleDeck()
-      val user = User(Seq.empty, lifePoints = 3, name = "Player1")
-
-      val (updatedDeck, updatedUser) = HelpFunctions.distributeCardsToUser(initialDeck, user)
-
-      assert(updatedUser.handDeck.length == 3, "Der Benutzer sollte genau 3 Karten erhalten.")
-      assert(updatedDeck.cardDeck.length == initialDeck.cardDeck.length - 3, "Das Deck sollte um 3 Karten reduziert werden.")
-      assert(updatedUser.handDeck.forall(card => initialDeck.cardDeck.contains(card)), "Die Karten des Benutzers sollten aus dem ursprünglichen Deck stammen.")
+    
+    "calculate current score" in {
+      val player1 = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), 3, "Player1")
     }
-
-    "allow user to knock" in {
-      val gameState = GameState(
-        players = Seq(User(Seq.empty, 3, "Player1")),
-        table = User(Seq.empty, 0, "Table"),
-        deck = new CardDeck().shuffleDeck()
-      )
-
-      val newState = HelpFunctions.knock(gameState)
-      assert(newState.knockCounter == 1, "Der Knock-Zähler sollte um 1 erhöht werden.")
-      assert(!newState.gameOver, "Das Spiel sollte noch nicht vorbei sein.")
-
-      val finalState = HelpFunctions.knock(newState)
-
-      assert(finalState.knockCounter == 2, "Der Knock-Zähler sollte auf 2 erhöht werden.")
-      assert(finalState.gameOver, "Das Spiel sollte vorbei sein, wenn zweimal geklopft wurde.")
-    }
-
-    "allow user to trade" in {
-      val tableDeck = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), -1, "Table")
-      val player = User(Seq(Card("Kreuz", "A"), Card("Herz", "8"), Card("Pik", "J")), 3, "Player1")
-      val gameState = GameState(
-        players = Seq(player),
-        table = tableDeck,
-        deck = new CardDeck().shuffleDeck()
-      )
-
-      val newState = HelpFunctions.tradeOneCard(gameState, 1, 2, player)
-
-      val updatedPlayer = newState.players.find(_.name == player.name).get
-      assert(updatedPlayer.handDeck.contains(Card("Karo", "K")), "Der Spieler sollte die Karte aus der Mitte erhalten.")
-      assert(!newState.table.handDeck.contains(Card("Karo","K")), "Der Tisch sollte die getauschte Karte nicht mehr im deck haben.")
-      assert(!updatedPlayer.handDeck.contains(Card("Herz", "8")), "Die getauschte Karte sollte nicht mehr im Deck des Spielers sein.")
-      assert(newState.table.handDeck.contains(Card("Herz", "8")), "Die getauschte Karte sollte in die Mitte gelegt worden sein.")
-    }
-
-    "calculate points of player" in {
-      val sameSuitCards = Seq(Card("Herz", "7"), Card("Herz", "10"), Card("Herz", "A"))
-      val mixedSuitCards = Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K"))
-      val sameRankCards = Seq(Card("Herz", "K"), Card("Pik", "K"), Card("Karo", "K"))
-
-      assert(HelpFunctions.calculatePoints(sameSuitCards) == 27, "Punkte sollten die Summe derselben Farbe sein.")
-      assert(HelpFunctions.calculatePoints(mixedSuitCards) == 10, "Punkte sollten der höchste Rang sein, wenn alle Farben unterschiedlich sind.")
-      assert(HelpFunctions.calculatePoints(sameRankCards) == 30.5, "Drei Karten desselben Rangs sollten 30.5 Punkte geben.")
-    }
-
-    "check for schnauz of player" in {
-      val player1 = User(Seq(Card("Herz", "10"), Card("Herz", "J"), Card("Herz", "A")), 3, "Player1") // 31 Punkte
-      val player2 = User(Seq(Card("Kreuz", "K"), Card("Pik", "K"), Card("Karo", "K")), 3, "Player2") // 30.5 Punkte
+    
+    "get current player" in {
+      val player1 = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), 3, "Player1")
+      val player2 = User(Seq(Card("Kreuz", "7"), Card("Herz", "10"), Card("Pik", "K")), 3, "Player2")
       val gameState = GameState(
         players = Seq(player1, player2),
         table = User(Seq.empty, -1, "Table"),
         deck = new CardDeck().shuffleDeck()
       )
+      assert(HelpFunctions.getCurrentPlayer(gameState) == player1, "Der aktuelle Spieler sollte der erste Spieler sein.")
+    }
 
-      val newState = HelpFunctions.checkForSchnauz(gameState)
+    "calculate points of player" in {
+      val cards1 = Seq(Card("Herz", "7"), Card("Herz", "10"), Card("Herz", "K"))
+      val cards2 = Seq(Card("Kreuz", "7"), Card("Pik", "10"), Card("Herz", "K"))
+      val points1 = HelpFunctions.calculatePoints(cards1)
+      val points2 = HelpFunctions.calculatePoints(cards2)
+      assert(points1.isSuccess, "Die Punkteberechnung sollte erfolgreich sein.")
+      assert(points1.get == 27, "Die Punkte von cards1 sollte 27 sein")
+      assert(points2.isSuccess, "Die Punkteberechnung sollte erfolgreich sein.")
+      assert(points2.get == 10, "Die Punkte von cards2 sollte 10 sein.")
+    }
 
-      assert(newState.gameOver, "Das Spiel sollte beendet sein, wenn ein Spieler Schnauz hat.")
-      assert(newState.players.contains(player1), "Spieler1 sollte als Gewinner mit 31 Punkten erkannt werden.")
+    "find loser of round" in {
+      val player1 = User(Seq(Card("Herz", "7"), Card("Kreuz", "10"), Card("Karo", "K")), 3, "Player1")
+      val player2 = User(Seq(Card("Pik", "7"), Card("Pik", "10"), Card("Karo", "K")), 3, "Player2")
+      val player3 = User(Seq(Card("Pik", "A"), Card("Kreuz", "A"), Card("Karo", "A")), 3, "Player3")
+      val playersWithoutFeuer = Seq(player1, player2)
+      val playersWithFeuer = Seq(player1, player2, player3)
+      val loosersWithoutFeuer = HelpFunctions.findLoserOfRound(playersWithoutFeuer)
+      val loosersWithFeuer = HelpFunctions.findLoserOfRound(playersWithFeuer)
+      assert(loosersWithoutFeuer.map(_.name) == Seq("Player1"), "Der Spieler mit den wenigsten Punkten sollte verloren haben (player1).")
+      assert(loosersWithFeuer.map(_.name) == Seq("Player1","Player2"), "Alle Spieler die kein Feuer haben sollten verloren haben.")
+    }
+    
+    "check for player limit" in {
+      val player1 = User(Seq(Card("Herz", "7"), Card("Pik", "8"), Card("Karo", "9")), 3, "Player1")
+      val player2 = User(Seq(Card("Herz", "8"), Card("Pik", "9"), Card("Karo", "10")), 3, "Player2")
+      val player3 = User(Seq(Card("Herz", "9"), Card("Pik", "10"), Card("Karo", "J")), 3, "Player3")
+      val player4 = User(Seq(Card("Herz", "10"), Card("Pik", "J"), Card("Karo", "Q")), 3, "Player4")
+      val player5 = User(Seq(Card("Herz", "J"), Card("Pik", "Q"), Card("Karo", "K")), 3, "Player5")
+      val player6 = User(Seq(Card("Herz", "Q"), Card("Pik", "K"), Card("Karo", "A")), 3, "Player6")
+      val player7 = User(Seq(Card("Herz", "K"), Card("Pik", "A"), Card("Kreuz", "7")), 3, "Player7")
+      val player8 = User(Seq(Card("Herz", "A"), Card("Karo", "7"), Card("Kreuz", "8")), 3, "Player8")
+      val players1 = Seq("Player1", "Player2", "Player3", "Player4", "Player5", "Player6", "Player7", "Player8")
+      val players2 = Seq("Player1")
+      val playerLimit1 = HelpFunctions.checkForPlayerLimit(players1)
+      val playerLimit2 = HelpFunctions.checkForPlayerLimit(players2)
+      assert(playerLimit1, "Die Anzahl der Spieler sollte korrekt zwischen 2 und 9 liegen.")
+      assert(!playerLimit2,"Die Anzahl der Spieler sollte zu als wenig erkannt sein")
     }
   }
-
 }

@@ -5,8 +5,7 @@ import Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOne
 import FileIO.FileIO
 import GameBuilder.GameBuilder
 import GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
-import Model.*
-import Model.BaseImpl.GameState
+import Model._
 import util.{Observable, UndoManager}
 import com.google.inject.Inject
 

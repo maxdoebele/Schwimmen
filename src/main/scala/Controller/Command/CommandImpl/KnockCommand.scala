@@ -1,7 +1,7 @@
 package Controller.Command.CommandImpl
 
 import Controller.{Controller, HelpFunctions}
-import Model.*
+import Model._
 import _root_.Controller.Command.Command
 
 class KnockCommand(controller: Controller) extends Command {

@@ -1,15 +1,16 @@
 package View.tui
 
-import _root_.Controller.*
-import Model.*
-import Model.BaseImpl.*
-import _root_.Controller.HelpFunctions.*
+import FileIO.FileIO
+import _root_.Controller._
+import Model._
+import Model.BaseImpl._
+import _root_.Controller.HelpFunctions._
 import _root_.util.Observer
 import com.google.inject.Inject
 
 import scala.util.{Failure, Success}
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.*
+import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TUI @Inject() (val controller: Controller) extends Observer {
@@ -60,7 +61,8 @@ class TUI @Inject() (val controller: Controller) extends Observer {
         val currentPlayer = getCurrentPlayer(controller.gameState)
         displayGameState(controller.gameState)
 
-        println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: 1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
+        println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: \n" +
+          s"1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
 
         InputHandler.readLineThread().onComplete {
           case Success(input) =>
@@ -154,7 +156,6 @@ class TUI @Inject() (val controller: Controller) extends Observer {
       displayHand(player.handDeck)
       println()
     }
-
     println("Tisch Karten:")
     displayHand(gameState.table.handDeck)
     println()

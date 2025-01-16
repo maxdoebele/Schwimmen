@@ -9,7 +9,7 @@ class SkipCommand(controller: Controller) extends Command {
   var memento: GameStateTrait = controller.gameState
 
   override def execute(): Unit = {
-    memento = controller.gameState;
+    memento = controller.gameState
     val updatedGameState = controller.gameState.copy(queue = controller.gameState.queue + 1)
     controller.gameState = updatedGameState
   }

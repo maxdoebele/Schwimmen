@@ -1,4 +1,3 @@
-
 package View.gui
 
 object Style {

@@ -1,4 +1,4 @@
-import Controller.*
+import Controller._
 import View.gui.GUI
 import View.tui.TUI
 import _root_.Controller.DependencyInjection.GameModule

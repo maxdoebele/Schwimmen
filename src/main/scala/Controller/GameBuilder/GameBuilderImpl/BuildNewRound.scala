@@ -15,7 +15,7 @@ class BuildNewRound(gameState: GameStateTrait) extends GameBuilder {
 
   private def mergeNewGameState(): GameStateTrait = {
     val updated = gameState.copy(
-      players = distibuteCardGameState.players, 
+      players = distibuteCardGameState.players,
       table = distibuteCardGameState.table, 
       deck = distibuteCardGameState.deck, 
       queue = 0, 

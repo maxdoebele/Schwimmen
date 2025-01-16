@@ -2,6 +2,9 @@ package ModelTest
 
 import Model.BaseImpl.Card
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
+
+import scala.xml.{Elem, Utility}
 
 class CardTest extends AnyWordSpec {
 
@@ -50,6 +53,36 @@ class CardTest extends AnyWordSpec {
     "return 0 points for an invalid rank" in {
       val card = Card("Herz", "Z")
       assert(card.rankToPoints == 0)
+    }
+
+    "serialize to XML correctly" in {
+      val card = Card("Herz", "7")
+      val expectedXML = <Card>
+        <suit>Herz</suit>
+        <rank>7</rank>
+      </Card>
+      assert(Utility.trim(card.toXML) == Utility.trim(expectedXML), "Die XML-Darstellung der Karte sollte korrekt sein.")
+    }
+
+    "serialize to JSON correctly" in {
+      val card = Card("Herz", "7")
+      val expectedJSON = "{\"suit\":\"Herz\",\"rank\":\"7\"}"
+      assert(card.toJSON.toString() == expectedJSON, "Die JSON-Darstellung der Karte sollte korrekt sein.")
+    }
+
+    "deserialize from XML correctly" in {
+      val cardXML = <Card>
+        <suit>Herz</suit>
+        <rank>7</rank>
+      </Card>
+      val card = Card.fromXML(cardXML)
+      assert(card == Card("Herz", "7"), "Die Karte sollte korrekt aus XML deserialisiert werden.")
+    }
+
+    "deserialize from JSON correctly" in {
+      val cardJSON = "{\"suit\":\"Herz\",\"rank\":\"7\"}"
+      val card = Json.parse(cardJSON).as[Card]
+      assert(card == Card("Herz", "7"), "Die Karte sollte korrekt aus JSON deserialisiert werden.")
     }
   }
 }

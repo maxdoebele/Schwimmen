@@ -22,7 +22,6 @@ import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Text
 import util.Observer
-
 import java.io.File
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
@@ -144,14 +143,14 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
       text = "load"
       style = Style.buttonStyle
       onAction = _ => {
-        controller.loadGame()
+        loadGame()
       }
     }
     val saveButton = new Button {
       text = "save"
       style = Style.buttonStyle
       onAction = _ => {
-        controller.saveGame()
+        saveGame()
       }
     }
     val tableCardsLabel = new Label {
@@ -294,7 +293,7 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
     }
     new Scene(700,500) {
       root = new Pane {
-        style = Style.BackgroundEnd
+        style = Style.BackgroundEndGame
         children = Seq(
           winnerText
         )
@@ -310,7 +309,7 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
       scene = guistartscene()
     }
   }
-  
+
   // ----------------------------- Helper functions --------------------------------
 
   def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
