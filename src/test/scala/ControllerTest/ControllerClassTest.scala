@@ -1,7 +1,8 @@
 package ControllerTest
 import org.scalatest.wordspec.AnyWordSpec
-import Controller.Controller
-import Controller.GameBuilder.GameBuilderImpl.BuildNewGame
+import Controller.{Controller, HelpFunctions}
+import _root_.Controller.COR.CORImpl.LifePointsHandler
+import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 import _root_.Controller.GameBuilder.GameBuilder
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 
@@ -24,7 +25,15 @@ class ControllerClassTest extends AnyWordSpec {
 
     "set gameOver if player has schnauz" in {
       controller.checkForSchnauz(controller)
-      assert(controller.gameState.gameOver, "in GameState sollte gameOver auf true gesetzt werden")
+      assert(controller.gameState.gameOver, "gameOver sollte auf true gesetzt werden")
+    }
+
+    "call LifePointsHandler if game is over" in {
+      controller.checkifGameOver()
+      val loosers = HelpFunctions.findLoserOfRound(controller.gameState.players)
+      val handler = LifePointsHandler().handle(controller, loosers)
+      assert(handler == (), "LifePointsHandler sollte erfolgreich ausgeführt werden")
+      assert(controller.gameState.gameOver, "gameOver sollte auf true gesetzt werden")
     }
 
     "create a new Game" in {
@@ -63,6 +72,10 @@ class ControllerClassTest extends AnyWordSpec {
     }
 
     "redo" in {
+    // TODO
+    }
+
+    "cancel read Line" in {
     // TODO
     }
 

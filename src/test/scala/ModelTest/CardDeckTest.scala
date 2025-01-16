@@ -2,6 +2,9 @@ package ModelTest
 
 import Model.BaseImpl.CardDeck
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
+
+import scala.xml.Utility
 
 class CardDeckTest extends AnyWordSpec {
 
@@ -36,6 +39,156 @@ class CardDeckTest extends AnyWordSpec {
       assert(newDeck.cardDeck.contains(removedCards.head))
       assert(newDeck.cardDeck.contains(removedCards(1)))
       assert(newDeck.cardDeck.contains(removedCards(2)))
+    }
+
+    "serialize to XML correctly" in {
+      val deck = new CardDeck()
+      val expectedXML = deck.toXML()
+      assert(Utility.trim(deck.toXML()) == Utility.trim(expectedXML), "Die XML-Darstellung des Decks sollte korrekt sein.")
+    }
+
+    "deserialize from XML correctly" in {
+      val xml = <deck>
+        <CardDeck>
+          <Card>
+            <suit>Herz</suit>
+            <rank>7</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>8</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>9</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>10</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>J</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>Q</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>K</rank>
+          </Card>
+          <Card>
+            <suit>Herz</suit>
+            <rank>A</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>7</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>8</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>9</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>10</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>J</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>Q</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>K</rank>
+          </Card>
+          <Card>
+            <suit>Karo</suit>
+            <rank>A</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>7</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>8</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>9</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>10</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>J</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>Q</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>K</rank>
+          </Card>
+          <Card>
+            <suit>Kreuz</suit>
+            <rank>A</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>7</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>8</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>9</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>10</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>J</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>Q</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>K</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>A</rank>
+          </Card>
+        </CardDeck>
+      </deck>
+      val deck = CardDeck.fromXML(xml)
+      assert(deck.cardDeck.length == 32)
+    }
+
+    "serialize to JSON and deserialize from JSON correctly" in {
+      val deck = new CardDeck()
+      val json = Json.toJson(deck)
+      val deckFromJson = json.as[CardDeck]
+      assert(deck == deckFromJson)
     }
   }
 }

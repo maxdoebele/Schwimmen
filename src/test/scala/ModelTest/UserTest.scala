@@ -2,6 +2,7 @@ package ModelTest
 
 import Model.BaseImpl.{Card, User}
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
 
 class UserTest extends AnyWordSpec {
 
@@ -56,5 +57,43 @@ class UserTest extends AnyWordSpec {
       assert(updatedUser.lifePoints == 1)
     }
 
+    "serialize to XML correctly" in {
+      val user = User(Seq(Card("Herz", "7")), 3, "Max")
+      val xml = user.toXML
+      assert((xml \ "name").text == "Max")
+      assert((xml \ "lifePoints").text == "3")
+      assert((xml \ "handDeck").nonEmpty)
+    }
+
+    "deserialize from XML correctly" in {
+      val xml = <player>
+        <handDeck>
+          <Card>
+            <suit>Herz</suit>
+            <rank>7</rank>
+          </Card>
+          <Card>
+            <suit>Pik</suit>
+            <rank>8</rank>
+          </Card>
+        </handDeck>
+        <lifePoints>3</lifePoints>
+        <name>Max</name>
+        <swimming>false</swimming>
+      </player>
+      val user = User.fromXML(xml)
+      assert(user.name == "Max")
+      assert(user.lifePoints == 3)
+      assert(user.handDeck.length == 2)
+      assert(user.handDeck.contains(Card("Herz", "7")))
+      assert(user.handDeck.contains(Card("Pik", "8")))
+    }
+
+    "serialize and deserialize to and from JAML correctly" in {
+      val user = new User(Seq(Card("Herz", "7")), 3, "Max")
+      val json = Json.toJson(user)
+      val deckFromJson = json.as[User]
+      assert(user == deckFromJson)
+    }
   }
 }
