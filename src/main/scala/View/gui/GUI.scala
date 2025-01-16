@@ -32,28 +32,29 @@ import scala.jdk.CollectionConverters._
 import scala.sys.process.buildersToProcess
 import scala.util.{Failure, Success, Try}
 
-class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFXApp3 with Observer {
+class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer {
 
   controller.add(this)
 
-  private val folderPath1 = "Karten/"
-  private val Logo = "Logo.png"
-  private val cardFileMap = loadCardDeck(folderPath1)
+  private val folderPath = "Karten/"
+  private val cardFileMap = loadCardDeck(folderPath)
 
   private var cardIndex = (-1, -1)
   private var cardIndexValid = BooleanProperty(false)
-  private var firstRoundKnockValid = BooleanProperty(false)
-  private var playerLimit = BooleanProperty(false)
   private var lastSelectedButtonTable: Option[Button] = None
   private var lastSelectedButtonUser: Option[Button] = None
 
+  private var firstRoundKnockValid = BooleanProperty(false)
+  private var playerLimit = BooleanProperty(false)
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
 
   override def update(): Unit = {
     Platform.runLater {
       firstRoundKnockValid.value = controller.gameState.queue < controller.gameState.players.size
-      if (controller.gameState.roundCounter == roundCounter.get()) {
+      if (controller.gameState.players.size <= 1) {
+        stage.scene = guiEndOfGameScene()
+      } else if (controller.gameState.roundCounter == roundCounter.get()) {
         stage.scene = guiEndOfRoundScene()
         this.synchronized {
           roundCounter.incrementAndGet()
@@ -66,6 +67,7 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
 
   private def guistartscene(): Scene = {
     var enteredNames: Seq[String] = Seq.empty
+    val Schwimmen = new Image("file:src/main/resources/Logo.png")
     val playerNamesText = new Text {
       textAlignment = TextAlignment.Center
       wrappingWidth = 250
@@ -94,105 +96,133 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
         }
       }
     }
-    new Scene(500, 450) {
-      root = new StackPane {
-        style = "-fx-background-color: lightblue;"
-        alignment = Pos.CENTER
-        children = new VBox {
-          alignment = Pos.CENTER
-          children = Seq(
-            new Label {
-              text = "Willkommen bei"
-              style = Style.boldTextWhite
-            },
-            new ImageView (Logo) {
-              fitWidth = 200
-              preserveRatio = true
-            },
-            new VBox {
-              alignment = Pos.CENTER
-              spacing = 20
-              children = Seq(
-                new HBox {
-                  alignment = Pos.CENTER
-                  spacing = 20
-                  children = Seq(
-                  playerNames
-                  )
-                },
-                playerNamesText,
-                new Button {
-                  text = "Start"
-                  style <== when(disable) choose Style.disabledButton otherwise Style.buttonStyle
-                  disable <== playerLimit.not
-                  onAction = _ => {
-                    controller.createNewGame(enteredNames)
-                  }
-                }
-              )
-            }
-          )
-        }
+    val welcome = new Label {
+      text = "Willkommen bei"
+      style = Style.boldTextWhite
+    }
+    val logo = new ImageView(Schwimmen) {
+      fitWidth = 200
+      preserveRatio = true
+    }
+    val startButton = new Button {
+      minWidth = 150
+      minHeight = 46.82
+      style <== when(disable) choose Style.transparentButton otherwise Style.startButton
+      disable <== playerLimit.not
+      onAction = _ => {
+        controller.createNewGame(enteredNames)
+      }
+    }
+
+    new Scene(700, 500) {
+      root = new Pane {
+        style = Style.BackgroundStart
+        children = Seq(
+          welcome,
+          logo,
+          playerNames,
+          playerNamesText,
+          startButton
+        )
+        welcome.layoutX = 300
+        welcome.layoutY = 115
+        logo.layoutX = 250
+        logo.layoutY = 138
+        playerNames.layoutX = 265
+        playerNames.layoutY = 180
+        playerNamesText.layoutX = 225
+        playerNamesText.layoutY = 230
+        startButton.layoutX = 280
+        startButton.layoutY = 375
       }
     }
   }
 
 
   private def guiupdatescene(): Scene = {
+    val loadButton = new Button {
+      text = "load"
+      style = Style.buttonStyle
+      onAction = _ => {
+        controller.loadGame()
+      }
+    }
+    val saveButton = new Button {
+      text = "save"
+      style = Style.buttonStyle
+      onAction = _ => {
+        controller.saveGame()
+      }
+    }
+    val tableCardsLabel = new Label {
+      text = "Table Cards"
+      style = Style.boldText
+    }
+    val tableCards = new HBox {
+      alignment = Pos.CENTER
+      children = createCardDisplayTable(controller.gameState.table.handDeck)
+    }
+    val playerCardsLabel = new Label {
+      text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
+      style = Style.boldText
+    }
+    val playerCards = new HBox {
+      alignment = Pos.CENTER
+      spacing = 10
+      children = createCardDisplayUser(HelpFunctions.getCurrentPlayer(controller.gameState).handDeck)
+    }
+    val playButtons = new HBox {
+      alignment = Pos.CENTER
+      spacing = 20
+      children = Seq(
+        createKnockButton,
+        createButton("Skip", controller.skip()),
+        createButton("Trade ALL", controller.tradeAll()),
+        createTradeOneButton
+      )
+    }
     new Scene(700, 500) {
-      root = new StackPane {
+      root = new Pane {
+        stage.resizable = false
         style = Style.BackgroundUpdate
-        alignment = Pos.CENTER
-        children = new StackPane {
-          alignment = Pos.CENTER
-          children = Seq(
-            new VBox {
-              alignment = Pos.CENTER
-              spacing = 20
-              children = Seq(
-                new Label {
-                  text = "Table Cards"
-                  style = Style.boldText
-                },
-                new HBox {
-                  alignment = Pos.CENTER
-                  children = createCardDisplayTable(controller.gameState.table.handDeck)
-                },
-                new Label {
-                  text = s"${HelpFunctions.getCurrentPlayer(controller.gameState).name}'s Cards"
-                  style = Style.boldText
-                },
-                new HBox {
-                  alignment = Pos.CENTER
-                  spacing = 10
-                  alignment = Pos.CENTER
-                  children = createCardDisplayUser(HelpFunctions.getCurrentPlayer(controller.gameState).handDeck)
-                },
-                new HBox {
-                  alignment = Pos.CENTER
-                  spacing = 20
-                  alignment = Pos.CENTER
-                  children = Seq(
-                    createKnockButton,
-                    createButton("Skip", controller.skip()),
-                    createButton("Trade ALL", controller.tradeAll()),
-                    createTradeOneButton
-                  )
-                }
-              )
-            }
-          )
-        }
+        children = Seq(
+          loadButton,
+          saveButton,
+          tableCardsLabel,
+          tableCards,
+          playerCardsLabel,
+          playerCards,
+          playButtons
+        )
+        loadButton.layoutX = 10
+        loadButton.layoutY = 20
+        saveButton.layoutX = 620
+        saveButton.layoutY = 20
+        tableCardsLabel.layoutX = 315
+        tableCardsLabel.layoutY = 20
+        tableCards.layoutX = 165
+        tableCards.layoutY = 50
+        playerCardsLabel.layoutX = 315
+        playerCardsLabel.layoutY = 230
+        playerCards.layoutX = 165
+        playerCards.layoutY = 260
+        playButtons.layoutX = 120
+        playButtons.layoutY = 430
       }
     }
   }
 
   private def guiEndOfRoundScene(): Scene = {
+    val schwimmer = controller.gameState.players.find(_.swimming)
     val losers = controller.gameState.lastLoosers.map(_.name).mkString("\n")
     val currentScores = HelpFunctions.calculateCurrentScore(controller)
-    val WeiterButton = new Image("file:src/main/resources/WeiterButton.png")
-    val imageView = new ImageView(WeiterButton) {
-      preserveRatio = true
+    val weiterButton = new Button {
+      minWidth = 150
+      minHeight = 46.82
+      style = Style.weiterButton
+      onAction = _ => {
+        stage.scene = guiupdatescene()
+      }
     }
     val scoreGrid = new GridPane {
       hgap = 40
@@ -216,14 +246,22 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
     val currentScoresText = new Label {
       text = "Aktueller Punktestand"
-      alignment = Pos.TOP_CENTER
       style = Style.bigBoldTextWhite
     }
     val losersText = new Label {
       text = s"${losers}"
       style = Style.boldText
     }
-
+    val schwimmerText = new Label {
+      schwimmer match {
+        case Some(player) =>
+          text = s"${player.name}"
+          style = Style.boldText
+        case None         =>
+          text = "Keiner"
+          style = Style.boldText
+      }
+    }
     new Scene(700, 500) {
       root = new Pane {
         style = Style.BackgroundEnd
@@ -231,15 +269,8 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
           currentScoresText,
           scoreGrid,
           losersText,
-          new Button {
-            graphic = imageView
-            style = "-fx-background-color: transparent;"
-            layoutX = 275
-            layoutY = 360
-            onAction = _ => {
-              stage.scene = guiupdatescene()
-            }
-          }
+          schwimmerText,
+          weiterButton
         )
         losersText.layoutX = 50
         losersText.layoutY = 57
@@ -247,11 +278,42 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
         currentScoresText.layoutY = 122
         scoreGrid.layoutX = 280
         scoreGrid.layoutY = 137
+        schwimmerText.layoutX = 560
+        schwimmerText.layoutY = 400
+        weiterButton.layoutX = 270
+        weiterButton.layoutY = 360
       }
     }
   }
 
-  private def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
+  private def guiEndOfGameScene(): Scene = {
+    val winner = controller.gameState.players.map(_.name).mkString("\n")
+    val winnerText = new Label {
+      text = s"${winner}"
+      style = Style.bigBoldTextWhite
+    }
+    new Scene(700,500) {
+      root = new Pane {
+        style = Style.BackgroundEnd
+        children = Seq(
+          winnerText
+        )
+        winnerText.layoutX = 330
+        winnerText.layoutY = 230
+      }
+    }
+  }
+
+  override def start(): Unit = {
+    stage = new JFXApp3.PrimaryStage {
+      title.value = "Game of Schwimmen"
+      scene = guistartscene()
+    }
+  }
+  
+  // ----------------------------- Helper functions --------------------------------
+
+  def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
     new HBox {
       spacing = 10
       alignment = Pos.CENTER
@@ -259,12 +321,12 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
   }
 
-  private def createCardButtonTable(card: Card): Button = {
+  def createCardButtonTable(card: Card): Button = {
     val cardImagePath = cardFileMap.getOrElse(card, "default.png")
 
     new Button {
       graphic = new ImageView {
-        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath1$cardImagePath"))
+        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath$cardImagePath"))
         fitWidth = 100
         preserveRatio = true
       }
@@ -286,7 +348,7 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
   }
 
-  private def createCardDisplayUser(handDeck: Seq[Card]): HBox = {
+  def createCardDisplayUser(handDeck: Seq[Card]): HBox = {
     new HBox {
       spacing = 10
       alignment = Pos.CENTER
@@ -294,12 +356,12 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
   }
 
-  private def createCardButtonUser(card: Card): Button = {
+  def createCardButtonUser(card: Card): Button = {
     val cardImagePath = cardFileMap.getOrElse(card, "default.png")
 
     new Button {
       graphic = new ImageView {
-        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath1$cardImagePath"))
+        image = new Image(getClass.getClassLoader.getResourceAsStream(s"$folderPath$cardImagePath"))
         fitWidth = 100
         preserveRatio = true
       }
@@ -321,7 +383,7 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
   }
 
-  private def createButton(label: String, action: => Unit): Button = {
+  def createButton(label: String, action: => Unit): Button = {
     new Button {
       text = label
       minWidth = 80
@@ -332,20 +394,8 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
   }
 
-  private def createTradeOneButton: Button = {
-    new Button {
-      text = "Trade One"
-      style <== when(disable) choose Style.disabledButton otherwise Style.buttonStyle
-      disable <== cardIndexValid.not
-      onAction = _ => {
-        controller.tradeOne(cardIndex._1, cardIndex._2)
-        cardIndex = (-1, -1)
-        cardIndexValid.value = false
-      }
-    }
-  }
 
-  private def createKnockButton: Button = {
+  def createKnockButton: Button = {
     new Button {
       text = "Knock"
       style <== when(disable) choose Style.disabledButton otherwise Style.buttonStyle
@@ -356,11 +406,16 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
   }
 
-
-  override def start(): Unit = {
-    stage = new JFXApp3.PrimaryStage {
-      title.value = "Game of Schwimmen"
-      scene = guistartscene()
+  def createTradeOneButton: Button = {
+    new Button {
+      text = "Trade One"
+      style <== when(disable) choose Style.disabledButton otherwise Style.buttonStyle
+      disable <== cardIndexValid.not
+      onAction = _ => {
+        controller.tradeOne(cardIndex._1, cardIndex._2)
+        cardIndex = (-1, -1)
+        cardIndexValid.value = false
+      }
     }
   }
 
@@ -392,17 +447,5 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
         println(s"Folder not found: $folderPath")
         Map.empty
     }
-  }
-
-  override def loadGame(): Unit = {
-    controller.gameState = fileIO.readFile()
-    println("Saved GameState was loaded")
-    controller.notifySubscribers()
-  }
-
-  override def saveGame(): Unit = {
-    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
-    println("Game was saved in src/main/data/gameState")
-    controller.notifySubscribers()
   }
 }
