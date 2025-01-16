@@ -2,14 +2,15 @@ package Controller
 
 import COR.CORImpl.LifePointsHandler
 import Command.CommandImpl.{KnockCommand, SkipCommand, TradeAllCommand, TradeOneCommand}
+import FileIO.FileIO
 import GameBuilder.GameBuilder
 import GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
-import Model._
+import Model.*
+import Model.BaseImpl.GameState
 import util.{Observable, UndoManager}
-
 import com.google.inject.Inject
 
-class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
+class Controller @Inject() (var gameBuilder : GameBuilder, val fileIO: FileIO) extends Observable {
   
   val undoManager: UndoManager = new UndoManager()
   var gameState: GameStateTrait = gameBuilder.returnGameState()
@@ -22,6 +23,14 @@ class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
       resetRound()
     }
     notifySubscribers()
+  }
+
+  def undo(): Unit = executeCommand {
+    undoManager.undoStep()
+  }
+
+  def redo(): Unit = executeCommand {
+    undoManager.redoStep()
   }
 
   def cancelReadLine(): Unit = {
@@ -47,26 +56,19 @@ class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
     undoManager.execute(TradeOneCommand(this))
   }
 
-  def undo(): Unit = executeCommand {
-    undoManager.undoStep()
-  }
+  def checkForSchnauz(): Unit = {
+    val schnauzPlayer = this.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 31)
+    val feuerSchnauzPlayer = this.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 33)
 
-  def redo(): Unit = executeCommand {
-    undoManager.redoStep()
-  }
-
-  def checkForSchnauz(controller: Controller): Unit = {
-    val schnauzPlayer = controller.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 31)
-    val feuerSchnautzPlayer = controller.gameState.players.find(player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0) == 33)
-
-    if (schnauzPlayer.isDefined || feuerSchnautzPlayer.isDefined) {
-      controller.gameState = controller.gameState.copy(gameOver = true)
+    if (schnauzPlayer.isDefined || feuerSchnauzPlayer.isDefined) {
+      this.gameState = this.gameState.copy(gameOver = true)
     }
   }
 
 
   def checkifGameOver(): Boolean = {
-    checkForSchnauz(this)
+    checkForSchnauz()
+    someOneKnocked()
     if (this.gameState.gameOver) {
       val losers = HelpFunctions.findLoserOfRound(this.gameState.players)
       this.gameState = this.gameState.copy(lastLoosers = losers)
@@ -84,5 +86,28 @@ class Controller @Inject() (var gameBuilder : GameBuilder) extends Observable {
   def createNewGame(names: Seq[String]): Unit = {
     gameState = BuildNewGame(names).returnGameState()
     notifySubscribers()
+  }
+
+  def loadGame(): Unit = {
+    this.gameState = fileIO.readFile()
+    this.notifySubscribers()
+  }
+
+  def saveGame(): Unit = {
+    fileIO.createFile(this.gameState.asInstanceOf[GameState])
+    this.notifySubscribers()
+  }
+
+  private def someOneKnocked(): Unit = {
+    val player1 = HelpFunctions.getCurrentPlayer(this.gameState)
+    val player2 = this.gameState.players.find(_.knocked)
+
+    player2 match {
+      case Some(knockedPlayer) =>
+        if (player1 == knockedPlayer) {
+          this.gameState = this.gameState.copy(gameOver = true)
+        }
+      case None =>
+    }
   }
 }

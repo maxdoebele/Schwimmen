@@ -1,6 +1,5 @@
 package View.tui
 
-import FileIO.FileIO
 import _root_.Controller.*
 import Model.*
 import Model.BaseImpl.*
@@ -13,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Observer {
+class TUI @Inject() (val controller: Controller) extends Observer {
 
   controller.add(this)
   InputHandler.startReading()
@@ -84,9 +83,9 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
               case "redo" =>
                 controller.redo()
               case "save" =>
-                saveGame()
+                controller.saveGame()
               case "load" =>
-                loadGame()
+                controller.loadGame()
               case _ =>
                 println(wrongInputMessage)
                 update()
@@ -129,18 +128,6 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
       case scala.util.Failure(exception) =>
         println(s"Failed to read input for trading choice: ${exception.getMessage}")
     }
-  }
-
-  override def loadGame(): Unit = {
-    controller.gameState = fileIO.readFile()
-    println("Saved GameState was loaded")
-    controller.notifySubscribers()
-  }
-
-  override def saveGame() : Unit = {
-    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
-    println("Game was saved in src/main/data/gameState")
-    controller.notifySubscribers()
   }
 
   private def drawCard(card: Card): List[String] = {

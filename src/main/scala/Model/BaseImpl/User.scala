@@ -4,7 +4,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import scala.xml.Elem
 
-case class User(handDeck: Seq[Card], lifePoints: Int, name: String, swimming: Boolean = false) {
+case class User(handDeck: Seq[Card], lifePoints: Int, name: String, swimming: Boolean = false, knocked: Boolean =false) {
   def removeCard(index: Int): Option[(User, Card)] = {
     if (index >= 0 && index < handDeck.size) {
       val cardToRemove = handDeck(index)
