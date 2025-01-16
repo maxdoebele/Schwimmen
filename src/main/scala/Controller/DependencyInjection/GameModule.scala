@@ -3,15 +3,18 @@ package Controller.DependencyInjection
 import Controller.GameBuilder.GameBuilder
 import Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import Controller.Controller
-import FileIO.FileIOImpl.{FileIOJSON, FileIOYAML, FileIOXML}
+import FileIO.FileIOImpl.{FileIOJSON, FileIOXML, FileIOYAML}
 import FileIO.FileIO
-import com.google.inject.{AbstractModule, Singleton}
+import com.google.inject.{AbstractModule, Singleton, TypeLiteral}
 import com.google.inject.name.Names
 import net.codingwell.scalaguice.ScalaModule
 
 class GameModule extends AbstractModule with ScalaModule{
   override def configure(): Unit = {
-    bind[Seq[String]].annotatedWith(Names.named("playerNames")).toInstance(Seq.empty[String])
+    bind(new TypeLiteral[Seq[String]]() {})
+      .annotatedWith(Names.named("playerNames"))
+      .toInstance(Seq.empty[String])
+
     bind[GameBuilder].to[BuildNewGame]
     bind[Controller].in(classOf[Singleton])
 
