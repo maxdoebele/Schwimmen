@@ -7,23 +7,24 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class PotentialSchwimmerHandlerTest extends AnyWordSpec {
 
-  val player1 = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), 2, "Player1")
-  val player2 = User(Seq(Card("Kreuz", "7"), Card("Herz", "10"), Card("Herz", "K")), 3, "Player2")
-  val table = User(Seq.empty, -1, "Table")
-  val initialGameState = GameState(
-    players = Seq(player1, player2),
-    table = table,
-    deck = new CardDeck().shuffleDeck()
-  )
-  val controller = Controller(new GameBuilder {
-    override def returnGameState(): GameState = initialGameState
-    override def updateTable(): User = table
-    override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-  })
-  
   "PotentialSchwimmerHandler" should {
 
     "detect potential swimmers of loosers" in {
+      val looser1 = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), 0, "Looser1")
+      val looser2 = User(Seq(Card("Kreuz", "7"), Card("Herz", "10"), Card("Pik", "K")), 1, "Looser2")
+      val table = User(Seq.empty, -1, "Table")
+      val initialGameState = GameState(
+        players = Seq(looser1, looser2),
+        table = table,
+        deck = new CardDeck().shuffleDeck()
+      )
+
+      val controller = Controller(new GameBuilder {
+        override def returnGameState(): GameState = initialGameState
+        override def updateTable(): User = table
+        override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
+      })
+
       val potentialSchwimmer = controller.gameState.players.filter { p =>
         p.lifePoints == 0
       }
@@ -32,6 +33,21 @@ class PotentialSchwimmerHandlerTest extends AnyWordSpec {
     }
 
     "delegate further handling to SchwimmerHandler" in {
+      val looser1 = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), 0, "Looser1")
+      val looser2 = User(Seq(Card("Kreuz", "7"), Card("Herz", "10"), Card("Pik", "K")), 1, "Looser2")
+      val table = User(Seq.empty, -1, "Table")
+      val initialGameState = GameState(
+        players = Seq(looser1, looser2),
+        table = table,
+        deck = new CardDeck().shuffleDeck()
+      )
+
+      val controller = Controller(new GameBuilder {
+        override def returnGameState(): GameState = initialGameState
+        override def updateTable(): User = table
+        override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
+      })
+
       val potentialSchwimmer = controller.gameState.players.filter { p =>
         p.lifePoints == 0
       }
