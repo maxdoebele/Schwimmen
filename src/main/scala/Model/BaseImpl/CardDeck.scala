@@ -19,19 +19,13 @@ case class CardDeck(cardDeck: Seq[Card]) {
   }
 
   def remove3Cards(): (Seq[Card], CardDeck) = {
-    if (cardDeck.length < 3) {
-      throw new IllegalStateException("Nicht genug Karten im Deck um 3 abzuheben.")
-    }
     val (onHoldCard, remaining) = cardDeck.splitAt(3)
     (onHoldCard, copy(cardDeck = remaining))
   }
 
   def add3Cards(threeCards: Seq[Card]): CardDeck = {
-    if (threeCards.length == 3) {
-      copy(cardDeck = cardDeck ++ threeCards)
-    } else {
-      throw new IllegalArgumentException("Genau 3 Karten erwartet.")
-    }
+    copy(cardDeck = cardDeck ++ threeCards)
+
   }
 
   def toXML(): Elem = <CardDeck>

@@ -17,25 +17,14 @@ class FileIOYAML extends FileIO {
   mapper.registerModule(DefaultScalaModule)
 
   override def createFile(gameState: GameState): Unit = {
-    try {
-      val yamlFile = new File("src/main/data/gameState.yaml")
-      mapper.writeValue(yamlFile, gameState)
-      println(s"Spielzustand erfolgreich in ${yamlFile.getAbsolutePath} gespeichert.")
-    } catch {
-      case e: IOException =>
-        println(s"Fehler beim Speichern der YAML-Datei: ${e.getMessage}")
-    }
+    val yamlFile = new File("src/main/data/gameState.yaml")
+    mapper.writeValue(yamlFile, gameState)
+    println(s"Spielzustand erfolgreich in ${yamlFile.getAbsolutePath} gespeichert.")
   }
 
   override def readFile(): GameStateTrait = {
-    try {
-      val yamlFile = new File(FILEPATH)
-      mapper.readValue(yamlFile, classOf[Model.BaseImpl.GameState])
-    } catch {
-      case e: IOException =>
-        println(s"Fehler beim Lesen der YAML-Datei: ${e.getMessage}")
-        throw e
-    }
+    val yamlFile = new File(FILEPATH)
+    mapper.readValue(yamlFile, classOf[Model.BaseImpl.GameState])
   }
 }
 

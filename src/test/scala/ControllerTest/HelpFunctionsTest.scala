@@ -1,8 +1,9 @@
 package ControllerTest
 
-import Controller._
-
-import Model._
+import Controller.*
+import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
+import FileIO.FileIOImpl.FileIOJSON
+import Model.*
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -11,7 +12,21 @@ class HelpFunctionsTest extends AnyWordSpec {
   "Game Logic" should {
     
     "calculate current score" in {
-      val player1 = User(Seq(Card("Herz", "7"), Card("Pik", "10"), Card("Karo", "K")), 3, "Player1")
+      val player1 = User(Seq(Card("Herz", "7"), Card("Herz", "10"), Card("Herz", "K")), 3, "Player1")
+      val player2 = User(Seq(Card("Karo", "7"), Card("Karo", "10"), Card("Karo", "K")), 3, "Player2")
+      val player = Seq("Player1", "Player2")
+      val controller = Controller(BuildNewGame(player), new FileIOJSON)
+      controller.gameState = GameState(
+        players = Seq(player1, player2),
+        table = User(Seq.empty, -1, "Table"),
+        deck = new CardDeck().shuffleDeck()
+      )
+      val result = HelpFunctions.calculateCurrentScore(controller)
+      val expectedScore = Map(
+        "Player1" -> 3,
+        "Player2" -> 3
+      )
+      assert(result == expectedScore, "Der aktuelle Punktestand sollte 3 sein.")
     }
     
     "get current player" in {
@@ -25,15 +40,48 @@ class HelpFunctionsTest extends AnyWordSpec {
       assert(HelpFunctions.getCurrentPlayer(gameState) == player1, "Der aktuelle Spieler sollte der erste Spieler sein.")
     }
 
-    "calculate points of player" in {
-      val cards1 = Seq(Card("Herz", "7"), Card("Herz", "10"), Card("Herz", "K"))
-      val cards2 = Seq(Card("Kreuz", "7"), Card("Pik", "10"), Card("Herz", "K"))
-      val points1 = HelpFunctions.calculatePoints(cards1)
-      val points2 = HelpFunctions.calculatePoints(cards2)
-      assert(points1.isSuccess, "Die Punkteberechnung sollte erfolgreich sein.")
-      assert(points1.get == 27, "Die Punkte von cards1 sollte 27 sein")
-      assert(points2.isSuccess, "Die Punkteberechnung sollte erfolgreich sein.")
-      assert(points2.get == 10, "Die Punkte von cards2 sollte 10 sein.")
+    "calculatePoints" should {
+
+      "correctly calculate points of player" in {
+        // Card sets
+        val cards1 = Seq(Card("Herz", "7"), Card("Herz", "10"), Card("Herz", "K"))
+        val cards2 = Seq(Card("Kreuz", "7"), Card("Pik", "10"), Card("Herz", "K"))
+
+        // Calculating points
+        val points1 = HelpFunctions.calculatePoints(cards1)
+        val points2 = HelpFunctions.calculatePoints(cards2)
+
+        // Assert points calculation is successful for both cases
+        assert(points1.isSuccess, "Die Punkteberechnung für cards1 sollte erfolgreich sein.")
+        assert(points1.get == 27, "Die Punkte von cards1 sollte 27 sein.")
+
+        assert(points2.isSuccess, "Die Punkteberechnung für cards2 sollte erfolgreich sein.")
+        assert(points2.get == 10, "Die Punkte von cards2 sollte 10 sein.")
+      }
+
+      "throw an exception if the number of cards is not exactly 3" in {
+        val cards = Seq(Card("Herz", "7"), Card("Herz", "10"))
+        val result = HelpFunctions.calculatePoints(cards)
+
+        assert(result.isFailure, "Die Berechnung sollte fehlschlagen, wenn nicht genau 3 Karten übergeben werden.")
+        assert(result.failed.get.isInstanceOf[IllegalArgumentException], "Es sollte eine IllegalArgumentException geworfen werden.")
+      }
+
+      "calculate points correctly for same suit group" in {
+        val cards = Seq(Card("Herz", "7"), Card("Herz", "10"), Card("Herz", "K"))
+        val result = HelpFunctions.calculatePoints(cards)
+
+        assert(result.isSuccess, "Die Punkteberechnung für Karten mit gleichem Suit sollte erfolgreich sein.")
+        assert(result.get == 27, "Die Punkte von den Karten sollten 27 sein.")
+      }
+
+      "calculate points correctly when cards have different suits" in {
+        val cards = Seq(Card("Herz", "7"), Card("Kreuz", "10"), Card("Pik", "K"))
+        val result = HelpFunctions.calculatePoints(cards)
+
+        assert(result.isSuccess, "Die Punkteberechnung für Karten mit verschiedenen Suits sollte erfolgreich sein.")
+        assert(result.get == 10, "Die Punkte sollten 10 sein, da keine zwei Karten den gleichen Suit haben.")
+      }
     }
 
     "find loser of round" in {

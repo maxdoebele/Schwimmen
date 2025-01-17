@@ -8,9 +8,10 @@ import _root_.FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.*
 
+import java.io.{ByteArrayOutputStream, PrintStream}
 import scala.util.{Failure, Success}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

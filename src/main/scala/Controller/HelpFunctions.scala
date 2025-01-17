@@ -48,10 +48,6 @@ object HelpFunctions {
     val usersPoints: Seq[(User, Try[Double])] = allPlayers.map(user => user -> calculatePoints(user.handDeck))
     val successfulPoints = usersPoints.collect { case (user, Success(points)) => (user, points) }
 
-    if (successfulPoints.isEmpty) {
-      return Seq.empty[User]
-    }
-
     val playerWith33Points = successfulPoints.find { case (_, points) => points == 33 }
 
     playerWith33Points match {
