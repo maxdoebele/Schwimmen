@@ -1,6 +1,7 @@
 package ControllerTest
 import org.scalatest.wordspec.AnyWordSpec
 import Controller.{Controller, HelpFunctions}
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.COR.CORImpl.LifePointsHandler
 import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 import _root_.Controller.GameBuilder.GameBuilder
@@ -18,13 +19,13 @@ class ControllerClassTest extends AnyWordSpec {
   deck = new CardDeck().shuffleDeck(),
   )
   val playerNames = Seq.empty
-  val controller = Controller(BuildNewGame(playerNames))
+  val controller = Controller(BuildNewGame(playerNames), new FileIOJSON)
   controller.gameState = gameState
 
   "Controller" should {
 
     "set gameOver if player has schnauz" in {
-      controller.checkForSchnauz(controller)
+      controller.checkForSchnauz()
       assert(controller.gameState.gameOver, "gameOver sollte auf true gesetzt werden")
     }
 

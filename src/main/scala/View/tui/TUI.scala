@@ -1,6 +1,5 @@
 package View.tui
 
-import FileIO.FileIO
 import _root_.Controller._
 import Model._
 import Model.BaseImpl._
@@ -19,8 +18,8 @@ class TUI @Inject() (val controller: Controller) extends Observer {
   InputHandler.startReading()
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
-
   private val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
+  
   def start(): Future[Unit] = {
     Future {
       println("Bitte gib die Namen der Spieler mit Komma getrennt ein.")

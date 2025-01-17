@@ -1,5 +1,6 @@
 package ControllerTest.CORTest
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler}
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
@@ -22,7 +23,7 @@ class LifePointsHandlerTest extends AnyWordSpec {
         override def returnGameState(): GameState = initialGameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
 
       val loosers = Seq(player1)
 
@@ -49,7 +50,7 @@ class LifePointsHandlerTest extends AnyWordSpec {
         override def returnGameState(): GameState = gameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
       
       val loosers = Seq(player1)
       

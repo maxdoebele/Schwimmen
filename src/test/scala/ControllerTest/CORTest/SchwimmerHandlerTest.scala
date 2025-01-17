@@ -1,6 +1,7 @@
 package ControllerTest.CORTest
 import org.scalatest.wordspec.AnyWordSpec
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler, SchwimmerHandler}
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
@@ -22,7 +23,7 @@ class SchwimmerHandlerTest extends AnyWordSpec {
         override def returnGameState(): GameState = initialGameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
 
       val Schwimmer = SchwimmerHandler().handle(controller, Seq(potentialSchwimmer))
       val updatedPotentialSchwimmer = controller.gameState.players.find(_.name == "PotentialSchwimmer").get

@@ -1,6 +1,7 @@
 package ControllerTest.CommandTest
 import Controller.GameBuilder.GameBuilder
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import _root_.Controller.Command.CommandImpl.TradeOneCommand
 import org.scalatest.wordspec.AnyWordSpec
@@ -24,7 +25,7 @@ class TradeOneCommandTest extends AnyWordSpec {
         override def returnGameState(): GameState = gameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
 
       val tradeOneCommand = TradeOneCommand(controller)
       tradeOneCommand.execute()

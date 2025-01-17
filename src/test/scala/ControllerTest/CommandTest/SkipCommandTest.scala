@@ -1,5 +1,6 @@
 package ControllerTest.CommandTest
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.Command.CommandImpl.SkipCommand
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler}
@@ -25,7 +26,7 @@ class SkipCommandTest extends AnyWordSpec {
         override def returnGameState(): GameState = gameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
 
       val skip = SkipCommand(controller)
       skip.execute()
