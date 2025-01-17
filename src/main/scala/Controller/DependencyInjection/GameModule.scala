@@ -19,7 +19,7 @@ class GameModule extends AbstractModule with ScalaModule{
     bind[Controller].in(classOf[Singleton])
 
     //bind[FileIO].to[FileIOJSON]
-    bind[FileIO].to[FileIOXML]
-    //bind[FileIO].to[FileIOYAML]
+    //bind[FileIO].to[FileIOXML]
+    bind[FileIO].to[FileIOYAML]
   }
 }

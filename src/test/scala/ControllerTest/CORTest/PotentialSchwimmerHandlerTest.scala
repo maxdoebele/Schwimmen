@@ -3,6 +3,7 @@ import Controller.Controller
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler, SchwimmerHandler}
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
+import FileIO.FileIOImpl.FileIOJSON
 import org.scalatest.wordspec.AnyWordSpec
 
 class PotentialSchwimmerHandlerTest extends AnyWordSpec {
@@ -23,7 +24,7 @@ class PotentialSchwimmerHandlerTest extends AnyWordSpec {
         override def returnGameState(): GameState = initialGameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
 
       val potentialSchwimmer = controller.gameState.players.filter { p =>
         p.lifePoints == 0
@@ -46,7 +47,7 @@ class PotentialSchwimmerHandlerTest extends AnyWordSpec {
         override def returnGameState(): GameState = initialGameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      },  new FileIOJSON)
 
       val potentialSchwimmer = controller.gameState.players.filter { p =>
         p.lifePoints == 0

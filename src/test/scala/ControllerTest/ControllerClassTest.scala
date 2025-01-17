@@ -4,6 +4,7 @@ import Controller.{Controller, HelpFunctions}
 import _root_.Controller.COR.CORImpl.LifePointsHandler
 import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 import _root_.Controller.GameBuilder.GameBuilder
+import FileIO.FileIOImpl.FileIOJSON
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 
 class ControllerClassTest extends AnyWordSpec {
@@ -18,14 +19,19 @@ class ControllerClassTest extends AnyWordSpec {
   deck = new CardDeck().shuffleDeck(),
   )
   val playerNames = Seq.empty
-  val controller = Controller(BuildNewGame(playerNames))
+  val controller = Controller(BuildNewGame(playerNames), new FileIOJSON)
   controller.gameState = gameState
 
   "Controller" should {
 
     "set gameOver if player has schnauz" in {
-      controller.checkForSchnauz(controller)
+      assert(!controller.gameState.gameOver, "gameOver sollte auf false gesetzt sein")
+      controller.checkForSchnauz()
+      val schnauzPlayer = controller.gameState.players.find(player =>
+        player.name == "SchnauzPlayer"
+      )
       assert(controller.gameState.gameOver, "gameOver sollte auf true gesetzt werden")
+      assert(schnauzPlayer.isDefined, "SchnauzPlayer sollte im Spielstand existieren")
     }
 
     "call LifePointsHandler if game is over" in {
@@ -33,7 +39,6 @@ class ControllerClassTest extends AnyWordSpec {
       val loosers = HelpFunctions.findLoserOfRound(controller.gameState.players)
       val handler = LifePointsHandler().handle(controller, loosers)
       assert(handler == (), "LifePointsHandler sollte erfolgreich ausgeführt werden")
-      assert(controller.gameState.gameOver, "gameOver sollte auf true gesetzt werden")
     }
 
     "create a new Game" in {

@@ -6,6 +6,7 @@ import FileIO.FileIO
 import GameBuilder.GameBuilder
 import GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import Model._
+import Model.BaseImpl.GameState
 import util.{Observable, UndoManager}
 import com.google.inject.Inject
 

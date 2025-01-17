@@ -4,6 +4,7 @@ import _root_.Controller.Command.CommandImpl.SkipCommand
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler}
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
+import FileIO.FileIOImpl.FileIOJSON
 import org.scalatest.wordspec.AnyWordSpec
 
 class SkipCommandTest extends AnyWordSpec {
@@ -25,7 +26,7 @@ class SkipCommandTest extends AnyWordSpec {
         override def returnGameState(): GameState = gameState
         override def updateTable(): User = table
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
-      })
+      }, new FileIOJSON)
 
       val skip = SkipCommand(controller)
       skip.execute()

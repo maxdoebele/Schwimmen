@@ -26,3 +26,6 @@ libraryDependencies ++= {
 
 lazy val root = (project in file("."))
   .settings(name := "Schwimmen")
+
+enablePlugins(ScoverageSbtPlugin)
+coverageExcludedPackages := ".*View.*;.*Main.*"

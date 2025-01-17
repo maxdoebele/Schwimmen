@@ -294,7 +294,7 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
     }
     new Scene(700,500) {
       root = new Pane {
-        style = Style.BackgroundEnd
+        style = Style.BackgroundEndGame
         children = Seq(
           winnerText
         )
