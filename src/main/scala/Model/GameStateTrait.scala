@@ -3,6 +3,12 @@ package Model
 import Model.BaseImpl.*
 import play.api.libs.json.{Format, Json}
 
+/**
+ * Trait for the GameState
+ * Implements methods that define the GameState
+ * copy method to create a new GameState with updated values
+ */
+
 trait GameStateTrait {
   def players: Seq[User]
   def table: User
