@@ -3,62 +3,46 @@
     <handDeck>
       <Card>
     <suit>Kreuz</suit>
-    <rank>Q</rank>
-  </Card><Card>
-    <suit>Herz</suit>
-    <rank>K</rank>
+    <rank>J</rank>
   </Card><Card>
     <suit>Pik</suit>
-    <rank>10</rank>
+    <rank>K</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>9</rank>
   </Card>
     </handDeck>
-    <lifePoints>2</lifePoints>
-    <name>emilia</name>
+    <lifePoints>3</lifePoints>
+    <name>Player1</name>
     <swimming>false</swimming>
   </player><player>
     <handDeck>
       <Card>
     <suit>Caro</suit>
-    <rank>Q</rank>
+    <rank>K</rank>
   </Card><Card>
     <suit>Pik</suit>
     <rank>7</rank>
   </Card><Card>
-    <suit>Herz</suit>
-    <rank>10</rank>
-  </Card>
-    </handDeck>
-    <lifePoints>3</lifePoints>
-    <name>patrick</name>
-    <swimming>false</swimming>
-  </player><player>
-    <handDeck>
-      <Card>
-    <suit>Caro</suit>
-    <rank>J</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>A</rank>
-  </Card><Card>
     <suit>Kreuz</suit>
     <rank>K</rank>
   </Card>
     </handDeck>
     <lifePoints>3</lifePoints>
-    <name>max</name>
+    <name>Player2</name>
     <swimming>false</swimming>
   </player></players>
     <table><player>
     <handDeck>
       <Card>
-    <suit>Herz</suit>
-    <rank>7</rank>
+    <suit>Kreuz</suit>
+    <rank>8</rank>
   </Card><Card>
-    <suit>Pik</suit>
+    <suit>Caro</suit>
     <rank>Q</rank>
   </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>9</rank>
+    <suit>Caro</suit>
+    <rank>A</rank>
   </Card>
     </handDeck>
     <lifePoints>-1</lifePoints>
@@ -68,64 +52,73 @@
     <deck><CardDeck>
     <Card>
     <suit>Herz</suit>
-    <rank>9</rank>
+    <rank>K</rank>
   </Card><Card>
     <suit>Caro</suit>
-    <rank>8</rank>
+    <rank>9</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>J</rank>
   </Card><Card>
     <suit>Kreuz</suit>
+    <rank>Q</rank>
+  </Card><Card>
+    <suit>Kreuz</suit>
+    <rank>9</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>8</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>9</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>J</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>10</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>A</rank>
+  </Card><Card>
+    <suit>Pik</suit>
     <rank>10</rank>
   </Card><Card>
     <suit>Herz</suit>
-    <rank>A</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
     <rank>7</rank>
   </Card><Card>
-    <suit>Herz</suit>
-    <rank>J</rank>
-  </Card><Card>
-    <suit>Pik</suit>
+    <suit>Kreuz</suit>
     <rank>A</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>9</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>J</rank>
-  </Card><Card>
-    <suit>Caro</suit>
-    <rank>9</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>8</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>8</rank>
   </Card><Card>
     <suit>Herz</suit>
     <rank>Q</rank>
   </Card><Card>
-    <suit>Pik</suit>
-    <rank>J</rank>
+    <suit>Kreuz</suit>
+    <rank>7</rank>
   </Card><Card>
-    <suit>Caro</suit>
-    <rank>10</rank>
+    <suit>Pik</suit>
+    <rank>8</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>A</rank>
   </Card><Card>
     <suit>Caro</suit>
     <rank>7</rank>
   </Card><Card>
+    <suit>Kreuz</suit>
+    <rank>10</rank>
+  </Card><Card>
     <suit>Caro</suit>
-    <rank>K</rank>
+    <rank>J</rank>
   </Card><Card>
     <suit>Pik</suit>
-    <rank>K</rank>
+    <rank>Q</rank>
   </Card><Card>
     <suit>Caro</suit>
-    <rank>A</rank>
+    <rank>8</rank>
   </Card><Card>
     <suit>Herz</suit>
-    <rank>8</rank>
+    <rank>10</rank>
   </Card>
   </CardDeck></deck>
     <queue>0</queue>
@@ -134,22 +127,6 @@
     <indexCardPlayer>0</indexCardPlayer>
     <indexCardTable>0</indexCardTable>
     <swimmerGlobal>false</swimmerGlobal>
-    <roundCounter>1</roundCounter>
-    <lastLooser><player>
-    <handDeck>
-      <Card>
-    <suit>Pik</suit>
-    <rank>J</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>10</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>9</rank>
-  </Card>
-    </handDeck>
-    <lifePoints>3</lifePoints>
-    <name>emilia</name>
-    <swimming>false</swimming>
-  </player></lastLooser>
+    <roundCounter>0</roundCounter>
+    <lastLooser></lastLooser>
   </gameState>

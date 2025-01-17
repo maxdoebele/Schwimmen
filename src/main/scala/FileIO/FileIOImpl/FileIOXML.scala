@@ -23,6 +23,5 @@ class FileIOXML extends FileIO {
     val gameState = GameState.fromXML(xml)
     gameState
   }
-
 }
 
