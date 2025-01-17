@@ -1,5 +1,6 @@
 package ControllerTest.CORTest
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler}
 import Model.BaseImpl.{Card, CardDeck, GameState, User}

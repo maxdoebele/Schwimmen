@@ -1,10 +1,10 @@
 package ControllerTest
 import org.scalatest.wordspec.AnyWordSpec
 import Controller.{Controller, HelpFunctions}
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.COR.CORImpl.LifePointsHandler
 import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 import _root_.Controller.GameBuilder.GameBuilder
-import FileIO.FileIOImpl.FileIOJSON
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 
 class ControllerClassTest extends AnyWordSpec {

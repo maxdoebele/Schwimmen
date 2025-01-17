@@ -1,6 +1,7 @@
 package ControllerTest.CORTest
 import org.scalatest.wordspec.AnyWordSpec
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilder
 import _root_.Controller.COR.CORImpl.{LifePointsHandler, PotentialSchwimmerHandler, SchwimmerHandler}
 import Model.BaseImpl.{Card, CardDeck, GameState, User}

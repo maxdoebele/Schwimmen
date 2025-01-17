@@ -1,6 +1,7 @@
 package ControllerTest.CommandTest
 import Controller.GameBuilder.GameBuilder
 import Controller.Controller
+import FileIO.FileIOImpl.FileIOJSON
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import _root_.Controller.Command.CommandImpl.TradeOneCommand
 import org.scalatest.wordspec.AnyWordSpec

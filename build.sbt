@@ -4,6 +4,7 @@ ThisBuild / scalaVersion := "3.5.0"
 
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.10"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.10" % Test
+libraryDependencies += "org.mockito" % "mockito-core" % "5.1.1" % Test
 libraryDependencies += "org.scalafx" %% "scalafx" % "22.0.0-R33"
 libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0"
 libraryDependencies += "com.google.inject" % "guice" % "7.0.0"
