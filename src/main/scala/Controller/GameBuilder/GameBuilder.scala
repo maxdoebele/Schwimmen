@@ -3,6 +3,13 @@ package Controller.GameBuilder
 import Model._
 import Model.BaseImpl.{CardDeck, GameState, User}
 
+/**
+ * Trait for GameBuilder
+ * Implements methods to create a CardDeck, update the Table, return the GameState and distribute Cards
+ * updates the GameState and builds new game and new round
+ * @see GameBuilderImpl
+ */
+
 trait GameBuilder {
   def createCardDeck(): CardDeck
 
