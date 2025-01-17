@@ -29,7 +29,6 @@ class PotentialSchwimmerHandlerTest extends AnyWordSpec {
       val potentialSchwimmer = controller.gameState.players.filter { p =>
         p.lifePoints == 0
       }
-
       assert(potentialSchwimmer.map(_.name) == Seq("Looser1"), "Der Spieler mit 0 Leben sollte ein potentieller Schwimmer sein.")
     }
 

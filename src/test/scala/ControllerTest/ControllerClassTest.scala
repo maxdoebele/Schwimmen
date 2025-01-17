@@ -72,21 +72,54 @@ class ControllerClassTest extends AnyWordSpec {
     }
 
     "undo" in {
-    // TODO
+    val initialGameState = controller.gameState
+    controller.undo()
+    assert(controller.gameState != initialGameState, "GameState sollte zurückgesetzt worden sein.")
     }
 
     "redo" in {
-    // TODO
+    val initialGameState = controller.gameState
+    controller.undo()
+    controller.redo()
+    assert(controller.gameState == initialGameState, "GameState sollte wiederhergestellt worden sein.")
     }
 
     "cancel read Line" in {
-    // TODO
+      @volatile var threadReadLine: Thread = null
+
+      // Dummy thread
+      threadReadLine = new Thread(() => {
+        try {
+          while (true) {
+            Thread.sleep(1000)
+          }
+        } catch {
+          case _: InterruptedException =>
+          // Erwartete Unterbrechung
+        }
+      })
+
+      threadReadLine.start()
+
+      controller.threadReadLine = threadReadLine
+      controller.cancelReadLine()
+      Thread.sleep(100)
+
+      assert(!threadReadLine.isAlive, "Thread sollte unterbrochen worden sein")
     }
 
     "reset round when gameOver is true" in {
       controller.gameState = controller.gameState.copy(gameOver = true)
       controller.resetRound()
       assert(!controller.gameState.gameOver, "Spiel sollte zurückgesetzt werden")
+    }
+
+    "load the game" in {
+      // TODO
+    }
+
+    "save the game" in {
+      // TODO
     }
   }
 }
