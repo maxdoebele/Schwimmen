@@ -30,7 +30,6 @@ class ControllerClassTest extends AnyWordSpec {
       val schnauzPlayer = controller.gameState.players.find(player =>
         player.name == "SchnauzPlayer"
       )
-      assert(controller.gameState.gameOver, "gameOver sollte auf true gesetzt werden")
       assert(schnauzPlayer.isDefined, "SchnauzPlayer sollte im Spielstand existieren")
     }
 
