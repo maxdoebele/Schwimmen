@@ -9,13 +9,13 @@ import com.google.inject.Inject
 
 import scala.util.{Failure, Success}
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent._
+import scala.concurrent.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TUI @Inject() (val controller: Controller) extends Observer {
+class TUI @Inject() (val controller: Controller, val inputHandler: InputHandlerTrait) extends Observer {
 
   controller.add(this)
-  InputHandler.startReading()
+  inputHandler.startReading()
 
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
   private val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
@@ -23,7 +23,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
   def start(): Future[Unit] = {
     Future {
       println("Bitte gib die Namen der Spieler mit Komma getrennt ein.")
-      InputHandler.readLineThread().onComplete {
+      inputHandler.readLineThread().onComplete {
         case Success(input) =>
           val names = input.split(", ").toList
           if(checkForPlayerLimit(names)) {
@@ -43,7 +43,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
       if (controller.gameState.roundCounter == roundCounter.get()) {
         displayEndOfRound()
         println("Drücke Enter um weiter zu spielen")
-        InputHandler.readLineThread().onComplete {
+        inputHandler.readLineThread().onComplete {
           case Success(input) =>
             input match
               case _ =>
@@ -63,7 +63,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
         println(s"${currentPlayer.name}, Du bist dran! Wähle eine Aktion: \n" +
           s"1 = Klopfen, 2 = Schieben, 3 = Tauschen, undo = letzter Zug rückgängig")
 
-        InputHandler.readLineThread().onComplete {
+        inputHandler.readLineThread().onComplete {
           case Success(input) =>
             input match {
               case "1" =>
@@ -101,7 +101,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
   private def handleTrade(): Unit = {
     println("1: Alle Karten tauschen, 2: Eine Karte tauschen")
 
-    InputHandler.readLineThread().onComplete {
+    inputHandler.readLineThread().onComplete {
       case Success(input) =>
         input match {
           case "1" =>
@@ -110,7 +110,7 @@ class TUI @Inject() (val controller: Controller) extends Observer {
             println("Schreibe deine und dann die Karte des Tisches mit welcher du Tauschen willst, Beispiel: 0 1")
             println("0: erste Karte, 1: mittlere Karte, 2: letzte Karte.")
 
-            InputHandler.readLineThread().onComplete {
+            inputHandler.readLineThread().onComplete {
               case scala.util.Success(indices) =>
                 val splitInput = indices.split(" ").map(_.toInt)
                 if (splitInput.length == 2) {

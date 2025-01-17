@@ -2,51 +2,59 @@ package View.tui
 
 import Controller.{Controller, HelpFunctions}
 import _root_.Controller.GameBuilder.GameBuilder
-import FileIO.FileIO
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
 import _root_.FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import org.mockito.Mockito.*
-import org.mockito.ArgumentMatchers.*
 
 import java.io.{ByteArrayOutputStream, PrintStream}
 import scala.util.{Failure, Success}
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 
 class TUITest extends AnyWordSpec with Matchers {
 
   "A TUI" should {
 
     "start the game and create a new game with valid player input" in {
+
       val player = Seq.empty
       val controller = Controller(BuildNewGame(player), new FileIOJSON)
-      val tui = new TUI(controller)
+      val inputHandler = new InputHandlerTest
+      val tui = new TUI(controller, inputHandler)
 
-      val names = "Alice, Bob"
-      val inputHandlerMock = Future.successful(names)
+      // Valid input test
+      val namesIO = "Alice, Bob"
+      inputHandler.fillInputBuffer(namesIO, true)
 
-      tui.start()
-      inputHandlerMock.onComplete {
-        case Success(input) =>
-          val playerNames = input.split(", ").toList
-          if (HelpFunctions.checkForPlayerLimit(playerNames)) {
-            controller.createNewGame(playerNames)
-          }
-        case Failure(_) =>
-        // Handle failure case
-      }
+      val startFuture = tui.start()
+      Await.ready(startFuture, Duration.Inf) // Wait for the async operation to complete
 
-      Thread.sleep(100) // Allow time for the future to execute
       controller.gameState.players.map(_.name) shouldEqual List("Alice", "Bob")
     }
+
+    "retry when wrong input in start" in {
+      val player = Seq.empty
+      val controller = Controller(BuildNewGame(player), new FileIOJSON)
+      val inputHandler = new InputHandlerTest
+      val tui = new TUI(controller, inputHandler)
+
+      val namesNIO = "p1"
+
+      inputHandler.fillInputBuffer(namesNIO, true) // Fill the input buffer with invalid input
+      val startFuture = tui.start()
+      Await.ready(startFuture, Duration.Inf) // Wait for the async operation to complete
+
+      controller.gameState.players shouldBe(empty)
+    }
+
 
     "reject invalid player input" in {
       val player = Seq.empty
       val controller = Controller(BuildNewGame(player), new FileIOJSON)
-      val tui = new TUI(controller)
+      val tui = new TUI(controller, new InputHandlerTest)
 
       val names = "Alice" // Invalid input
       val inputMock = Future.successful(names)
@@ -107,7 +115,7 @@ class TUITest extends AnyWordSpec with Matchers {
         override def createCardDeck(): CardDeck = new CardDeck().shuffleDeck()
       }, new FileIOJSON)
 
-      val tui = new TUI(controller)
+      val tui = new TUI(controller, new InputHandlerTest)
 
       // Simulate the state where the round ends
       val outputStream = new java.io.ByteArrayOutputStream()

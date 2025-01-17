@@ -3,10 +3,10 @@ package View.tui
 import scala.concurrent.{Future, Promise}
 import scala.io.StdIn
 
-object InputHandler {
+class InputHandlerImpl extends InputHandlerTrait {
   private var inputPromise: Option[Promise[String]] = None
 
-  def startReading(): Unit = {
+  override def startReading(): Unit = {
     new Thread(() => {
       while (true) {
         val line = StdIn.readLine()
@@ -18,7 +18,7 @@ object InputHandler {
     }).start()
   }
 
-  def readLineThread(): Future[String] = this.synchronized {
+  override def readLineThread(): Future[String] = this.synchronized {
     if (inputPromise.isDefined) {
       inputPromise.get.failure(new IllegalStateException())
     }

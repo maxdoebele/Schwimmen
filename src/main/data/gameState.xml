@@ -2,14 +2,14 @@
     <players><player>
     <handDeck>
       <Card>
-    <suit>Kreuz</suit>
+    <suit>Herz</suit>
     <rank>J</rank>
   </Card><Card>
-    <suit>Pik</suit>
-    <rank>K</rank>
-  </Card><Card>
     <suit>Herz</suit>
-    <rank>9</rank>
+    <rank>Q</rank>
+  </Card><Card>
+    <suit>Kreuz</suit>
+    <rank>J</rank>
   </Card>
     </handDeck>
     <lifePoints>3</lifePoints>
@@ -19,13 +19,13 @@
     <handDeck>
       <Card>
     <suit>Caro</suit>
-    <rank>K</rank>
-  </Card><Card>
-    <suit>Pik</suit>
     <rank>7</rank>
   </Card><Card>
     <suit>Kreuz</suit>
     <rank>K</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>10</rank>
   </Card>
     </handDeck>
     <lifePoints>3</lifePoints>
@@ -36,13 +36,13 @@
     <handDeck>
       <Card>
     <suit>Kreuz</suit>
-    <rank>8</rank>
-  </Card><Card>
-    <suit>Caro</suit>
     <rank>Q</rank>
   </Card><Card>
-    <suit>Caro</suit>
-    <rank>A</rank>
+    <suit>Kreuz</suit>
+    <rank>7</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>K</rank>
   </Card>
     </handDeck>
     <lifePoints>-1</lifePoints>
@@ -51,74 +51,74 @@
   </player></table>
     <deck><CardDeck>
     <Card>
+    <suit>Caro</suit>
+    <rank>A</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>A</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>8</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>9</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>9</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>K</rank>
+  </Card><Card>
+    <suit>Kreuz</suit>
+    <rank>A</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>A</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>8</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>9</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>10</rank>
+  </Card><Card>
+    <suit>Kreuz</suit>
+    <rank>10</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>7</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>Q</rank>
+  </Card><Card>
+    <suit>Herz</suit>
+    <rank>10</rank>
+  </Card><Card>
+    <suit>Pik</suit>
+    <rank>J</rank>
+  </Card><Card>
+    <suit>Caro</suit>
+    <rank>J</rank>
+  </Card><Card>
     <suit>Herz</suit>
     <rank>K</rank>
   </Card><Card>
-    <suit>Caro</suit>
-    <rank>9</rank>
-  </Card><Card>
-    <suit>Herz</suit>
-    <rank>J</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>Q</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>9</rank>
-  </Card><Card>
     <suit>Herz</suit>
     <rank>8</rank>
   </Card><Card>
-    <suit>Pik</suit>
+    <suit>Kreuz</suit>
+    <rank>8</rank>
+  </Card><Card>
+    <suit>Kreuz</suit>
     <rank>9</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>J</rank>
-  </Card><Card>
-    <suit>Caro</suit>
-    <rank>10</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>A</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>10</rank>
   </Card><Card>
     <suit>Herz</suit>
     <rank>7</rank>
   </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>A</rank>
-  </Card><Card>
-    <suit>Herz</suit>
-    <rank>Q</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>7</rank>
-  </Card><Card>
-    <suit>Pik</suit>
-    <rank>8</rank>
-  </Card><Card>
-    <suit>Herz</suit>
-    <rank>A</rank>
-  </Card><Card>
-    <suit>Caro</suit>
-    <rank>7</rank>
-  </Card><Card>
-    <suit>Kreuz</suit>
-    <rank>10</rank>
-  </Card><Card>
-    <suit>Caro</suit>
-    <rank>J</rank>
-  </Card><Card>
     <suit>Pik</suit>
     <rank>Q</rank>
-  </Card><Card>
-    <suit>Caro</suit>
-    <rank>8</rank>
-  </Card><Card>
-    <suit>Herz</suit>
-    <rank>10</rank>
   </Card>
   </CardDeck></deck>
     <queue>0</queue>

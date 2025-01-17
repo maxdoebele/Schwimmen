@@ -5,6 +5,7 @@ import Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import Controller.Controller
 import FileIO.FileIOImpl.{FileIOJSON, FileIOXML, FileIOYAML}
 import FileIO.FileIO
+import View.tui.{InputHandlerImpl, InputHandlerTrait}
 import com.google.inject.{AbstractModule, Singleton, TypeLiteral}
 import com.google.inject.name.Names
 import net.codingwell.scalaguice.ScalaModule
@@ -17,6 +18,9 @@ class GameModule extends AbstractModule with ScalaModule{
 
     bind[GameBuilder].to[BuildNewGame]
     bind[Controller].in(classOf[Singleton])
+    
+    bind[InputHandlerImpl].in(classOf[Singleton])
+    bind[InputHandlerTrait].to[InputHandlerImpl]
 
     //bind[FileIO].to[FileIOJSON]
     bind[FileIO].to[FileIOXML]
