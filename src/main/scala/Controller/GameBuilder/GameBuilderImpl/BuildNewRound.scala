@@ -15,7 +15,7 @@ class BuildNewRound(gameState: GameStateTrait) extends GameBuilder {
 
   private def mergeNewGameState(): GameStateTrait = {
     val updated = gameState.copy(
-      players = distibuteCardGameState.players, 
+      players = distibuteCardGameState.players,
       table = distibuteCardGameState.table, 
       deck = distibuteCardGameState.deck, 
       queue = 0, 
@@ -34,7 +34,8 @@ class BuildNewRound(gameState: GameStateTrait) extends GameBuilder {
   }
 
   def updatePlayers(players: Seq[User]): Seq[User] = {
-    val filteredPlayers = players.filter(user => user.lifePoints > 0)
+    val resetKnockedPlayers = players.map(player => player.copy(knocked = false))
+    val filteredPlayers = resetKnockedPlayers.filter(user => user.lifePoints > 0)
     filteredPlayers.tail :+ filteredPlayers.head
   }
 

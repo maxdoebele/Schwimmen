@@ -22,6 +22,7 @@ import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
 import scalafx.scene.paint.Color._
 import scalafx.scene.text.Text
 import util.Observer
+
 import java.io.File
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
@@ -31,7 +32,7 @@ import scala.jdk.CollectionConverters._
 import scala.sys.process.buildersToProcess
 import scala.util.{Failure, Success, Try}
 
-class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFXApp3 with Observer {
+class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer {
 
   controller.add(this)
 
@@ -143,14 +144,14 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
       text = "load"
       style = Style.buttonStyle
       onAction = _ => {
-        loadGame()
+        controller.loadGame()
       }
     }
     val saveButton = new Button {
       text = "save"
       style = Style.buttonStyle
       onAction = _ => {
-        saveGame()
+        controller.saveGame()
       }
     }
     val tableCardsLabel = new Label {
@@ -293,7 +294,7 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
     }
     new Scene(700,500) {
       root = new Pane {
-        style = Style.BackgroundEndGame
+        style = Style.BackgroundEnd
         children = Seq(
           winnerText
         )
@@ -309,7 +310,7 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
       scene = guistartscene()
     }
   }
-  
+
   // ----------------------------- Helper functions --------------------------------
 
   def createCardDisplayTable(handDeck: Seq[Card]): HBox = {
@@ -446,15 +447,5 @@ class GUI @Inject() (val controller: Controller, val fileIO: FileIO) extends JFX
         println(s"Folder not found: $folderPath")
         Map.empty
     }
-  }
-
-  override def loadGame(): Unit = {
-    controller.gameState = fileIO.readFile()
-    controller.notifySubscribers()
-  }
-
-  override def saveGame(): Unit = {
-    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
-    controller.notifySubscribers()
   }
 }

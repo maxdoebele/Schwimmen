@@ -1,13 +1,8 @@
-import Controller.*
+import Controller._
 import View.gui.GUI
 import View.tui.TUI
 import _root_.Controller.DependencyInjection.GameModule
-import _root_.Controller.GameBuilder.*
-import _root_.Controller.GameBuilder.GameBuilderImpl.BuildNewGame
 import com.google.inject.Guice
-import com.google.inject.name.Names
-
-import scala.io.StdIn.*
 
 object Main {
   def main(args: Array[String]): Unit = {

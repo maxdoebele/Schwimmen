@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Observer {
+class TUI @Inject() (val controller: Controller) extends Observer {
 
   controller.add(this)
   InputHandler.startReading()
@@ -23,10 +23,10 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
   private val wrongInputMessage = "Ungültige Eingabe, bitte versuche es erneut."
   def start(): Future[Unit] = {
     Future {
-      println("Bitte gib die Namen der Spieler mit Leerzeichen getrennt ein.")
+      println("Bitte gib die Namen der Spieler mit Komma getrennt ein.")
       InputHandler.readLineThread().onComplete {
         case Success(input) =>
-          val names = input.split(" ").toList
+          val names = input.split(", ").toList
           if(checkForPlayerLimit(names)) {
             controller.createNewGame(names)
           } else {
@@ -46,11 +46,10 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
         println("Drücke Enter um weiter zu spielen")
         InputHandler.readLineThread().onComplete {
           case Success(input) =>
-            input match {
+            input match
               case _ =>
                 println("Weiter gehts...")
                 controller.notifySubscribers()
-            }
           case Failure(exception) =>
             //
           }
@@ -86,9 +85,9 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
               case "redo" =>
                 controller.redo()
               case "save" =>
-                saveGame()
+                controller.saveGame()
               case "load" =>
-                loadGame()
+                controller.loadGame()
               case _ =>
                 println(wrongInputMessage)
                 update()
@@ -184,17 +183,5 @@ class TUI @Inject() (val controller: Controller, val fileIO: FileIO) extends Obs
     } else {
       println(f"Das Spiel ist vorbei... Gratuliere ${controller.gameState.players.map(_.name).mkString(", ")} du hast GEWONNEN!")
     }
-  }
-
-  override def loadGame(): Unit = {
-    controller.gameState = fileIO.readFile()
-    println("Saved GameState was loaded")
-    controller.notifySubscribers()
-  }
-
-  override def saveGame() : Unit = {
-    fileIO.createFile(controller.gameState.asInstanceOf[GameState])
-    println("Game was saved in src/main/data/gameState")
-    controller.notifySubscribers()
   }
 }
