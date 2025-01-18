@@ -16,20 +16,15 @@ class FileIOJSONTest extends AnyWordSpec with Matchers {
 
     "create and read back the correct GameState" in {
 
-      // Create a dummy GameState object (replace with your actual GameState data)
       val player = Seq("Player1", "Player2", "Player3", "Player4")
       val gameState = BuildNewGame(player).returnGameState()
 
-      // Initialize FileIOJSON object
       val fileIO = new FileIOJSON
 
-      // Create the file with the GameState
       fileIO.createFile(gameState)
 
-      // Read the GameState back from the file
       val readGameState: GameStateTrait = fileIO.readFile()
 
-      // Assert the properties of the read game state match the original
       readGameState shouldBe a[GameState]
       assert(readGameState.asInstanceOf[GameState].players.size.equals(4), "The gamestate should have 4 players.")
       assert(readGameState.asInstanceOf[GameState].table.name.equals("theTable"), "The table should have the name theTable.")
