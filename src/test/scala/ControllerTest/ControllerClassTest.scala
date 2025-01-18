@@ -115,11 +115,22 @@ class ControllerClassTest extends AnyWordSpec {
     }
 
     "load the game" in {
-      // TODO
+      val fileIO = new FileIOJSON
+      fileIO.createFile(controller.gameState.asInstanceOf[GameState])
+
+      controller.loadGame()
+      val gameState = controller.gameState
+
+      assert(controller.gameState == gameState, "GameState sollte korrekt geladen werden")
     }
 
     "save the game" in {
-      // TODO
+      val fileIO = new FileIOJSON
+
+      controller.saveGame()
+      val gameState = controller.gameState
+
+      assert(controller.gameState == gameState, "GameState sollte korrekt gespeichert werden.")
     }
   }
 }

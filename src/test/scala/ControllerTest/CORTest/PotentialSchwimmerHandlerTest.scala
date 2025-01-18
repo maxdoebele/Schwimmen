@@ -52,8 +52,8 @@ class PotentialSchwimmerHandlerTest extends AnyWordSpec {
         p.lifePoints == 0
       }
 
-      val handler = SchwimmerHandler().handle(controller, potentialSchwimmer)
-      assert(handler == (), "Der SchwimmerHandler sollte erfolgreich ausgeführt werden.")
+      val handler = new SchwimmerHandler().handle(controller, potentialSchwimmer)
+      assert(handler == (), "SchwimmerHandler sollte erfolgreich ausgeführt worden sein.")
     }
   }
 }
