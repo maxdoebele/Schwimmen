@@ -28,7 +28,7 @@ jobs:
       run: sbt test
       
   run_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
       - name: Build Project and export Coverage
