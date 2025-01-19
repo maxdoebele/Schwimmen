@@ -30,4 +30,4 @@ lazy val root = (project in file("."))
 
 enablePlugins(ScoverageSbtPlugin)
 coverageExcludedPackages := ".*GUI.*"
-coverageExcludedFiles := ".*InputHandlerImpl.*"
+coverageExcludedFiles := ".*(Main|InputHandlerImpl).*"

@@ -41,7 +41,7 @@ class ControllerClassTest extends AnyWordSpec {
     }
 
     "create a new Game" in {
-      val playerNames = Seq("Alice", "Bob", "Charlie")
+      val playerNames = Seq("Player1", "Player2", "Player3", "Player4")
       controller.createNewGame(playerNames)
       val players = controller.gameState.players
       assert(players.map(_.name) == playerNames, "neues Spiel sollte mit Namen erstellt werden")

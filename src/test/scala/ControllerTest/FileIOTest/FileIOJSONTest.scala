@@ -16,8 +16,8 @@ class FileIOJSONTest extends AnyWordSpec with Matchers {
 
     "create and read back the correct GameState" in {
 
-      val player = Seq("Player1", "Player2", "Player3", "Player4")
-      val gameState = BuildNewGame(player).returnGameState()
+      val playerNames = Seq("Player1", "Player2", "Player3", "Player4")
+      val gameState = BuildNewGame(playerNames).returnGameState()
 
       val fileIO = new FileIOJSON
 
@@ -25,12 +25,11 @@ class FileIOJSONTest extends AnyWordSpec with Matchers {
 
       val readGameState: GameStateTrait = fileIO.readFile()
 
-      readGameState shouldBe a[GameState]
-      assert(readGameState.asInstanceOf[GameState].players.size.equals(4), "The gamestate should have 4 players.")
+      assert(readGameState.asInstanceOf[GameState].players.size == 4, "The gamestate should have 4 players.")
       assert(readGameState.asInstanceOf[GameState].table.name.equals("theTable"), "The table should have the name theTable.")
       assert(readGameState.asInstanceOf[GameState].table.lifePoints.equals(-1), "The table should have -1 life points.")
-      assert(readGameState.asInstanceOf[GameState].deck.cardDeck.size.equals(32 - 5 * 3), "The carddeck should have 32 cards.")
-      assert(readGameState.asInstanceOf[GameState].players.map(_.name).equals(player), "The players should have the names Player1, Player2, Player3, Player4.")
+      assert(readGameState.asInstanceOf[GameState].deck.cardDeck.size == (32 - 5 * 3), "The carddeck should have 32 cards.")
+      assert(readGameState.asInstanceOf[GameState].players.map(_.name).equals(playerNames), "The players should have the names Player1, Player2, Player3, Player4.")
       assert(readGameState.asInstanceOf[GameState].players.map(_.lifePoints).equals(Seq(3, 3, 3, 3)), "The players should have 3 life points.")
       assert(readGameState.asInstanceOf[GameState].gameOver.equals(false), "The game should not be over.")
 
