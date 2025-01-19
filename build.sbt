@@ -29,4 +29,5 @@ lazy val root = (project in file("."))
   .settings(name := "Schwimmen")
 
 enablePlugins(ScoverageSbtPlugin)
-coverageExcludedPackages := ".*GUI.*InputHandlerImpl"
+coverageExcludedPackages := ".*GUI.*"
+coverageExcludedFiles := ".*InputHandlerImpl.*"
