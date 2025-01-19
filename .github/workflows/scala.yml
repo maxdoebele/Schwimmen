@@ -21,6 +21,9 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
+    - name: Check sbt version
+      run: sbt --version  # This verifies that sbt is installed and available
+
     - name: compile
       run: sbt compile
       
