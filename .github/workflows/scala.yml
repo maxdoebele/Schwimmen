@@ -9,7 +9,7 @@ on:
       - main
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout code
@@ -34,7 +34,7 @@ jobs:
       run: sbt test
       
   run_test:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Build Project and export Coverage
