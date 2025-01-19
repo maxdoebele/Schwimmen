@@ -48,7 +48,7 @@ class TUITest extends AnyWordSpec with Matchers {
       val startFuture = tui.start()
       Await.ready(startFuture, Duration.Inf) // Wait for the async operation to complete
 
-      controller.gameState.players shouldBe(empty)
+      controller.gameState.players shouldBe empty
     }
 
 
