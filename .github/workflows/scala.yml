@@ -1,5 +1,4 @@
 name: Scala CI
-
 on:
   push:
     branches:
@@ -8,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -23,44 +21,22 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
 
-    - name: Cache sbt
-      uses: actions/cache@v3
-      with:
-        path: ~/.sbt
-        key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
-        restore-keys: |
-          ${{ runner.os }}-sbt-
-
-    - name: Install sbt (only if not cached)
-      run: |
-        if ! command -v sbt &> /dev/null; then
-          echo "Installing sbt..."
-          echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list
-          curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x99E82A75642AC823" | gpg --dearmor | sudo tee /usr/share/keyrings/sbt-keyring.gpg > /dev/null
-          sudo apt-get update
-          sudo apt-get install sbt
-        else
-          echo "sbt is already installed."
-        fi
-
-    - name: Compile
+    - name: compile
       run: sbt compile
-
+      
     - name: Run tests
       run: sbt test
-
+      
   run_test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
-      - name: Build Project and Export Coverage
+      - name: Build Project and export Coverage
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
           echo "Current directory: $(pwd)"
           ls -R
-          export CI_BRANCH="${GITHUB_REF#refs/heads/}"
-          sbt clean coverage test
-          sbt coverageReport coveralls
+           export CI_BRANCH="${GITHUB_REF#refs/heads/}"
+           sbt clean coverage test
+           sbt coverageReport coveralls
