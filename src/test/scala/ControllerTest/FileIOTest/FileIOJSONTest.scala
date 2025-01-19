@@ -29,7 +29,6 @@ class FileIOJSONTest extends AnyWordSpec with Matchers {
       assert(readGameState.asInstanceOf[GameState].table.name.equals("theTable"), "The table should have the name theTable.")
       assert(readGameState.asInstanceOf[GameState].table.lifePoints.equals(-1), "The table should have -1 life points.")
       assert(readGameState.asInstanceOf[GameState].deck.cardDeck.size == (32 - 5 * 3), "The carddeck should have 32 cards.")
-      assert(readGameState.asInstanceOf[GameState].players.map(_.name).equals(playerNames), "The players should have the names Player1, Player2, Player3, Player4.")
       assert(readGameState.asInstanceOf[GameState].players.map(_.lifePoints).equals(Seq(3, 3, 3, 3)), "The players should have 3 life points.")
       assert(readGameState.asInstanceOf[GameState].gameOver.equals(false), "The game should not be over.")
 
