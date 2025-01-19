@@ -1,8 +1,9 @@
-package View.tui
+package ViewTest
 
 import Controller.{Controller, HelpFunctions}
 import _root_.Controller.GameBuilder.GameBuilder
 import Model.BaseImpl.{Card, CardDeck, GameState, User}
+import View.tui.{InputHandlerTest, TUI}
 import _root_.FileIO.FileIOImpl.FileIOJSON
 import _root_.Controller.GameBuilder.GameBuilderImpl.{BuildNewGame, BuildNewRound}
 import org.scalatest.wordspec.AnyWordSpec
