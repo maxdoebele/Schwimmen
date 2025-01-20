@@ -10,9 +10,11 @@ class InputHandlerImpl extends InputHandlerTrait {
     new Thread(() => {
       while (true) {
         val line = StdIn.readLine()
-        this.synchronized {
-          inputPromise.foreach(_.success(line))
-          inputPromise = None // Reset the promise
+        if (line != null) {
+          this.synchronized {
+            inputPromise.foreach(_.success(line))
+            inputPromise = None // Reset the promise
+          }
         }
       }
     }).start()

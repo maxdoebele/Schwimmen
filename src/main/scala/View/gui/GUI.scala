@@ -1,12 +1,11 @@
 package View.gui
 
-import FileIO.FileIO
-import Model.BaseImpl.{Card, GameState}
+import Model.BaseImpl.{Card, CardDeck, GameState}
 import _root_.Controller.{Controller, HelpFunctions}
 import _root_.Controller.HelpFunctions.checkForPlayerLimit
 import com.google.inject.Inject
-import javafx.geometry._
-import scalafx.Includes._
+import javafx.geometry.*
+import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.Bindings
 import scalafx.beans.property.BooleanProperty
@@ -16,19 +15,19 @@ import scalafx.scene.control.{Button, ComboBox, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.layout.{Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, GridPane, HBox, Pane, Region, StackPane, VBox}
 import scalafx.scene.paint.Color
-import scalafx.scene.paint.Color._
+import scalafx.scene.paint.Color.*
 import scalafx.scene.text.{Text, TextAlignment}
 import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import scalafx.scene.paint.Color._
+import scalafx.scene.paint.Color.*
 import scalafx.scene.text.Text
 import util.Observer
 
 import java.io.File
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.collection.IterableOnce.iterableOnceExtensionMethods
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 import scala.sys.process.buildersToProcess
 import scala.util.{Failure, Success, Try}
 
@@ -37,7 +36,7 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
   controller.add(this)
 
   private val folderPath = "Karten/"
-  private val cardFileMap = loadCardDeck(folderPath)
+  private val cardFileMap = loadCardDeck()
 
   private var cardIndex = (-1, -1)
   private var cardIndexValid = BooleanProperty(false)
@@ -357,6 +356,7 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
 
   def createCardButtonTable(card: Card): Button = {
     val cardImagePath = cardFileMap.getOrElse(card, "default.png")
+    println(cardImagePath)
 
     new Button {
       graphic = new ImageView {
@@ -453,33 +453,9 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
     }
   }
 
-  private def loadCardDeck(folderPath: String): Map[Card, String] = {
-    val folderUrl: Option[URL] = Option(getClass.getClassLoader.getResource(folderPath))
-
-    folderUrl match {
-      case Some(url) =>
-        val folder = new File(url.toURI) // Convert URL to File
-        Try(folder.listFiles().filter(_.getName.endsWith(".png"))) match {
-          case Success(cardFiles) =>
-            cardFiles.flatMap { file =>
-              val fileName = file.getName.replace(".png", "")
-              val cardNameParts = fileName.split(" ")
-              if (cardNameParts.length == 2) {
-                val suit = cardNameParts(0)
-                val rank = cardNameParts(1)
-                Some(Card(suit, rank) -> file.getName) // Map Card to filename
-              } else {
-                println(s"Skipping invalid card file: ${file.getName}")
-                None
-              }
-            }.toMap
-          case Failure(exception) =>
-            println(s"Error reading card files: ${exception.getMessage}")
-            Map.empty
-        }
-      case None =>
-        println(s"Folder not found: $folderPath")
-        Map.empty
-    }
+  private def loadCardDeck(): Map[Card, String] = {
+   val cardDeck = new CardDeck()
+   val cardFileMap = cardDeck.cardDeck.map(card => card -> s"${card.suit} ${card.rank}.png").toMap
+    cardFileMap
   }
 }
