@@ -65,6 +65,7 @@ class GameStateTest extends AnyWordSpec {
       assert((xml \ "swimmerGlobal").text == "false")
       assert((xml \ "roundCounter").text == "0")
       assert((xml \ "lastLooser").nonEmpty)
+      assert((xml \ "playerPoints").nonEmpty)
 
       val parsedXml = XML.loadString(xml.toString())
       assert(parsedXml.isInstanceOf[scala.xml.Elem])
@@ -85,6 +86,7 @@ class GameStateTest extends AnyWordSpec {
       assert(deserializedGameState.schwimmer == gameState.schwimmer)
       assert(deserializedGameState.roundCounter == gameState.roundCounter)
       assert(deserializedGameState.lastLoosers == gameState.lastLoosers)
+      assert(deserializedGameState.playerPoints == gameState.playerPoints)
     }
   }
 }

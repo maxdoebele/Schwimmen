@@ -84,6 +84,23 @@ class HelpFunctionsTest extends AnyWordSpec {
       }
     }
 
+    "get playerPoints of round" in {
+      val player1 = User(Seq(Card("Herz", "7"), Card("Kreuz", "10"), Card("Kreuz", "K")), 3, "Player1")
+      val schnauzPlayer = User(Seq(Card("Pik", "A"), Card("Pik", "10"), Card("Pik", "K")), 3, "schnauzPlayer")
+      val feuerSchnauzPlayer = User(Seq(Card("Herz", "A"), Card("Kreuz", "A"), Card("Karo", "A")), 3, "feuerSchnauzPlayer")
+      val halbePlayer = User(Seq(Card("Herz", "8"), Card("Kreuz", "8"), Card("Kreuz", "8")), 3, "halbePlayer")
+      val players = Seq(player1, schnauzPlayer, feuerSchnauzPlayer, halbePlayer)
+      val controller = Controller(BuildNewGame(Seq("Player1", "schnauzPlayer", "feuerSchnauzPlayer", "halbePlayer")), new FileIOJSON)
+      controller.gameState = GameState(
+        players = players,
+        table = User(Seq.empty, -1, "Table"),
+        deck = new CardDeck().shuffleDeck()
+      )
+      val result = HelpFunctions.getPlayerPoints(controller)
+      val expectedPoints = Seq(20.0, 31.0, 33.0, 30.5)
+      assert(result.playerPoints == expectedPoints, "Die Punkte der Spieler sollten korrekt berechnet werden")
+    }
+
     "find loser of round" in {
       val player1 = User(Seq(Card("Herz", "7"), Card("Kreuz", "10"), Card("Karo", "K")), 3, "Player1")
       val player2 = User(Seq(Card("Pik", "7"), Card("Pik", "10"), Card("Karo", "K")), 3, "Player2")
