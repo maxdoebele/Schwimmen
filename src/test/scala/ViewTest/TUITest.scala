@@ -27,13 +27,13 @@ class TUITest extends AnyWordSpec with Matchers {
       val tui = new TUI(controller, inputHandler)
 
       // Valid input test
-      val namesIO = "Alice, Bob"
+      val namesIO = "Player1, Player2, Player3, Player4"
       inputHandler.fillInputBuffer(namesIO, true)
 
       val startFuture = tui.start()
       Await.ready(startFuture, Duration.Inf) // Wait for the async operation to complete
 
-      controller.gameState.players.map(_.name) shouldEqual Seq("Alice", "Bob")
+      controller.gameState.players.map(_.name) shouldEqual Seq("Player1", "Player2", "Player3", "Player4")
     }
 
     "retry when wrong input in start" in {
@@ -57,7 +57,7 @@ class TUITest extends AnyWordSpec with Matchers {
       val controller = Controller(BuildNewGame(player), new FileIOJSON)
       val tui = new TUI(controller, new InputHandlerTest)
 
-      val names = "Alice" // Invalid input
+      val names = "Player1" // Invalid input
       val inputMock = Future.successful(names)
 
       inputMock.onComplete {
