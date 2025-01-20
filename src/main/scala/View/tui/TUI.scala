@@ -173,8 +173,10 @@ class TUI @Inject() (val controller: Controller, val inputHandler: InputHandlerT
     if (controller.gameState.players.size > 1) {
       val currentScores = HelpFunctions.calculateCurrentScore(controller)
       println("Aktueller Punktestand")
-      currentScores.foreach { case (name, score) =>
-        println(f"$name%-20s  $score%3d") // Formatierung: Name linksbündig, Punktzahl rechtsbündig
+      val currentScoresZip = currentScores.zipWithIndex
+      currentScoresZip.foreach { case ((name, score), index) =>
+        val points = controller.gameState.playerPoints(index)
+        println(f"$name%-20s $score%10d $points%10.2f")
       }
       for (i <- 1 to 3) {
         println()

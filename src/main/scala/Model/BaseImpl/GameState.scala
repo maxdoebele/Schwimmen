@@ -15,7 +15,8 @@ case class GameState(
                       override val indexCardTable: Int = 0,
                       override val schwimmer: Boolean = false,
                       override val roundCounter: Int = 0,
-                      override val lastLoosers: Seq[User] = Seq.empty[User]
+                      override val lastLoosers: Seq[User] = Seq.empty[User],
+                      override val playerPoints: Seq[Double] = Seq.empty[Double]
                     ) extends GameStateTrait {
   def toXML: Elem = <gameState>
     <players>{this.players.map(player => player.toXML)}</players>
@@ -29,6 +30,7 @@ case class GameState(
     <swimmerGlobal>{this.schwimmer}</swimmerGlobal>
     <roundCounter>{this.roundCounter}</roundCounter>
     <lastLooser>{this.lastLoosers.map(looser=>looser.toXML)}</lastLooser>
+    <playerPoints>{this.playerPoints}</playerPoints>
   </gameState>
 }
 
@@ -48,6 +50,7 @@ object GameState {
     val swimmer = (xml \ "swimmerGlobal").text.trim.toBoolean
     val roundCounter = (xml \ "roundCounter").text.trim.toInt
     val lastLoosers = (xml \ "lastLooser" \ "looser").map(node => User.fromXML(node)).toList
+    val playerPoints = (xml \ "playerPoints").text.trim.split(",").map(_.toDouble).toList
 
     // Reconstruct the GameState
     GameState(
@@ -61,7 +64,8 @@ object GameState {
       indexCardTable = indexCardTable,
       schwimmer = swimmer,
       roundCounter = roundCounter,
-      lastLoosers = lastLoosers
+      lastLoosers = lastLoosers,
+      playerPoints = playerPoints
     )
   }
 }

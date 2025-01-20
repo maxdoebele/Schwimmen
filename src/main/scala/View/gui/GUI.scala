@@ -48,7 +48,6 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
   private var playerLimit = BooleanProperty(false)
   private val roundCounter: AtomicInteger = new AtomicInteger(1)
 
-
   override def update(): Unit = {
     Platform.runLater {
       firstRoundKnockValid.value = controller.gameState.queue < controller.gameState.players.size
@@ -229,7 +228,30 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
       vgap = 5
       padding = Insets(10)
 
-      currentScores.zipWithIndex.foreach { case ((name, score), index) =>
+      val nameHeader = new Label {
+        text = "Spieler"
+        alignment = Pos.CENTER
+        style = Style.bigBoldTextWhite
+      }
+      val scoreHeader = new Label {
+        text = "Lebenspunkte"
+        alignment = Pos.CENTER
+        style = Style.bigBoldTextWhite
+      }
+      val pointsHeader = new Label {
+        text = "Punkte"
+        alignment = Pos.CENTER
+        style = Style.bigBoldTextWhite
+      }
+      
+      add(nameHeader, 0, 0)
+      add(scoreHeader, 1, 0)
+      add(pointsHeader, 2, 0)
+
+      val currentScoresZip = currentScores.zipWithIndex
+      currentScoresZip.foreach { case ((name, score), index) =>
+        val points = controller.gameState.playerPoints(index)
+
         val nameLabel = new Label {
           text = name
           alignment = Pos.CENTER_LEFT
@@ -240,8 +262,20 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
           alignment = Pos.CENTER_RIGHT
           style = Style.boldTextWhite
         }
-        add(nameLabel, 0, index)
-        add(scoreLabel, 1, index)
+        val pointsLabel = new Label {
+          text = points match {
+            case 31.0 => "Schnauz"
+            case 33.0 => "Feuer-Schnauz"
+            case 30.5 => "Halbe"
+            case _    => points.toString
+          }
+          alignment = Pos.CENTER_RIGHT
+          style = Style.boldTextWhite
+        }
+
+        add(nameLabel, 0, index + 1) 
+        add(scoreLabel, 1, index + 1) 
+        add(pointsLabel, 2, index + 1) 
       }
     }
     val currentScoresText = new Label {
@@ -276,7 +310,7 @@ class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer 
         losersText.layoutY = 57
         currentScoresText.layoutX = 280
         currentScoresText.layoutY = 122
-        scoreGrid.layoutX = 280
+        scoreGrid.layoutX = 200
         scoreGrid.layoutY = 137
         schwimmerText.layoutX = 560
         schwimmerText.layoutY = 400

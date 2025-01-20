@@ -20,6 +20,7 @@ class Controller @Inject() (var gameBuilder : GameBuilder, val fileIO: FileIO) e
   private def executeCommand(action: => Unit): Unit = {
     action
     if(checkifGameOver()) {
+      this.gameState = HelpFunctions.getPlayerPoints(this)
       resetRound()
     }
     notifySubscribers()

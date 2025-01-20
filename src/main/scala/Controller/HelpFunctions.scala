@@ -44,6 +44,12 @@ object HelpFunctions {
     }
   }
 
+  def getPlayerPoints(controller: Controller): GameStateTrait = {
+    val playerPoints = controller.gameState.players.map { player => HelpFunctions.calculatePoints(player.handDeck).getOrElse(0.0)}
+    val newGameState = controller.gameState.copy(playerPoints = playerPoints)
+    newGameState
+  }
+
   def findLoserOfRound(allPlayers: Seq[User]): Seq[User] = {
     val usersPoints: Seq[(User, Try[Double])] = allPlayers.map(user => user -> calculatePoints(user.handDeck))
     val successfulPoints = usersPoints.collect { case (user, Success(points)) => (user, points) }

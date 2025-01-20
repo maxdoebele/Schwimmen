@@ -21,6 +21,7 @@ trait GameStateTrait {
   def schwimmer: Boolean
   def roundCounter: Int
   def lastLoosers: Seq[User]
+  def playerPoints: Seq[Double]
   
   def copy(
             players: Seq[User] = this.players,
@@ -33,6 +34,7 @@ trait GameStateTrait {
             indexCardTable: Int = this.indexCardTable,
             schwimmer: Boolean = this.schwimmer,
             roundCounter: Int = this.roundCounter,
-            lastLoosers: Seq[User] = this.lastLoosers
+            lastLoosers: Seq[User] = this.lastLoosers,
+            playerPoints: Seq[Double] = this.playerPoints
           ): GameStateTrait
 }
