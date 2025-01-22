@@ -42,7 +42,11 @@ class BuildNewRound(gameState: GameStateTrait) extends GameBuilder {
   }
 
   def updatePoints(points: Seq[Double]): Seq[Double] = {
-    points.tail :+ points.head
+    if(points != Seq.empty) {
+      points.tail :+ points.head
+    } else {
+      Seq.empty
+    }
   }
   
   override def updateTable(): User = {
