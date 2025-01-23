@@ -16,7 +16,9 @@ trait GameBuilder {
   def updateTable(): User
 
   def returnGameState(): GameStateTrait
-
+  
+  //*************Helper Funktions*********************
+  
   def distributeCards(users: Seq[User], userTable: User, cardDeck: CardDeck): GameState = {
     val (deckAfterPlayers, usersWithCards) = users.foldLeft((cardDeck, Seq.empty[User])) {
       case ((currentDeck, updatedUsers), user) =>
@@ -27,8 +29,7 @@ trait GameBuilder {
 
     GameState(usersWithCards, tableWithCards, finalDeck)
   }
-
-  //*************Helper Funktions*********************
+  
   def distributeCardsToUser(deck: CardDeck, user: User): (CardDeck, User) = {
     val (drawnCards, newDeck) = deck.remove3Cards()
     if (user.handDeck.isEmpty) {

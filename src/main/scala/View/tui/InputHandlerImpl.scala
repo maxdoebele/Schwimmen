@@ -20,13 +20,15 @@ class InputHandlerImpl extends InputHandlerTrait {
     }).start()
   }
 
-  override def readLineThread(): Future[String] = this.synchronized {
-    if (inputPromise.isDefined) {
-      inputPromise.get.failure(new IllegalStateException())
+  override def readLineThread(): Future[String] = {
+    this.synchronized {
+      if (inputPromise.isDefined) {
+        inputPromise.get.failure(new IllegalStateException())
+      }
+      val promise = Promise[String]()
+      inputPromise = Some(promise)
+      promise.future
     }
-    val promise = Promise[String]()
-    inputPromise = Some(promise)
-    promise.future
   }
 
 }

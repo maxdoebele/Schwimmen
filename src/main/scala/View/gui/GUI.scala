@@ -7,28 +7,19 @@ import com.google.inject.Inject
 import javafx.geometry.*
 import scalafx.Includes.*
 import scalafx.application.{JFXApp3, Platform}
-import scalafx.beans.binding.Bindings
 import scalafx.beans.property.BooleanProperty
 import scalafx.geometry.Insets
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, ComboBox, Label, TextField}
+import scalafx.scene.control.{Button, Label, TextField}
 import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.layout.{Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, GridPane, HBox, Pane, Region, StackPane, VBox}
-import scalafx.scene.paint.Color
-import scalafx.scene.paint.Color.*
-import scalafx.scene.text.{Text, TextAlignment}
-import scalafx.scene.layout.{HBox, Region, StackPane, VBox}
-import scalafx.scene.paint.Color.*
+import scalafx.scene.layout.{GridPane, Pane}
+import scalafx.scene.text.TextAlignment
+import scalafx.scene.layout.{HBox, Region}
 import scalafx.scene.text.Text
 import util.Observer
 
-import java.io.File
-import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 import scala.jdk.CollectionConverters.*
-import scala.collection.IterableOnce.iterableOnceExtensionMethods
-import scala.jdk.CollectionConverters.*
-import scala.sys.process.buildersToProcess
 import scala.util.{Failure, Success, Try}
 
 class GUI @Inject() (val controller: Controller ) extends JFXApp3 with Observer {

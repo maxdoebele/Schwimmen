@@ -131,12 +131,15 @@ class ControllerClassTest extends AnyWordSpec {
     }
 
     "save the game" in {
+
+      val playernames = Seq("Player1", "Player2", "Player3", "Player4")
       val fileIO = new FileIOJSON
+      val controller2 = new Controller(BuildNewGame(playernames),fileIO)
 
-      controller.saveGame()
-      val gameState = controller.gameState
+      controller2.saveGame()
+      controller2.loadGame()
 
-      assert(controller.gameState == gameState, "GameState sollte korrekt gespeichert werden.")
+      assert(controller2.gameState.players.map(_.name) == playernames, "GameState sollte korrekt gespeichert werden")
     }
   }
 }
