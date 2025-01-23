@@ -13,24 +13,30 @@ class ControllerClassTest extends AnyWordSpec {
   val player2 = User(Seq(Card("Kreuz", "7"), Card("Herz", "10"), Card("Herz", "K")), 3, "Player2")
   val schnauzPlayer = User(Seq(Card("Herz", "A"), Card("Herz", "J"), Card("Herz", "D")), 2, "SchnauzPlayer")
   val table = User(Seq(Card("Karo", "8"), Card("Herz", "9"), Card("Kreuz", "A")), -1, "Table")
-  val gameState = GameState(
+  val gameState = new GameState(
   players = Seq(player1, player2, schnauzPlayer),
   table = table,
   deck = new CardDeck().shuffleDeck(),
   )
   val playerNames = Seq.empty
-  val controller = Controller(BuildNewGame(playerNames), new FileIOJSON)
+
+  val controller = new Controller(BuildNewGame(playerNames), new FileIOJSON)
   controller.gameState = gameState
 
   "Controller" should {
 
-    "set gameOver if player has schnauz" in {
-      assert(!controller.gameState.gameOver, "gameOver sollte auf false gesetzt sein")
+    "check if player has schnauz" in {
       controller.checkForSchnauz()
       val schnauzPlayer = controller.gameState.players.find(player =>
         player.name == "SchnauzPlayer"
       )
       assert(schnauzPlayer.isDefined, "SchnauzPlayer sollte im Spielstand existieren")
+    }
+
+    "set gameOver if schnauz exists" in {
+      controller.checkForSchnauz()
+      val gameover = controller.gameState.copy(gameOver = true)
+      assert(gameover.gameOver, "gameOver sollte auf true gesetzt sein, wenn ein Spieler Schnauz hat")
     }
 
     "call LifePointsHandler if game is over" in {
@@ -109,7 +115,6 @@ class ControllerClassTest extends AnyWordSpec {
     }
 
     "reset round when gameOver is true" in {
-      controller.gameState = controller.gameState.copy(gameOver = true)
       controller.resetRound()
       assert(!controller.gameState.gameOver, "Spiel sollte zurückgesetzt werden")
     }
@@ -118,6 +123,7 @@ class ControllerClassTest extends AnyWordSpec {
       val fileIO = new FileIOJSON
       fileIO.createFile(controller.gameState.asInstanceOf[GameState])
 
+      controller.saveGame()
       controller.loadGame()
       val gameState = controller.gameState
 

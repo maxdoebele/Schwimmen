@@ -50,7 +50,6 @@ object GameState {
     val swimmer = (xml \ "swimmerGlobal").text.trim.toBoolean
     val roundCounter = (xml \ "roundCounter").text.trim.toInt
     val lastLoosers = (xml \ "lastLooser" \ "looser").map(node => User.fromXML(node)).toList
-    //val playerPoints = (xml \ "playerPoints").text.trim.split(",").map(_.toDouble).toList
 
     // Reconstruct the GameState
     GameState(
@@ -65,7 +64,6 @@ object GameState {
       schwimmer = swimmer,
       roundCounter = roundCounter,
       lastLoosers = lastLoosers
-      //playerPoints = playerPoints
     )
   }
 }
