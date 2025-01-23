@@ -33,7 +33,7 @@ class TUITest extends AnyWordSpec with Matchers {
       val startFuture = tui.start()
       Await.ready(startFuture, Duration.Inf) // Wait for the async operation to complete
 
-      controller.gameState.players.map(_.name) shouldEqual Seq("Player1", "Player2", "Player3", "Player4")
+      controller.gameState.players.map(_.name) shouldEqual List("Player1", "Player2", "Player3", "Player4")
     }
 
     "retry when wrong input in start" in {
