@@ -1,4 +1,4 @@
-# Schwimmen 🏊🃏
+# Schwimmen
 
 [![Scala CI](https://github.com/maxdoebele/Schwimmen/actions/workflows/scala.yml/badge.svg)](https://github.com/maxdoebele/Schwimmen/actions/workflows/scala.yml)
 [![Coverage Status](https://coveralls.io/repos/github/maxdoebele/Schwimmen/badge.svg?branch=main)](https://coveralls.io/github/maxdoebele/Schwimmen?branch=main)
